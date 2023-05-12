@@ -1,13 +1,14 @@
 package dev.pulceo.pna.util;
 
 import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
+import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
 
 import java.util.List;
 
 public class Iperf3Utils {
 
-    public static Iperf3BandwidthMeasurement extractBandwidth(List<String> iperf3Output, Iperf3Role iperf3Role) {
+    public static Iperf3BandwidthMeasurement extractBandwidth(Iperf3Protocol iperf3Protocol, List<String> iperf3Output, Iperf3Role iperf3Role) {
 
         int indexOfBitrate = 0;
         int indexOfRetr = 0;
@@ -23,10 +24,9 @@ public class Iperf3Utils {
                 resultLine = iperf3Output.get(i);
             }
         }
-        // extract bitrate by removing all
+        // extract bitrate, it is located between
         int bitrate = Integer.valueOf(resultLine.substring(indexOfBitrate, indexOfRetr).replaceAll("[^0-9]", ""));
-
-        return new Iperf3BandwidthMeasurement(bitrate, iperf3Role);
+        return new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
     }
 
 }

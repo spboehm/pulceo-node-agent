@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class Iperf3BandwidthMeasurement {
 
+    private final Iperf3Protocol iperf3Protocol;
     private final int bitrate;
     private final String bandwidthUnit = "Mbits/s";
     private final Iperf3Role iperf3Role;

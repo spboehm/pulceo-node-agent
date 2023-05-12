@@ -1,6 +1,6 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.exception.ProcessException;
+import dev.pulceo.pna.exception.SubProcessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class ProcessOutputUtils {
 
     @Test
-    public void testReadProcessOutputFromIperf3Output () throws IOException, ProcessException {
+    public void testReadProcessOutputFromIperf3Output () throws IOException, SubProcessException {
         // given
         File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_client_result.txt");
 

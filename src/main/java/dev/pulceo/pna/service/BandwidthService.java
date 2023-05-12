@@ -1,8 +1,12 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.exception.ProcessException;
+import dev.pulceo.pna.exception.BandwidthServiceException;
+import dev.pulceo.pna.exception.SubProcessException;
+import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
 import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Result;
+import dev.pulceo.pna.model.iperf3.Iperf3Role;
+import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessOutputUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -40,7 +44,7 @@ public class BandwidthService {
     }
 
 
-    public String checkForRunning(int port) throws IOException, InterruptedException, ProcessException {
+    public String checkForRunning(int port) throws IOException, InterruptedException, SubProcessException {
 
         Process p = new ProcessBuilder("ps -ef | grep iperf3 | awk {'print $11'} | grep" + " " + port).start();
         int waitForCompleted = p.waitFor();
@@ -52,32 +56,36 @@ public class BandwidthService {
         return "";
     }
 
-    public Iperf3Result measureBandwidth(String host, int port, Iperf3Protocol protocol) {
-
+    public Iperf3Result measureBandwidth(String host, int port, Iperf3Protocol protocol) throws BandwidthServiceException {
+        // TODO: validation
         try {
-            /* Iperf3Result */
-            // from
-            final String from  = environment.getProperty("pna.hostname");
-            // to
-            final String to = host;
-            // start
-            final String start = Instant.now().toString();
-            Process p = new ProcessBuilder("/bin/iperf3", "-c", host ,"-p", String.valueOf(port),"-f m").start();
+            String from  = environment.getProperty("pna.hostname");
+
+            String start = Instant.now().toString();
+            Process p;
+            if (protocol == Iperf3Protocol.TCP) {
+                p = new ProcessBuilder("/bin/iperf3", "-c", host ,"-p", String.valueOf(port),"-f m").start();
+            } else {
+                p = new ProcessBuilder("/bin/iperf3", "-u" , "-c", host ,"-p", String.valueOf(port),"-f m").start();
+            }
             p.waitFor();
-            // end
-            final String end = Instant.now().toString();
-            // iperf3Output
-            final List<String> iperf3Output = ProcessOutputUtils.readProcessOutput(p.getInputStream());
-            // client
-            // TODO: process
-            // receiver
-            // TODO: process
 
-        } catch (IOException | InterruptedException | ProcessException e) {
-            throw new RuntimeException(e);
+            String end = Instant.now().toString();
+
+            List<String> iperf3Output = ProcessOutputUtils.readProcessOutput(p.getInputStream());
+
+            Iperf3BandwidthMeasurement iperf3BandwidthMeasurementSender = Iperf3Utils.extractBandwidth(protocol, iperf3Output, Iperf3Role.SENDER);
+            Iperf3BandwidthMeasurement iperf3BandwidthMeasurementReceiver = Iperf3Utils.extractBandwidth(protocol, iperf3Output, Iperf3Role.SENDER);
+
+            return new Iperf3Result(
+                    from, host,
+                    start, end,
+                    iperf3Output,
+                    iperf3BandwidthMeasurementSender,
+                    iperf3BandwidthMeasurementReceiver);
+        } catch (IOException | InterruptedException | SubProcessException e) {
+            throw new BandwidthServiceException("Could to measure bandwidth!", e);
         }
-
-        return null;
     }
 
 

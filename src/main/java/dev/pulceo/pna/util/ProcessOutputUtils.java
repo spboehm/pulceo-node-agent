@@ -1,6 +1,6 @@
 package dev.pulceo.pna.util;
 
-import dev.pulceo.pna.exception.SubProcessException;
+import dev.pulceo.pna.exception.ProcessOutputException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ProcessOutputUtils {
 
-    public static List<String> readProcessOutput(InputStream inputStream) throws SubProcessException {
+    public static List<String> readProcessOutput(InputStream inputStream) throws ProcessOutputException {
         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
@@ -24,7 +24,7 @@ public class ProcessOutputUtils {
             }
             return processOutput;
         } catch (IOException e) {
-            throw new SubProcessException("Could not read process output", e);
+            throw new ProcessOutputException("Could not read process output", e);
         }
     }
 

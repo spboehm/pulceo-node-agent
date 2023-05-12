@@ -1,6 +1,6 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.exception.SubProcessException;
+import dev.pulceo.pna.exception.ProcessOutputException;
 import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
 import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
@@ -20,16 +20,16 @@ import java.util.List;
 public class Iperf3UtilsTests {
 
     @Test
-    void testExtractIperf3BandwidthMeasurementForSender() throws SubProcessException, IOException {
+    void testExtractIperf3BandwidthMeasurementForSender() throws ProcessOutputException, IOException {
         testExtractIperf3BandwidthMeasurement(Iperf3Protocol.TCP, 100434,Iperf3Role.SENDER);
     }
 
     @Test
-    void testExtractIperf3BandwidthMeasurementForReceiver() throws SubProcessException, IOException {
+    void testExtractIperf3BandwidthMeasurementForReceiver() throws ProcessOutputException, IOException {
         testExtractIperf3BandwidthMeasurement(Iperf3Protocol.TCP,100433,Iperf3Role.RECEIVER);
     }
 
-    void testExtractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, SubProcessException {
+    void testExtractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, ProcessOutputException {
         // given
         Iperf3BandwidthMeasurement expectedIperf3BandwidthMeasurement = new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
 

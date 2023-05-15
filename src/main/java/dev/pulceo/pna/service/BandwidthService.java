@@ -1,13 +1,13 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
-import dev.pulceo.pna.exception.ProcessOutputException;
+import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
 import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Result;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
 import dev.pulceo.pna.util.Iperf3Utils;
-import dev.pulceo.pna.util.ProcessOutputUtils;
+import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -44,12 +44,12 @@ public class BandwidthService {
     }
 
 
-    public boolean checkForRunning(int port) throws IOException, InterruptedException, ProcessOutputException {
+    public boolean checkForRunning(int port) throws IOException, InterruptedException, ProcessException {
 
         Process p = new ProcessBuilder("ps", "-ef", String.valueOf(port)).start();
         p.waitFor();
 
-        List<String> processOutput = ProcessOutputUtils.readProcessOutput(p.getInputStream());
+        List<String> processOutput = ProcessUtils.readProcessOutput(p.getInputStream());
 
 
 
@@ -79,7 +79,7 @@ public class BandwidthService {
 
             String end = Instant.now().toString();
 
-            List<String> iperf3Output = ProcessOutputUtils.readProcessOutput(p.getInputStream());
+            List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
 
             Iperf3BandwidthMeasurement iperf3BandwidthMeasurementSender = Iperf3Utils.extractBandwidth(protocol, iperf3Output, Iperf3Role.SENDER);
             Iperf3BandwidthMeasurement iperf3BandwidthMeasurementReceiver = Iperf3Utils.extractBandwidth(protocol, iperf3Output, Iperf3Role.SENDER);
@@ -90,7 +90,7 @@ public class BandwidthService {
                     iperf3Output,
                     iperf3BandwidthMeasurementSender,
                     iperf3BandwidthMeasurementReceiver);
-        } catch (IOException | InterruptedException | ProcessOutputException e) {
+        } catch (IOException | InterruptedException | ProcessException e) {
             throw new BandwidthServiceException("Could not measure bandwidth!", e);
         }
     }

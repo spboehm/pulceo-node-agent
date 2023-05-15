@@ -1,11 +1,10 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
-import dev.pulceo.pna.exception.ProcessOutputException;
+import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Result;
 import dev.pulceo.pna.service.BandwidthService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    void testCheckForRunningIperf3ServerInstances() throws IOException, InterruptedException, ProcessOutputException {
+    void testCheckForRunningIperf3ServerInstances() throws IOException, InterruptedException, ProcessException {
         // given
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {

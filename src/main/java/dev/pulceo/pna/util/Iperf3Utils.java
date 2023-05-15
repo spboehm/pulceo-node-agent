@@ -12,7 +12,7 @@ public class Iperf3Utils {
 
         int indexOfBitrate = 0;
         int indexOfRetr = 0;
-        String resultLine = new String();
+        String resultLine = "";
         // we iterate backwards through the iperf3 output, because results are expected to be at the end
         for (int i = iperf3Output.size() - 1; i >= 0; i--) {
             if (iperf3Output.get(i).contains("[ ID]")) {
@@ -25,7 +25,7 @@ public class Iperf3Utils {
             }
         }
         // extract bitrate, it is located between
-        int bitrate = Integer.valueOf(resultLine.substring(indexOfBitrate, indexOfRetr).replaceAll("[^0-9]", ""));
+        int bitrate = Integer.parseInt(resultLine.substring(indexOfBitrate, indexOfRetr).replaceAll("[^0-9]", ""));
         return new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
     }
 

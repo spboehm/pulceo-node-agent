@@ -1,0 +1,435 @@
+  PID COMMAND  CMD
+    1 systemd  /usr/lib/systemd/systemd --switched-root --system --deserialize=32
+    2 kthreadd [kthreadd]
+    3 rcu_gp   [rcu_gp]
+    4 rcu_par_ [rcu_par_gp]
+    5 slub_flu [slub_flushwq]
+    6 netns    [netns]
+    8 kworker/ [kworker/0:0H-events_highpri]
+   10 mm_percp [mm_percpu_wq]
+   11 rcu_task [rcu_tasks_kthread]
+   12 rcu_task [rcu_tasks_rude_kthread]
+   13 rcu_task [rcu_tasks_trace_kthread]
+   14 ksoftirq [ksoftirqd/0]
+   15 rcu_pree [rcu_preempt]
+   16 migratio [migration/0]
+   17 idle_inj [idle_inject/0]
+   19 cpuhp/0  [cpuhp/0]
+   20 cpuhp/1  [cpuhp/1]
+   21 idle_inj [idle_inject/1]
+   22 migratio [migration/1]
+   23 ksoftirq [ksoftirqd/1]
+   24 kworker/ [kworker/1:0-events]
+   25 kworker/ [kworker/1:0H-events_highpri]
+   26 cpuhp/2  [cpuhp/2]
+   27 idle_inj [idle_inject/2]
+   28 migratio [migration/2]
+   29 ksoftirq [ksoftirqd/2]
+   31 kworker/ [kworker/2:0H-events_highpri]
+   32 cpuhp/3  [cpuhp/3]
+   33 idle_inj [idle_inject/3]
+   34 migratio [migration/3]
+   35 ksoftirq [ksoftirqd/3]
+   37 kworker/ [kworker/3:0H-events_highpri]
+   38 cpuhp/4  [cpuhp/4]
+   39 idle_inj [idle_inject/4]
+   40 migratio [migration/4]
+   41 ksoftirq [ksoftirqd/4]
+   43 kworker/ [kworker/4:0H-events_highpri]
+   44 cpuhp/5  [cpuhp/5]
+   45 idle_inj [idle_inject/5]
+   46 migratio [migration/5]
+   47 ksoftirq [ksoftirqd/5]
+   49 kworker/ [kworker/5:0H-events_highpri]
+   50 cpuhp/6  [cpuhp/6]
+   51 idle_inj [idle_inject/6]
+   52 migratio [migration/6]
+   53 ksoftirq [ksoftirqd/6]
+   55 kworker/ [kworker/6:0H-events_highpri]
+   56 cpuhp/7  [cpuhp/7]
+   57 idle_inj [idle_inject/7]
+   58 migratio [migration/7]
+   59 ksoftirq [ksoftirqd/7]
+   61 kworker/ [kworker/7:0H-events_highpri]
+   62 cpuhp/8  [cpuhp/8]
+   63 idle_inj [idle_inject/8]
+   64 migratio [migration/8]
+   65 ksoftirq [ksoftirqd/8]
+   66 kworker/ [kworker/8:0-events]
+   67 kworker/ [kworker/8:0H-events_highpri]
+   68 cpuhp/9  [cpuhp/9]
+   69 idle_inj [idle_inject/9]
+   70 migratio [migration/9]
+   71 ksoftirq [ksoftirqd/9]
+   73 kworker/ [kworker/9:0H-events_highpri]
+   74 cpuhp/10 [cpuhp/10]
+   75 idle_inj [idle_inject/10]
+   76 migratio [migration/10]
+   77 ksoftirq [ksoftirqd/10]
+   79 kworker/ [kworker/10:0H-events_highpri]
+   80 cpuhp/11 [cpuhp/11]
+   81 idle_inj [idle_inject/11]
+   82 migratio [migration/11]
+   83 ksoftirq [ksoftirqd/11]
+   85 kworker/ [kworker/11:0H-events_highpri]
+   86 cpuhp/12 [cpuhp/12]
+   87 idle_inj [idle_inject/12]
+   88 migratio [migration/12]
+   89 ksoftirq [ksoftirqd/12]
+   90 kworker/ [kworker/12:0-events]
+   91 kworker/ [kworker/12:0H-events_highpri]
+   92 cpuhp/13 [cpuhp/13]
+   93 idle_inj [idle_inject/13]
+   94 migratio [migration/13]
+   95 ksoftirq [ksoftirqd/13]
+   97 kworker/ [kworker/13:0H-events_highpri]
+   98 cpuhp/14 [cpuhp/14]
+   99 idle_inj [idle_inject/14]
+  100 migratio [migration/14]
+  101 ksoftirq [ksoftirqd/14]
+  103 kworker/ [kworker/14:0H-events_highpri]
+  104 cpuhp/15 [cpuhp/15]
+  105 idle_inj [idle_inject/15]
+  106 migratio [migration/15]
+  107 ksoftirq [ksoftirqd/15]
+  109 kworker/ [kworker/15:0H-events_highpri]
+  126 kdevtmpf [kdevtmpfs]
+  127 inet_fra [inet_frag_wq]
+  128 kauditd  [kauditd]
+  129 khungtas [khungtaskd]
+  130 oom_reap [oom_reaper]
+  131 writebac [writeback]
+  132 kcompact [kcompactd0]
+  133 ksmd     [ksmd]
+  134 khugepag [khugepaged]
+  135 kintegri [kintegrityd]
+  136 kblockd  [kblockd]
+  137 blkcg_pu [blkcg_punt_bio]
+  142 kworker/ [kworker/7:1-events]
+  144 kworker/ [kworker/3:1-mm_percpu_wq]
+  151 kworker/ [kworker/14:1-mm_percpu_wq]
+  152 kworker/ [kworker/15:1-events]
+  153 tpm_dev_ [tpm_dev_wq]
+  154 ata_sff  [ata_sff]
+  155 edac-pol [edac-poller]
+  156 devfreq_ [devfreq_wq]
+  158 watchdog [watchdogd]
+  159 kworker/ [kworker/1:1H-kblockd]
+  160 kswapd0  [kswapd0]
+  166 kthrotld [kthrotld]
+  172 irq/123- [irq/123-pciehp]
+  173 irq/124- [irq/124-pciehp]
+  177 xenbus_p [xenbus_probe]
+  178 hwrng    [hwrng]
+  179 hfi-upda [hfi-updates]
+  181 mld      [mld]
+  182 kworker/ [kworker/0:1H-kblockd]
+  183 ipv6_add [ipv6_addrconf]
+  188 kstrp    [kstrp]
+  190 zswap-sh [zswap-shrink]
+  251 charger_ [charger_manager]
+  252 kworker/ [kworker/2:1H-events_highpri]
+  257 kworker/ [kworker/9:1H-events_highpri]
+  266 kworker/ [kworker/4:1H-events_highpri]
+  297 kworker/ [kworker/6:1H-events_highpri]
+  301 kworker/ [kworker/3:1H-kblockd]
+  304 pickup   pickup -l -t fifo -u
+  306 kaluad   [kaluad]
+  308 kmpath_r [kmpath_rdacd]
+  310 kmpathd  [kmpathd]
+  311 kmpath_h [kmpath_handlerd]
+  467 kworker/ [kworker/10:1H-kblockd]
+  469 kworker/ [kworker/8:1H-events_highpri]
+  471 kworker/ [kworker/11:1H-kblockd]
+  472 kworker/ [kworker/13:1H-events_highpri]
+  474 kworker/ [kworker/12:1H-events_highpri]
+  478 kworker/ [kworker/14:1H-kblockd]
+  482 kworker/ [kworker/15:1H-events_highpri]
+  483 kworker/ [kworker/5:1H-events_highpri]
+  485 kworker/ [kworker/7:1H-kblockd]
+  521 cryptd   [cryptd]
+  524 nvme-wq  [nvme-wq]
+  525 nvme-res [nvme-reset-wq]
+  526 nvme-del [nvme-delete-wq]
+  572 kworker/ [kworker/u33:3-hci0]
+  632 ttm      [ttm]
+  636 card1-cr [card1-crtc0]
+  637 card1-cr [card1-crtc1]
+  638 card1-cr [card1-crtc2]
+  639 card1-cr [card1-crtc3]
+  640 kworker/ [kworker/6:5-events]
+  641 USBC000: [USBC000:00-con1]
+  659 USBC000: [USBC000:00-con2]
+  686 kdmflush [kdmflush/254:0]
+  687 kcryptd_ [kcryptd_io/254:]
+  688 kcryptd/ [kcryptd/254:0]
+  689 dmcrypt_ [dmcrypt_write/254:0]
+  705 btrfs-wo [btrfs-worker]
+  706 btrfs-wo [btrfs-worker-hi]
+  707 btrfs-de [btrfs-delalloc]
+  708 btrfs-fl [btrfs-flush_del]
+  709 btrfs-ca [btrfs-cache]
+  710 btrfs-fi [btrfs-fixup]
+  711 btrfs-en [btrfs-endio]
+  712 btrfs-en [btrfs-endio-met]
+  713 btrfs-rm [btrfs-rmw]
+  714 btrfs-en [btrfs-endio-wri]
+  715 btrfs-co [btrfs-compresse]
+  716 btrfs-fr [btrfs-freespace]
+  717 btrfs-de [btrfs-delayed-m]
+  718 btrfs-qg [btrfs-qgroup-re]
+  719 btrfs-cl [btrfs-cleaner]
+  720 btrfs-tr [btrfs-transaction]
+  757 systemd- /usr/lib/systemd/systemd-journald
+  770 systemd- /usr/lib/systemd/systemd-udevd
+  846 kworker/ [kworker/3:2-events]
+  862 kworker/ [kworker/9:0]
+  982 acpi_the [acpi_thermal_pm]
+  983 irq/153- [irq/153-mei_me]
+  984 cfg80211 [cfg80211]
+  985 ktpacpid [ktpacpid]
+  987 irq/56-E [irq/56-ELAN067B:00]
+  998 kworker/ [kworker/u32:9-btrfs-endio-write]
+ 1052 irq/184- [irq/184-iwlwifi:default_queue]
+ 1053 irq/185- [irq/185-iwlwifi:queue_1]
+ 1054 irq/186- [irq/186-iwlwifi:queue_2]
+ 1055 irq/187- [irq/187-iwlwifi:queue_3]
+ 1056 irq/188- [irq/188-iwlwifi:queue_4]
+ 1057 irq/189- [irq/189-iwlwifi:queue_5]
+ 1058 irq/190- [irq/190-iwlwifi:queue_6]
+ 1059 irq/191- [irq/191-iwlwifi:queue_7]
+ 1060 kworker/ [kworker/4:1-cgroup_destroy]
+ 1061 irq/192- [irq/192-iwlwifi:queue_8]
+ 1062 irq/193- [irq/193-iwlwifi:queue_9]
+ 1063 irq/194- [irq/194-iwlwifi:queue_10]
+ 1064 irq/195- [irq/195-iwlwifi:queue_11]
+ 1065 irq/196- [irq/196-iwlwifi:queue_12]
+ 1066 irq/197- [irq/197-iwlwifi:queue_13]
+ 1067 irq/198- [irq/198-iwlwifi:queue_14]
+ 1068 irq/199- [irq/199-iwlwifi:exception]
+ 1074 kworker/ [kworker/11:2-inet_frag_wq]
+ 1120 Utility  /usr/lib64/firefox/firefox -contentproc -parentBuildID 20230504192738 -sandboxingKind 0 -prefsLen 36616 -prefMapSize 237375 -appDir /usr/lib64/firefox/brows
+ 1193 irq/200- [irq/200-AudioDSP]
+ 1198 kworker/ [kworker/1:1-mm_percpu_wq]
+ 1218 kworker/ [kworker/u32:15-btrfs-endio-write]
+ 1219 kworker/ [kworker/u32:17-btrfs-endio-write]
+ 1307 gvfsd-me /usr/libexec/gvfs/gvfsd-metadata
+ 1366 kworker/ [kworker/2:0-events]
+ 1618 kworker/ [kworker/u33:2-hci0]
+ 1835 kworker/ [kworker/5:2-mm_percpu_wq]
+ 1856 kdmflush [kdmflush/254:1]
+ 1857 kcryptd_ [kcryptd_io/254:]
+ 1858 kcryptd/ [kcryptd/254:1]
+ 1859 dmcrypt_ [dmcrypt_write/254:1]
+ 1869 auditd   /sbin/auditd
+ 1876 avahi-da avahi-daemon: running [linux.local]
+ 1877 bluetoot /usr/libexec/bluetooth/bluetoothd
+ 1878 dbus-dae /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+ 1880 irqbalan /usr/sbin/irqbalance --foreground
+ 1887 polkitd  /usr/libexec/polkit-1/polkitd --no-debug
+ 1892 smartd   /usr/sbin/smartd -n
+ 1895 nscd     /usr/sbin/nscd
+ 1999 audit_pr [audit_prune_tree]
+ 2002 kworker/ [kworker/0:0-mm_percpu_wq]
+ 2032 iprt-VBo [iprt-VBoxWQueue]
+ 2033 iprt-VBo [iprt-VBoxTscThread]
+ 2038 systemd- /usr/lib/systemd/systemd-logind
+ 2039 mcelog   /usr/sbin/mcelog --ignorenodev --daemon --foreground
+ 2040 ModemMan /usr/sbin/ModemManager
+ 2041 firewall /usr/bin/python3 /usr/sbin/firewalld --nofork --nopid
+ 2051 kioslave /usr/libexec/kf5/kioslave5 /usr/lib64/qt5/plugins/kf5/kio/kio_http.so https  local:/run/user/1000/akonadi_davgroupware_resource_0wYzEyY.31.kioworker.socket
+ 2077 bpfilter bpfilter_umh
+ 2096 NetworkM /usr/sbin/NetworkManager --no-daemon
+ 2155 cupsd    /usr/sbin/cupsd -l
+ 2157 dockerd  /usr/bin/dockerd --add-runtime oci=/usr/sbin/docker-runc
+ 2180 boltd    /usr/libexec/boltd
+ 2183 sshd     sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+ 2212 chronyd  /usr/sbin/chronyd
+ 2275 kworker/ [kworker/2:1-mm_percpu_wq]
+ 2282 kworker/ [kworker/10:2-events]
+ 2358 containe containerd --config /var/run/docker/containerd/containerd.toml --log-level warn
+ 2393 kworker/ [kworker/8:2-inet_frag_wq]
+ 2401 kworker/ [kworker/13:1-mm_percpu_wq]
+ 2478 kworker/ [kworker/6:1-events]
+ 2793 Web Cont /usr/lib64/firefox/firefox -contentproc -childID 110 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appD
+ 2866 Web Cont /usr/lib64/firefox/firefox -contentproc -childID 111 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appD
+ 2893 kworker/ [kworker/u32:0-btrfs-endio-write]
+ 2895 kworker/ [kworker/u32:6-btrfs-endio-write]
+ 2896 kworker/ [kworker/u32:12-events_unbound]
+ 2897 kworker/ [kworker/u32:13-btrfs-endio-write]
+ 2962 master   /usr/lib/postfix/bin//master -w
+ 2966 qmgr     qmgr -l -t fifo -u
+ 3041 Web Cont /usr/lib64/firefox/firefox -contentproc -childID 112 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appD
+ 3050 cron     /usr/sbin/cron -n
+ 3059 kworker/ [kworker/9:1-events_freezable]
+ 3070 sleep    /bin/sleep 3600
+ 3980 sleep    sleep 3200
+ 3981 bash     /bin/bash
+ 4003 snapperd /usr/sbin/snapperd
+ 4005 kworker/ [kworker/u32:2-btrfs-endio-write]
+ 4006 kworker/ [kworker/u32:5]
+ 4007 kworker/ [kworker/u32:10]
+ 4008 kworker/ [kworker/4:2-mm_percpu_wq]
+ 4009 kworker/ [kworker/8:1-events]
+ 4015 ps       ps -eo pid,fname,cmd
+ 7913 sddm     /usr/bin/sddm
+ 7915 Xorg.bin /usr/bin/Xorg.bin -nolisten tcp -auth /run/sddm/{10c5daf8-4f16-4628-b79b-0c5523300859} -background none -noreset -displayfd 17 -seat seat0 vt7
+ 7919 agetty   /sbin/agetty -o -p -- \u --noclear - linux
+10027 sddm-hel /usr/libexec/sddm/sddm-helper --socket /tmp/sddm-authed3d6374-c4f2-4043-8160-0cebe6f56eca --id 1 --start /usr/bin/startplasma-x11 --user sebastian.boehm --a
+10029 systemd  /usr/lib/systemd/systemd --user
+10030 (sd-pam) (sd-pam)
+10039 startpla /usr/bin/startplasma-x11
+10052 dbus-dae /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+10106 ssh-agen /usr/bin/ssh-agent /usr/bin/gpg-agent --sh --daemon --keep-display /usr/libexec/xinit/xinitrc
+10107 gpg-agen /usr/bin/gpg-agent --sh --daemon --keep-display /usr/libexec/xinit/xinitrc
+10144 baloo_fi /usr/libexec/baloo_file
+10150 xdg-desk /usr/libexec/xdg-desktop-portal
+10157 xdg-docu /usr/libexec/xdg-document-portal
+10163 udisksd  /usr/libexec/udisks2/udisksd
+10167 xdg-perm /usr/libexec/xdg-permission-store
+10178 fusermou fusermount3 -o rw,nosuid,nodev,fsname=portal,auto_unmount,subtype=portal -- /run/user/1000/doc
+10179 ksmserve /usr/bin/ksmserver
+10184 kded5    /usr/bin/kded5
+10185 kwin_x11 /usr/bin/kwin_x11 --replace
+10195 rtkit-da /usr/libexec/rtkit/rtkit-daemon
+10197 upowerd  /usr/libexec/upower/upowerd
+10254 kglobala /usr/bin/kglobalaccel5
+10263 plasmash /usr/bin/plasmashell --no-respawn
+10270 dconf-se /usr/libexec/dconf-service
+10277 xsetting /usr/bin/xsettingsd
+10329 kactivit /usr/libexec/kactivitymanagerd
+10333 gmenudbu /usr/bin/gmenudbusmenuproxy
+10335 polkit-k /usr/libexec/polkit-kde-authentication-agent-1
+10336 org_kde_ /usr/libexec/org_kde_powerdevil
+10337 xdg-desk /usr/libexec/xdg-desktop-portal-kde
+10338 xembedsn /usr/bin/xembedsniproxy
+10434 xdg-desk /usr/libexec/xdg-desktop-portal-gtk
+10475 gvfsd    /usr/libexec/gvfs/gvfsd
+10482 gvfsd-fu /usr/libexec/gvfs/gvfsd-fuse /run/user/1000/gvfs -f
+10493 at-spi-b /usr/libexec/at-spi2/at-spi-bus-launcher
+10506 dbus-dae /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 11 --address=unix:path=/run/user/1000/at-spi/bus_
+10512 at-spi2- /usr/libexec/at-spi2/at-spi2-registryd --use-gnome-session
+10526 nextclou /usr/bin/nextcloud --background
+10534 keepassx /usr/bin/keepassxc
+10541 agent    /usr/libexec/geoclue-2.0/demos/agent
+10543 kaccess  /usr/bin/kaccess
+10546 kalendar /usr/bin/kalendarac
+10553 ibus-dae /usr/bin/ibus-daemon --xim
+10554 kscreen_ /usr/libexec/kf5/kscreen_backend_launcher
+10558 pipewire /usr/bin/pipewire
+10559 wireplum /usr/bin/wireplumber
+10571 ibus-dco /usr/lib64/ibus/ibus-dconf
+10573 ibus-ui- /usr/lib64/ibus/ibus-ui-gtk3
+10574 ibus-ext /usr/lib64/ibus/ibus-extension-gtk3
+10580 ibus-x11 /usr/lib64/ibus/ibus-x11 --kill-daemon
+10583 ibus-por /usr/lib64/ibus/ibus-portal
+10611 krfcommd [krfcommd]
+10640 ibus-eng /usr/lib64/ibus/ibus-engine-simple
+10694 akonadi_ /usr/bin/akonadi_control
+10778 pcscd    /usr/sbin/pcscd --foreground
+10779 akonadis /usr/bin/akonadiserver
+10812 mysqld   /usr/sbin/mysqld --defaults-file=/home/sebastian.boehm/.local/share/akonadi/mysql.conf --datadir=/home/sebastian.boehm/.local/share/akonadi/db_data/ --socke
+10849 kleopatr /usr/bin/kleopatra -session 1028c1d320b210000167783795400000020450029_1684133644_931216
+10946 kontact  /usr/bin/kontact -session 1028c1d320b210000168138971900000031140023_1684133644_931215
+10988 pipewire /usr/bin/pipewire-pulse
+11030 kwalletd /usr/bin/kwalletd5
+11031 akonadi_ /usr/bin/akonadi_akonotes_resource --identifier akonadi_akonotes_resource_0
+11032 akonadi_ /usr/bin/akonadi_archivemail_agent --identifier akonadi_archivemail_agent
+11034 akonadi_ /usr/bin/akonadi_birthdays_resource --identifier akonadi_birthdays_resource
+11035 akonadi_ /usr/bin/akonadi_contacts_resource --identifier akonadi_contacts_resource_0
+11036 akonadi_ /usr/bin/akonadi_davgroupware_resource --identifier akonadi_davgroupware_resource_0
+11038 akonadi_ /usr/bin/akonadi_followupreminder_agent --identifier akonadi_followupreminder_agent
+11040 akonadi_ /usr/bin/akonadi_ical_resource --identifier akonadi_ical_resource_0
+11042 akonadi_ /usr/bin/akonadi_imap_resource --identifier akonadi_imap_resource_1
+11075 QtWebEng /usr/lib64/qt5/libexec/QtWebEngineProcess --type=zygote --no-zygote-sandbox --disable-in-process-stack-traces --application-name=kontact --webengine-schemes
+11077 QtWebEng /usr/lib64/qt5/libexec/QtWebEngineProcess --type=zygote --disable-in-process-stack-traces --application-name=kontact --webengine-schemes=cid:slLC;qrc:sLV --
+11085 akonadi_ /usr/bin/akonadi_imap_resource --identifier akonadi_imap_resource_2
+11088 akonadi_ /usr/bin/akonadi_indexing_agent --identifier akonadi_indexing_agent
+11090 akonadi_ /usr/bin/akonadi_maildir_resource --identifier akonadi_maildir_resource_0
+11092 akonadi_ /usr/bin/akonadi_maildispatcher_agent --identifier akonadi_maildispatcher_agent
+11094 akonadi_ /usr/bin/akonadi_mailfilter_agent --identifier akonadi_mailfilter_agent
+11139 akonadi_ /usr/bin/akonadi_mailmerge_agent --identifier akonadi_mailmerge_agent
+11142 akonadi_ /usr/bin/akonadi_migration_agent --identifier akonadi_migration_agent
+11161 akonadi_ /usr/bin/akonadi_newmailnotifier_agent --identifier akonadi_newmailnotifier_agent
+11173 akonadi_ /usr/bin/akonadi_notes_agent --identifier akonadi_notes_agent
+11181 akonadi_ /usr/bin/akonadi_sendlater_agent --identifier akonadi_sendlater_agent
+11183 QtWebEng /usr/lib64/qt5/libexec/QtWebEngineProcess --type=zygote --disable-in-process-stack-traces --application-name=kontact --webengine-schemes=cid:slLC;qrc:sLV --
+11184 akonadi_ /usr/bin/akonadi_unifiedmailbox_agent --identifier akonadi_unifiedmailbox_agent
+11371 scdaemon scdaemon --multi-server
+11472 QtWebEng /usr/lib64/qt5/libexec/QtWebEngineProcess --type=renderer --disable-in-process-stack-traces --disable-speech-api --enable-threaded-compositing --enable-feat
+11609 QtWebEng /usr/lib64/qt5/libexec/QtWebEngineProcess --type=renderer --disable-in-process-stack-traces --disable-speech-api --enable-threaded-compositing --enable-feat
+11692 kiod5    /usr/libexec/kf5/kiod5
+12280 irq/126- [irq/126-pciehp]
+12281 irq/127- [irq/127-pciehp]
+12282 irq/128- [irq/128-pciehp]
+12945 baloorun /usr/libexec/baloorunner
+12969 bwrap    bwrap --args 42 /app/bin/rocketchat-desktop
+12973 flatpak- /usr/libexec/flatpak-session-helper
+12980 bwrap    bwrap --args 42 /usr/bin/xdg-dbus-proxy --args=44
+12981 xdg-dbus /usr/bin/xdg-dbus-proxy --args=44
+12987 bwrap    bwrap --args 42 /app/bin/rocketchat-desktop
+12988 rocketch /app/Rocket.Chat/rocketchat-desktop --ozone-platform-hint=auto
+12991 cat      cat
+12992 cat      cat
+12995 flatpak- /usr/libexec/flatpak-portal
+13002 rocketch /app/Rocket.Chat/rocketchat-desktop --type=zygote --no-zygote-sandbox
+13004 zypak-sa [zypak-sandbox] <defunct>
+13006 bwrap    bwrap --args 39 /app/bin/zypak-helper child - /app/Rocket.Chat/rocketchat-desktop --type=zygote
+13015 bwrap    bwrap --args 39 /app/bin/zypak-helper child - /app/Rocket.Chat/rocketchat-desktop --type=zygote
+13016 rocketch /app/Rocket.Chat/rocketchat-desktop --type=zygote
+13042 rocketch /app/Rocket.Chat/rocketchat-desktop --type=gpu-process --ozone-platform=x11 --enable-crash-reporter=677780b8-37c2-4b20-aee7-562baf441618,no_channel --user-d
+13049 rocketch /app/Rocket.Chat/rocketchat-desktop --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --enable-crash-r
+13124 rocketch /app/Rocket.Chat/rocketchat-desktop --type=renderer --enable-crash-reporter=677780b8-37c2-4b20-aee7-562baf441618,no_channel --user-data-dir=/home/sebastian.
+13156 rocketch /app/Rocket.Chat/rocketchat-desktop --type=renderer --enable-crash-reporter=677780b8-37c2-4b20-aee7-562baf441618,no_channel --user-data-dir=/home/sebastian.
+13204 rocketch /app/Rocket.Chat/rocketchat-desktop --type=utility --utility-sub-type=audio.mojom.AudioService --lang=en-US --service-sandbox-type=none --enable-crash-repor
+14023 java     /opt/idea-IU-231.8770.65/jbr/bin/java -classpath /opt/idea-IU-231.8770.65/lib/app.jar:/opt/idea-IU-231.8770.65/lib/3rd-party-rt.jar:/opt/idea-IU-231.8770.65
+14192 fsnotifi /opt/idea-IU-231.8770.65/bin/fsnotifier
+14347 java     /home/sebastian.boehm/.jdks/temurin-17.0.7/bin/java -Djava.awt.headless=true -Dmaven.defaultProjectBuilder.disableGlobalModelCache=true -Didea.version=2023.
+18289 firefox  /usr/lib64/firefox/firefox
+18432 Socket P /usr/lib64/firefox/firefox -contentproc -parentBuildID 20230504192738 -prefsLen 30707 -prefMapSize 237375 -appDir /usr/lib64/firefox/browser {418c441e-0e8d-
+18497 WebExten /usr/lib64/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 30707 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDir
+18504 kmozilla /usr/lib/mozilla/kmozillahelper
+18547 Privileg /usr/lib64/firefox/firefox -contentproc -childID 2 -isForBrowser -prefsLen 31701 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDir
+18672 plasma-b /usr/bin/plasma-browser-integration-host /usr/lib64/mozilla/native-messaging-hosts/org.kde.plasma.browser_integration.json plasma-browser-integration@kde.or
+18675 Isolated /usr/lib64/firefox/firefox -contentproc -childID 3 -isForBrowser -prefsLen 31084 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDir
+18750 keepassx /usr/bin/keepassxc-proxy /home/sebastian.boehm/.mozilla/native-messaging-hosts/org.keepassxc.keepassxc_browser.json keepassxc-browser@keepassxc.org
+19100 java     /home/sebastian.boehm/.jdks/temurin-17.0.7/bin/java --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java
+19364 konsole  /usr/bin/konsole
+19522 kworker/ [kworker/u32:8-events_unbound]
+19785 konsole  /usr/bin/konsole
+19812 bash     /bin/bash
+19847 bash     /bin/bash
+20076 dolphin  /usr/bin/dolphin
+20406 kate     /usr/bin/kate -b /home/sebastian.boehm/ps_eo_output.txt
+20779 bash     /bin/bash
+21157 kworker/ [kworker/u32:4-kcryptd/254:0]
+21649 kworker/ [kworker/10:0-events]
+21728 Isolated /usr/lib64/firefox/firefox -contentproc -childID 15 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+25032 kworker/ [kworker/u32:1-kcryptd/254:0]
+25581 kworker/ [kworker/u32:11-btrfs-endio-write]
+26367 Isolated /usr/lib64/firefox/firefox -contentproc -childID 39 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+27373 kworker/ [kworker/5:1-events]
+28023 Isolated /usr/lib64/firefox/firefox -contentproc -childID 52 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+28226 Isolated /usr/lib64/firefox/firefox -contentproc -childID 54 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+28403 kworker/ [kworker/13:2-inet_frag_wq]
+28682 Isolated /usr/lib64/firefox/firefox -contentproc -childID 59 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+28834 kworker/ [kworker/u33:0-i915_flip]
+29277 kworker/ [kworker/4:0-cgroup_destroy]
+29501 Isolated /usr/lib64/firefox/firefox -contentproc -childID 70 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+29568 kworker/ [kworker/14:0]
+30026 Isolated /usr/lib64/firefox/firefox -contentproc -childID 77 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+30071 kworker/ [kworker/11:0-mm_percpu_wq]
+30092 Isolated /usr/lib64/firefox/firefox -contentproc -childID 78 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+30176 Isolated /usr/lib64/firefox/firefox -contentproc -childID 79 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+30239 kworker/ [kworker/0:2-events]
+30714 kworker/ [kworker/u32:7-kcryptd/254:0]
+30715 kworker/ [kworker/u32:14-kcryptd/254:0]
+30716 Isolated /usr/lib64/firefox/firefox -contentproc -childID 83 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+30874 kworker/ [kworker/12:2-events]
+30996 kworker/ [kworker/u33:1-hci0]
+31161 Isolated /usr/lib64/firefox/firefox -contentproc -childID 87 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+31227 kworker/ [kworker/7:2-mm_percpu_wq]
+31228 kworker/ [kworker/15:0-events]
+31303 Isolated /usr/lib64/firefox/firefox -contentproc -childID 89 -isForBrowser -prefsLen 31316 -prefMapSize 237375 -jsInitLen 238780 -parentBuildID 20230504192738 -appDi
+32052 RDD Proc /usr/lib64/firefox/firefox -contentproc -parentBuildID 20230504192738 -prefsLen 36616 -prefMapSize 237375 -appDir /usr/lib64/firefox/browser {8e2645bf-dbd7-
+32235 kworker/ [kworker/u32:3-btrfs-endio-write]

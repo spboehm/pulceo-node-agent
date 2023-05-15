@@ -20,18 +20,17 @@ import java.util.List;
 public class Iperf3UtilsTests {
 
     @Test
-    void testExtractIperf3BandwidthMeasurementForSender() throws ProcessException, IOException {
+    public void testExtractIperf3BandwidthMeasurementForSender() throws ProcessException, IOException {
         testExtractIperf3BandwidthMeasurement(Iperf3Protocol.TCP, 100434,Iperf3Role.SENDER);
     }
 
     @Test
-    void testExtractIperf3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
+    public void testExtractIperf3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
         testExtractIperf3BandwidthMeasurement(Iperf3Protocol.TCP,100433,Iperf3Role.RECEIVER);
     }
-
     // TODO: UDP
 
-    void testExtractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, ProcessException {
+    private void testExtractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, ProcessException {
         // given
         Iperf3BandwidthMeasurement expectedIperf3BandwidthMeasurement = new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
 
@@ -42,10 +41,66 @@ public class Iperf3UtilsTests {
         }
 
         // when
-        Iperf3BandwidthMeasurement actualIperf3BandwidthMeasurement = Iperf3Utils.extractBandwidth(iperf3Protocol, resultList, iperf3Role);
+        Iperf3BandwidthMeasurement actualIperf3BandwidthMeasurement = Iperf3Utils.extractIperf3BandwidthMeasurement(iperf3Protocol, resultList, iperf3Role);
 
         // then
         assertEquals(expectedIperf3BandwidthMeasurement, actualIperf3BandwidthMeasurement);
     }
 
+    @Test
+    public void testIsReceiver() {
+        // given
+        String cmdTCPReceiverShort = "/bin/iperf3 -s -p 5001 -f m";
+        String cmdTCPReceiverLong = "/bin/iperf3 --server -p 5001 -f m";
+
+        // when
+        boolean isReceiverShort = Iperf3Utils.isReceiver(cmdTCPReceiverShort);
+        boolean isReceiverLong = Iperf3Utils.isReceiver(cmdTCPReceiverLong);
+
+        // then
+        assertTrue(isReceiverShort);
+        assertTrue(isReceiverLong);
+    }
+
+    @Test
+    public void testIsTCPSender() {
+        // given
+        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p 5001 -f m";
+        String cmdUDPSenderLong = "/bin/iperf3 --client localhost --udp -f m";
+        String cmdTCPSenderShort = "/bin/iperf -c localhost -p 5001 -f m";
+        String cmdTCPSenderLong = "/bin/iperf --client localhost -p 5001 -f m";
+
+        // when
+        boolean isNotTCPSenderShort = Iperf3Utils.isTCPSender(cmdUDPSenderShort);
+        boolean isNotTCPSenderLong = Iperf3Utils.isTCPSender(cmdUDPSenderLong);
+        boolean isTCPSenderShort = Iperf3Utils.isTCPSender(cmdTCPSenderShort);
+        boolean isTCPSenderLong = Iperf3Utils.isTCPSender(cmdTCPSenderLong);
+
+        // then
+        assertFalse(isNotTCPSenderShort);
+        assertFalse(isNotTCPSenderLong);
+        assertTrue(isTCPSenderShort);
+        assertTrue(isTCPSenderLong);
+    }
+
+    @Test
+    public void testIsUDPSender()  {
+        // given
+        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p 5001 -f m";
+        String cmdUDPSenderLong = "/bin/iperf3 --client localhost --udp -f m";
+        String cmdTCPSenderShort = "/bin/iperf -c localhost -p 5001 -f m";
+        String cmdTCPSenderLong = "/bin/iperf --client localhost -p 5001 -f m";
+
+        // when
+        boolean isUDPSenderShort = Iperf3Utils.isUDPSender(cmdUDPSenderShort);
+        boolean isUDPSenderLong = Iperf3Utils.isUDPSender(cmdUDPSenderLong);
+        boolean isNotUDPSenderShort = Iperf3Utils.isUDPSender(cmdTCPSenderShort);
+        boolean isNotUDPSenderLong = Iperf3Utils.isUDPSender(cmdTCPSenderLong);
+
+        // then
+        assertTrue(isUDPSenderShort);
+        assertTrue(isUDPSenderLong);
+        assertFalse(isNotUDPSenderShort);
+        assertFalse(isNotUDPSenderLong);
+    }
 }

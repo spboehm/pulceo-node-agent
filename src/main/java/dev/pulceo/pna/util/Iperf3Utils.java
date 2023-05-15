@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Iperf3Utils {
 
-    public static Iperf3BandwidthMeasurement extractBandwidth(Iperf3Protocol iperf3Protocol, List<String> iperf3Output, Iperf3Role iperf3Role) {
+    public static Iperf3BandwidthMeasurement extractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, List<String> iperf3Output, Iperf3Role iperf3Role) {
 
         int indexOfBitrate = 0;
         int indexOfRetr = 0;
@@ -29,4 +29,30 @@ public class Iperf3Utils {
         return new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
     }
 
+    public static boolean isReceiver(String cmd) {
+        if (cmd.contains("-s") || cmd.contains("--server")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isTCPSender(String cmd) {
+        if (cmd.contains("-c") || cmd.contains("--client")) {
+            if (isUDPSender(cmd)) {
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isUDPSender(String cmd) {
+        if (cmd.contains("-u") || cmd.contains("--udp")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

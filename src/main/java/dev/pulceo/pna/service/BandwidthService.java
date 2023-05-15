@@ -21,7 +21,7 @@ public class BandwidthService {
 
     @Autowired
     private Environment environment;
-
+    
     public String startIperf3TCPServer(int port, Iperf3Protocol iperf3Protocol) {
 
         try {
@@ -43,27 +43,21 @@ public class BandwidthService {
         return "";
     }
 
+    public boolean checkForRunningIperf3Instance(Iperf3Protocol iperf3Protocol, Iperf3Role iperf3Role, int port) throws IOException, InterruptedException, ProcessException {
 
-    public boolean checkForRunning(int port) throws IOException, InterruptedException, ProcessException {
+        // get list of running processes
 
-        Process p = new ProcessBuilder("ps", "-ef", String.valueOf(port)).start();
-        p.waitFor();
+        // TCP
+        // UDP -u
 
-        List<String> processOutput = ProcessUtils.readProcessOutput(p.getInputStream());
+        // Role sender / receiver
 
-
-
-        System.out.println(processOutput.size());
-
-
-
-        for (int i = 0; i < processOutput.size(); i++) {
-            processOutput.get(i);
-        }
+        // port 5001...
 
         return false;
     }
 
+    // sender-side
     public Iperf3Result measureBandwidth(String host, int port, Iperf3Protocol protocol) throws BandwidthServiceException {
         try {
             String from  = environment.getProperty("pna.hostname");
@@ -81,8 +75,8 @@ public class BandwidthService {
 
             List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
 
-            Iperf3BandwidthMeasurement iperf3BandwidthMeasurementSender = Iperf3Utils.extractBandwidth(protocol, iperf3Output, Iperf3Role.SENDER);
-            Iperf3BandwidthMeasurement iperf3BandwidthMeasurementReceiver = Iperf3Utils.extractBandwidth(protocol, iperf3Output, Iperf3Role.SENDER);
+            Iperf3BandwidthMeasurement iperf3BandwidthMeasurementSender = Iperf3Utils.extractIperf3BandwidthMeasurement(protocol, iperf3Output, Iperf3Role.SENDER);
+            Iperf3BandwidthMeasurement iperf3BandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(protocol, iperf3Output, Iperf3Role.SENDER);
 
             return new Iperf3Result(
                     from, host,

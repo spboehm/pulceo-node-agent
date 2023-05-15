@@ -2,22 +2,10 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.util.ProcessUtils;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
-import org.springframework.util.Assert;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static org.mockito.Mockito.*;
 
 public class ProcessUtilsTests {
 
@@ -71,7 +59,7 @@ public class ProcessUtilsTests {
         }
 
         // when
-        List<String> result = ProcessUtils.getRunningProcessByName("sleep");
+        List<String> result = ProcessUtils.getRunningProcessesByName("sleep");
 
         // then
         Assertions.assertTrue(result.size() == 2);

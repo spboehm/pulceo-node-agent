@@ -108,4 +108,17 @@ public class ProcessUtilsTests {
         Assertions.assertEquals(expectedPid, actualPid);
     }
 
+    @Test
+    public void testGetCmdOfpsEntry() {
+        // given
+        String psEntry = "19199 iperf3   /bin/iperf3 -s -p 5001 -f m";
+        String expectedCmd = "/bin/iperf3 -s -p 5001 -f m";
+
+        // when
+        String actualCmd = ProcessUtils.getCmdOfpsEntry(psEntry);
+
+        // then
+        Assertions.assertEquals(expectedCmd, actualCmd);
+    }
+
 }

@@ -60,6 +60,11 @@ public class ProcessUtils {
         return Long.parseLong(psEntry.substring(indexOfPid, indexOfIperf - 1).trim());
     }
 
+    public static String getCmdOfpsEntry(String psEntry) {
+        int indexOfCmd = psEntry.indexOf("/");
+        return psEntry.substring(indexOfCmd).trim();
+    }
+
     public static long waitUntilProcessIsAlive(Process process) throws InterruptedException, IOException {
         if (process.isAlive()) {
             return process.pid();

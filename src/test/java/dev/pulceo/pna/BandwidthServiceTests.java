@@ -1,9 +1,12 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
+import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.service.BandwidthService;
+import dev.pulceo.pna.util.ProcessUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +102,21 @@ public class BandwidthServiceTests {
         assertFalse(iperf3ServerInstanceRunning);
     }
 
+    @Test
+    public void testGetListOfRunningIperf3Instances() throws BandwidthServiceException, ProcessException {
+        // given
+        int expectedNumberOfIperf3ServerInstances = 16;
+        List<Long> pids = new ArrayList<>();
+        for (int i = 0; i < expectedNumberOfIperf3ServerInstances; i++) {
+            pids.add(bandwidthService.startIperf3Server());
+        }
+
+        // when
+        List<String> actualListOfRunningIperf3Instances = bandwidthService.getListOfRunningIperf3Instances();
+
+        // then
+        Assertions.assertEquals(expectedNumberOfIperf3ServerInstances, actualListOfRunningIperf3Instances.size());
+    }
 
     @Test
     public void testCheckForRunningIperf3UDPSenderInstance() throws InterruptedException, IOException, BandwidthServiceException {

@@ -2,9 +2,12 @@ package dev.pulceo.pna.model.iperf3;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class Iperf3ServerCmd {
 
+    private final String uuid = UUID.randomUUID().toString();
     private final int port;
     private final String format = "m";
 

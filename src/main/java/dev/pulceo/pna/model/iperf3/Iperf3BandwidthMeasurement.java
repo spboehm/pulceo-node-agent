@@ -2,9 +2,12 @@ package dev.pulceo.pna.model.iperf3;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class Iperf3BandwidthMeasurement {
 
+    private final String uuid = UUID.randomUUID().toString();
     private final Iperf3ClientProtocol iperf3Protocol;
     private final int bitrate;
     private final String bandwidthUnit = "Mbits/s";

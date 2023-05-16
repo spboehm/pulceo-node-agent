@@ -8,7 +8,6 @@ import dev.pulceo.pna.model.iperf3.Iperf3Result;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -19,31 +18,11 @@ import java.util.List;
 @Service
 public class BandwidthService {
 
-    @Autowired
     private Environment environment;
-    
-    public String startIperf3TCPServer(int port, Iperf3ClientProtocol iperf3Protocol) {
 
-        try {
-            //
-            Process p1 = new ProcessBuilder("/bin/iperf3", "-s", "-p 5001", "-f m").start();
-            //Process p2 = new ProcessBuilder("iperf3", "-s", "-p 5002").start();
-            //Process p3 = new ProcessBuilder("iperf3", "-s", "-p 5003").start();
-
-
-            return "";
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public BandwidthService(Environment environment) {
+        this.environment = environment;
     }
-
-    public String createIperf3UDPServer() {
-        return "";
-    }
-
-
 
     public boolean checkForRunningIperf3Sender(Iperf3ClientProtocol iperf3Protocol, String host, int port) throws BandwidthServiceException {
         try {
@@ -54,9 +33,6 @@ public class BandwidthService {
                         return checkForRunningIperf3SenderByHostAndPort(host, port, runningIperf3Instance);
                     }
                 } else {
-                    System.out.println(iperf3Protocol);
-                    System.out.println(runningIperf3Instance);
-                    System.out.println(Iperf3Utils.isUDPSender(runningIperf3Instance));
                     if (Iperf3Utils.isUDPSender(runningIperf3Instance)) {
                         return checkForRunningIperf3SenderByHostAndPort(host, port, runningIperf3Instance);
                     }

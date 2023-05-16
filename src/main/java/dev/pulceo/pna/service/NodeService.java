@@ -11,8 +11,4 @@ public class NodeService {
     @Autowired
     NodeRepository nodeRepository;
 
-    public void addNode(Node node) {
-
-    }
-
 }

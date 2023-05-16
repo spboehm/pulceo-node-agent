@@ -1,15 +1,14 @@
 package dev.pulceo.pna.util;
 
 import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
+import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
 
 import java.util.List;
 
 public class Iperf3Utils {
 
-    public static Iperf3BandwidthMeasurement extractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, List<String> iperf3Output, Iperf3Role iperf3Role) {
-
+    public static Iperf3BandwidthMeasurement extractIperf3BandwidthMeasurement(Iperf3ClientProtocol iperf3Protocol, List<String> iperf3Output, Iperf3Role iperf3Role) {
         int indexOfBitrate = 0;
         int indexOfRetr = 0;
         String resultLine = "";
@@ -29,6 +28,9 @@ public class Iperf3Utils {
         return new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
     }
 
+    // TODO: validate cmd, means if it is following the desired format
+
+    // refers to both TCP and UDP, no differentiation because of the protocol
     public static boolean isReceiver(String cmd) {
         if (cmd.contains("-s") || cmd.contains("--server")) {
             return true;
@@ -54,5 +56,26 @@ public class Iperf3Utils {
         } else {
             return false;
         }
+    }
+
+    public static int extractPortFromIperf3Cmd(String cmd) {
+        // find position of -p
+        int indexOfPort = cmd.indexOf("-p");
+        int indexOfFormat = cmd.indexOf("-f");
+        return Integer.parseInt(cmd.substring(indexOfPort,indexOfFormat).replaceAll("[^0-9]", ""));
+    }
+
+    public static String extractHostFromIperf3Cmd(String cmd) {
+        // find position of -c
+        int indexOfHost = cmd.indexOf("-c");
+        int indexOfNextCommand;
+
+        if (isUDPSender(cmd)) {
+            indexOfNextCommand = cmd.indexOf("-u");
+        } else {
+            indexOfNextCommand = cmd.indexOf("-p");
+        }
+
+        return cmd.substring(indexOfHost + 3, indexOfNextCommand - 1);
     }
 }

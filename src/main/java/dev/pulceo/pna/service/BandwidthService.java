@@ -3,7 +3,7 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
+import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Result;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
 import dev.pulceo.pna.util.Iperf3Utils;
@@ -22,7 +22,7 @@ public class BandwidthService {
     @Autowired
     private Environment environment;
     
-    public String startIperf3TCPServer(int port, Iperf3Protocol iperf3Protocol) {
+    public String startIperf3TCPServer(int port, Iperf3ClientProtocol iperf3Protocol) {
 
         try {
             //
@@ -43,28 +43,46 @@ public class BandwidthService {
         return "";
     }
 
-    public boolean checkForRunningIperf3Instance(Iperf3Protocol iperf3Protocol, Iperf3Role iperf3Role, int port) throws IOException, InterruptedException, ProcessException {
 
-        // get list of running processes
 
-        // TCP
-        // UDP -u
+    public boolean checkForRunningIperf3Sender(Iperf3ClientProtocol iperf3Protocol, String host, int port) {
+        try {
+            List<String> listOfRunningIperf3Instances = ProcessUtils.getListOfRunningProcessesByName("iperf3");
+            for (String runningIperf3Instance: listOfRunningIperf3Instances) {
 
-        // Role sender / receiver
+            }
 
-        // port 5001...
+            return false;
+        } catch (ProcessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        return false;
+
+    public boolean checkForRunningIperf3Receiver(int port) throws BandwidthServiceException {
+        // Iperf3 Protocol is always TCP for receiver
+        // Iperf3 Role is always Receiver
+        try {
+            List<String> listOfRunningIperf3Instances = ProcessUtils.getListOfRunningProcessesByName("iperf3");
+            for (String runningIperf3Instance : listOfRunningIperf3Instances) {
+                if (Iperf3Utils.isReceiver(runningIperf3Instance) && Iperf3Utils.extractPortFromIperf3Cmd(runningIperf3Instance) == port) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (ProcessException e) {
+            throw new BandwidthServiceException("Could determine if iperf3 instance is running!", e);
+        }
     }
 
     // sender-side
-    public Iperf3Result measureBandwidth(String host, int port, Iperf3Protocol protocol) throws BandwidthServiceException {
+    public Iperf3Result measureBandwidth(String host, int port, Iperf3ClientProtocol protocol) throws BandwidthServiceException {
         try {
             String from  = environment.getProperty("pna.hostname");
 
             String start = Instant.now().toString();
             Process p;
-            if (protocol == Iperf3Protocol.TCP) {
+            if (protocol == Iperf3ClientProtocol.TCP) {
                 p = new ProcessBuilder("/bin/iperf3", "-c", "host", "-p", String.valueOf(port), "-f", "m").start();
             } else {
                 p = new ProcessBuilder("/bin/iperf3", "-u" , "-c", host ,"-p", String.valueOf(port),"-f m").start();

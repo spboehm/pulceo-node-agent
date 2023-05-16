@@ -59,7 +59,7 @@ public class ProcessUtilsTests {
         }
 
         // when
-        List<String> result = ProcessUtils.getRunningProcessesByName("sleep");
+        List<String> result = ProcessUtils.getListOfRunningProcessesByName("sleep");
 
         // then
         Assertions.assertTrue(result.size() == 2);

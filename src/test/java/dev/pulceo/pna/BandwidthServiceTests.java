@@ -1,19 +1,17 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
-import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
-import dev.pulceo.pna.model.iperf3.Iperf3Result;
-import dev.pulceo.pna.model.iperf3.Iperf3Role;
+import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.service.BandwidthService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class BandwidthServiceTests {
@@ -33,19 +31,43 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testCheckForRunningIperf3TCPReceiverInstance() throws IOException, InterruptedException, ProcessException {
+    public void testCheckForRunningIperf3UDPSenderInstance() throws InterruptedException, IOException {
         // given
         int port = 5001;
-        Process iperf3ProcessOne = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port), "-f m").start();
+        // start iperf3 receiver
+        Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p " + port, " -f m").start();
+        while (!iperf3Receiver.isAlive() ) {
+            Thread.sleep(1000);
+        }
 
-        while (!iperf3ProcessOne.isAlive()) {
+        // start iperf3 sender
+        String host = "localhost";
+        Process iperf3Sender = new ProcessBuilder("/bin/iperf3", "-c", "localhost", "-u", "-p " + port, " -t 60" ,"-f m").start();
+        while (!iperf3Sender.isAlive()) {
             Thread.sleep(1000);
         }
 
         // when
-        boolean TCPReceiverInstanceRunning = bandwidthService.checkForRunningIperf3Instance(Iperf3Protocol.TCP, Iperf3Role.RECEIVER, port);
+        boolean iperf3UDPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(Iperf3ClientProtocol.UDP, host, port);
 
         // then
-        assertTrue(TCPReceiverInstanceRunning);
+        assertTrue(iperf3UDPSenderInstanceRunning);
+    }
+
+    @Test
+    public void testCheckForRunningIperf3ReceiverInstance() throws IOException, InterruptedException, BandwidthServiceException {
+        // given
+        int port = 5001;
+        Process p = new ProcessBuilder("/bin/iperf3", "-s", "-p " + port, " -f m").start();
+
+        while (!p.isAlive()) {
+            Thread.sleep(1000);
+        }
+
+        // when
+        boolean iperf3ReceiverInstanceRunning = bandwidthService.checkForRunningIperf3Receiver(port);
+
+        // then
+        assertTrue(iperf3ReceiverInstanceRunning);
     }
 }

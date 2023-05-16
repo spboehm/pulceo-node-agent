@@ -2,7 +2,7 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.Iperf3Protocol;
+import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.model.iperf3.Iperf3Role;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
@@ -21,16 +21,16 @@ public class Iperf3UtilsTests {
 
     @Test
     public void testExtractIperf3BandwidthMeasurementForSender() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(Iperf3Protocol.TCP, 100434,Iperf3Role.SENDER);
+        testExtractIperf3BandwidthMeasurement(Iperf3ClientProtocol.TCP, 100434, Iperf3Role.SENDER);
     }
 
     @Test
     public void testExtractIperf3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(Iperf3Protocol.TCP,100433,Iperf3Role.RECEIVER);
+        testExtractIperf3BandwidthMeasurement(Iperf3ClientProtocol.TCP,100433, Iperf3Role.RECEIVER);
     }
     // TODO: UDP
 
-    private void testExtractIperf3BandwidthMeasurement(Iperf3Protocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, ProcessException {
+    private void testExtractIperf3BandwidthMeasurement(Iperf3ClientProtocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, ProcessException {
         // given
         Iperf3BandwidthMeasurement expectedIperf3BandwidthMeasurement = new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
 
@@ -103,4 +103,48 @@ public class Iperf3UtilsTests {
         assertFalse(isNotUDPSenderShort);
         assertFalse(isNotUDPSenderLong);
     }
+
+
+    @Test
+    public void testExtractHostFromIperf3UDPClientCmd() {
+        // given
+        String expectedHost = "localhost";
+        int expectedPort = 5001;
+        String cmdUDPSenderShort = "/bin/iperf3 -c " + expectedHost + " -u -p " + expectedPort + " -f m";
+
+        // when
+        String actualHost = Iperf3Utils.extractHostFromIperf3Cmd(cmdUDPSenderShort);
+
+        // then
+        assertEquals(expectedHost, actualHost);
+    }
+
+    @Test
+    public void testExtractHostFromIperf3TCPClientCmd() {
+        // given
+        String expectedHost = "localhost";
+        int expectedPort = 5001;
+        String cmdTCPSenderShort = "/bin/iperf -c " + expectedHost + " -p " + expectedPort + " -f m";
+
+        // when
+        String actualHost = Iperf3Utils.extractHostFromIperf3Cmd(cmdTCPSenderShort);
+
+        // then
+        assertEquals(expectedHost, actualHost);
+    }
+
+
+    @Test
+    public void testExtractPortFromIperf3Cmd() {
+        // given
+        int expectedPort = 5001;
+        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p " + expectedPort + " -f m";
+
+        // when
+        int actualPort = Iperf3Utils.extractPortFromIperf3Cmd(cmdUDPSenderShort);
+
+        // then
+        assertEquals(actualPort, expectedPort);
+    }
+
 }

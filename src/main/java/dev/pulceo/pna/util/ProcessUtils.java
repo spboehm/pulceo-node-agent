@@ -38,7 +38,7 @@ public class ProcessUtils {
         }
     }
 
-    public static List<String> getRunningProcessesByName(String name) throws ProcessException {
+    public static List<String> getListOfRunningProcessesByName(String name) throws ProcessException {
         List<String> listOfRunningProcesses = ProcessUtils.getListOfRunningProcesses();
         List<String> listOfFilteredProcesses = new ArrayList<>();
         for (int i = 0; i < listOfRunningProcesses.size() - 1; i++) {

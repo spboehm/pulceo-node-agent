@@ -59,4 +59,17 @@ public class ProcessUtils {
         int indexOfIperf = psEntry.indexOf("iperf");
         return Long.parseLong(psEntry.substring(indexOfPid, indexOfIperf - 1).trim());
     }
+
+    public static long waitUntilProcessIsAlive(Process process) throws InterruptedException, IOException {
+        if (process.isAlive()) {
+            return process.pid();
+        } else {
+            Thread.sleep(5000);
+            if (process.isAlive()) {
+                return process.pid();
+            } else {
+                throw new IOException();
+            }
+        }
+    }
 }

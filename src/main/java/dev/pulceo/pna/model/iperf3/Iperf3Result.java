@@ -1,10 +1,8 @@
 package dev.pulceo.pna.model.iperf3;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.Instant;
 import java.util.List;
 
 @Data

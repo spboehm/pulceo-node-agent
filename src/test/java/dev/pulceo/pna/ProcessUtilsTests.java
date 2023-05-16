@@ -42,7 +42,7 @@ public class ProcessUtilsTests {
     }
 
     @Test
-    public void testReadRunningProcessOutputFromPsOutput () throws ProcessException, IOException {
+    public void testReadRunningProcessOutputFromPsOutput () throws ProcessException {
         // given
         String expectedFirstColumn = "PID";
         String expectedSecondColumn = "COMMAND";

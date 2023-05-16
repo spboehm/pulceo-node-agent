@@ -49,7 +49,7 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testStartMultipleIperf3Server() throws BandwidthServiceException, InterruptedException {
+    public void testStartMultipleIperf3Server() throws BandwidthServiceException {
         // given
         int numberOfIperf3ServerInstances = 16;
 
@@ -66,15 +66,14 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testStartTooManyIperf3Instances() throws BandwidthServiceException {
+    public void testStartTooManyIperf3Instances() {
         // given
         int numberOfIperf3ServerInstances = 32;
 
         // when
         BandwidthServiceException bandwidthServiceException = assertThrows(BandwidthServiceException.class, () -> {
-            List<Long> pids = new ArrayList<>();
             for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
-                pids.add(bandwidthService.startIperf3Server());
+                bandwidthService.startIperf3Server();
             }
         });
 

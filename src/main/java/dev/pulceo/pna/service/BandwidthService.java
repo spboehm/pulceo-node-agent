@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -20,11 +18,11 @@ public class BandwidthService {
 
     private final Environment environment;
 
-    private final Map<Long,Iperf3ServerCmd> iperf3ServerProcessMap = new ConcurrentHashMap<Long,Iperf3ServerCmd>();
-    private final AtomicInteger atomicInteger = new AtomicInteger(16);
+    private final AtomicInteger atomicInteger;
 
     public BandwidthService(Environment environment) {
         this.environment = environment;
+        this.atomicInteger = new AtomicInteger(Integer.parseInt(environment.getProperty("pna.iperf3.max.server.instances")));
     }
 
     public long startIperf3Server() throws BandwidthServiceException {
@@ -66,7 +64,6 @@ public class BandwidthService {
         } catch (InterruptedException | IOException e) {
             throw new BandwidthServiceException("Could not stop iperf3 server!", e);
         }
-
     }
 
     public boolean checkForRunningIperf3Sender(Iperf3ClientProtocol iperf3Protocol, String host, int port) throws BandwidthServiceException {

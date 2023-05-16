@@ -1,6 +1,5 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.model.Node;
 import dev.pulceo.pna.repository.NodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

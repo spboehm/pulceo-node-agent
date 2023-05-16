@@ -31,12 +31,22 @@ public class BandwidthService {
             int nextAvailablePort = this.getNextAvailablePort();
             Iperf3ServerCmd iperf3ServerCmd = new Iperf3ServerCmd(nextAvailablePort);
             Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperf3ServerCmd.getCmd())).start();
-            while (!iperf3Process.isAlive()) {
-                Thread.sleep(100);
-            }
-            return iperf3Process.pid();
+            return waitUntilProcessIsAlive(iperf3Process);
         } catch (IOException | InterruptedException e) {
             throw new BandwidthServiceException("Could not start Iperf3 server process!", e);
+        }
+    }
+
+    private long waitUntilProcessIsAlive(Process iperf3Process) throws InterruptedException, IOException {
+        if (iperf3Process.isAlive()) {
+            return iperf3Process.pid();
+        } else {
+            Thread.sleep(5000);
+            if (iperf3Process.isAlive()) {
+                return iperf3Process.pid();
+            } else {
+                throw new IOException();
+            }
         }
     }
 

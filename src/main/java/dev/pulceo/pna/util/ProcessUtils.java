@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProcessUtils {
@@ -49,4 +50,13 @@ public class ProcessUtils {
         return listOfFilteredProcesses;
     }
 
+    public static List<String> splitCmdByWhitespaces(String cmd) {
+        return Arrays.asList(cmd.split(" "));
+    }
+
+    public static long getPidOfpsEntry (String psEntry) {
+        int indexOfPid = 0;
+        int indexOfIperf = psEntry.indexOf("iperf");
+        return Long.parseLong(psEntry.substring(indexOfPid, indexOfIperf - 1).trim());
+    }
 }

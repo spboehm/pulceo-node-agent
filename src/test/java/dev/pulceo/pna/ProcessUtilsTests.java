@@ -1,10 +1,20 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.ProcessException;
+import dev.pulceo.pna.model.iperf3.Iperf3ServerCmd;
 import dev.pulceo.pna.util.ProcessUtils;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProcessUtilsTests {
@@ -62,11 +72,40 @@ public class ProcessUtilsTests {
         List<String> result = ProcessUtils.getListOfRunningProcessesByName("sleep");
 
         // then
-        Assertions.assertTrue(result.size() == 2);
+        Assertions.assertEquals(2, result.size());
         Assertions.assertTrue(result.get(0).contains("sleep"));
         Assertions.assertTrue(result.get(0).contains("3600"));
         Assertions.assertTrue(result.get(1).contains("sleep"));
         Assertions.assertTrue(result.get(1).contains("2400"));
+    }
+
+    @Test
+    public void testSplitCmdByWhitespaces() {
+        // given
+        int port = 5001;
+        Iperf3ServerCmd iperf3ServerCmd = new Iperf3ServerCmd(port);
+        String[] expectedResult = new String[]{"/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m" };
+        List<String> expectedResultList = Arrays.asList(expectedResult);
+
+        // when
+        List<String> actualResultList = ProcessUtils.splitCmdByWhitespaces(iperf3ServerCmd.getCmd());
+
+        // then
+        Assertions.assertEquals(expectedResultList, actualResultList);
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(longs = {32450, 19199, 19233, 4685})
+    public void testGetPidOfpsEntry(long expectedPid) {
+        // given
+        String psEntry = expectedPid + " iperf3   /bin/iperf3 -s -p 5001 -f m";
+
+        // when
+        long actualPid = ProcessUtils.getPidOfpsEntry(psEntry);
+
+        // then
+        Assertions.assertEquals(expectedPid, actualPid);
     }
 
 }

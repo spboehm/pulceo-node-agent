@@ -61,8 +61,8 @@ public class Iperf3Utils {
     public static int extractPortFromIperf3Cmd(String cmd) {
         // find position of -p
         int indexOfPort = cmd.indexOf("-p");
-        int indexOfFormat = cmd.indexOf("-f");
-        return Integer.parseInt(cmd.substring(indexOfPort,indexOfFormat).replaceAll("[^0-9]", ""));
+        int indexOfNextCommand = cmd.indexOf("-f");
+        return Integer.parseInt(cmd.substring(indexOfPort + 3, indexOfNextCommand - 1));
     }
 
     public static String extractHostFromIperf3Cmd(String cmd) {
@@ -75,7 +75,8 @@ public class Iperf3Utils {
         } else {
             indexOfNextCommand = cmd.indexOf("-p");
         }
-
         return cmd.substring(indexOfHost + 3, indexOfNextCommand - 1);
     }
+
+    // TODO: validate cmds
 }

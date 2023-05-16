@@ -8,14 +8,13 @@ import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Iperf3UtilsTests {
 
@@ -135,13 +134,39 @@ public class Iperf3UtilsTests {
 
 
     @Test
-    public void testExtractPortFromIperf3Cmd() {
+    public void testExtractPortFromIperf3UDPClientCmd() {
         // given
         int expectedPort = 5001;
-        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p " + expectedPort + " -f m";
+        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p " + expectedPort + " -f m -t 60";
 
         // when
         int actualPort = Iperf3Utils.extractPortFromIperf3Cmd(cmdUDPSenderShort);
+
+        // then
+        assertEquals(actualPort, expectedPort);
+    }
+
+    @Test
+    public void testExtractPortFromIperf3TCPClientCmd() {
+        // given
+        int expectedPort = 5001;
+        String cmdTCPSenderShort = "/bin/iperf -c localhost -p " + expectedPort + " -f m -t 60";
+
+        // when
+        int actualPort = Iperf3Utils.extractPortFromIperf3Cmd(cmdTCPSenderShort);
+
+        // then
+        assertEquals(actualPort, expectedPort);
+    }
+
+    @Test
+    public void testExtractPortFromIperf3ServerCmd() {
+        // given
+        int expectedPort = 5001;
+        String cmdTCPReceiverShort = "/bin/iperf3 -s -p " + expectedPort + " -f m";
+
+        // when
+        int actualPort = Iperf3Utils.extractPortFromIperf3Cmd(cmdTCPReceiverShort);
 
         // then
         assertEquals(actualPort, expectedPort);

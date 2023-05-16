@@ -45,23 +45,39 @@ public class BandwidthService {
 
 
 
-    public boolean checkForRunningIperf3Sender(Iperf3ClientProtocol iperf3Protocol, String host, int port) {
+    public boolean checkForRunningIperf3Sender(Iperf3ClientProtocol iperf3Protocol, String host, int port) throws BandwidthServiceException {
         try {
             List<String> listOfRunningIperf3Instances = ProcessUtils.getListOfRunningProcessesByName("iperf3");
-            for (String runningIperf3Instance: listOfRunningIperf3Instances) {
-
+            for (String runningIperf3Instance : listOfRunningIperf3Instances) {
+                if (iperf3Protocol == Iperf3ClientProtocol.TCP) {
+                    if (Iperf3Utils.isTCPSender(runningIperf3Instance)) {
+                        return checkForRunningIperf3SenderByHostAndPort(host, port, runningIperf3Instance);
+                    }
+                } else {
+                    System.out.println(iperf3Protocol);
+                    System.out.println(runningIperf3Instance);
+                    System.out.println(Iperf3Utils.isUDPSender(runningIperf3Instance));
+                    if (Iperf3Utils.isUDPSender(runningIperf3Instance)) {
+                        return checkForRunningIperf3SenderByHostAndPort(host, port, runningIperf3Instance);
+                    }
+                }
             }
-
             return false;
         } catch (ProcessException e) {
-            throw new RuntimeException(e);
+            throw new BandwidthServiceException("Could not check for running iperf3 sender process!", e);
         }
     }
 
+    private boolean checkForRunningIperf3SenderByHostAndPort(String host, int port, String runningIperf3Instance) {
+        if (Iperf3Utils.extractHostFromIperf3Cmd(runningIperf3Instance).equals(host)) {
+            if (Iperf3Utils.extractPortFromIperf3Cmd(runningIperf3Instance) == port) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean checkForRunningIperf3Receiver(int port) throws BandwidthServiceException {
-        // Iperf3 Protocol is always TCP for receiver
-        // Iperf3 Role is always Receiver
         try {
             List<String> listOfRunningIperf3Instances = ProcessUtils.getListOfRunningProcessesByName("iperf3");
             for (String runningIperf3Instance : listOfRunningIperf3Instances) {

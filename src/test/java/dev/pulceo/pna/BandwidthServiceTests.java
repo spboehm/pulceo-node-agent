@@ -187,7 +187,7 @@ public class BandwidthServiceTests {
         assertTrue(iperf3TCPSenderInstanceRunning);
     }
 
-    private Process startIperf3ServerInstance(int port) throws IOException, InterruptedException {
+    public static Process startIperf3ServerInstance(int port) throws IOException, InterruptedException {
         Process iperf3ServerInstance = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port) ,"-f", "m").start();
         while (!iperf3ServerInstance.isAlive() ) {
             Thread.sleep(1000);
@@ -220,5 +220,20 @@ public class BandwidthServiceTests {
 
         // then
         assertEquals(expectedPidOfRunningIperf3Receiver, actualPidOfRunningIperf3Receiver);
+    }
+
+    @Test
+    public void testMeasureBandwidth() throws IOException, InterruptedException, BandwidthServiceException {
+        // given
+        int port = 5001;
+        startIperf3ServerInstance(port);
+
+        // when
+        //Iperf3Result iperf3Result = bandwidthService.measureBandwidth("localhost", port, Iperf3ClientProtocol.TCP);
+
+        // then
+
+
+
     }
 }

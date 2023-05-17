@@ -88,10 +88,7 @@ public class BandwidthServiceTests {
         // given
         int port = 5001;
         // start iperf3 receiver
-        Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m").start();
-        while (!iperf3Receiver.isAlive() ) {
-            Thread.sleep(1000);
-        }
+        startIperf3ServerInstance(port);
 
         // when
         bandwidthService.stopIperf3Server(5001);
@@ -121,10 +118,7 @@ public class BandwidthServiceTests {
 
         List<Long> pids = new ArrayList<>();
         for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
-            Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(5000 + i), "-f", "m").start();
-            while (!iperf3Receiver.isAlive() ) {
-                Thread.sleep(1000);
-            }
+            startIperf3ServerInstance(5000 + i);
         }
 
         bandwidthService.stopIperf3Server(5012);
@@ -142,10 +136,7 @@ public class BandwidthServiceTests {
         int expectedNumberOfIperf3ServerInstances = 16;
         List<Long> pids = new ArrayList<>();
         for (int i = 0; i < expectedNumberOfIperf3ServerInstances; i++) {
-            Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(5000 + i), "-f", "m").start();
-            while (!iperf3Receiver.isAlive() ) {
-                Thread.sleep(1000);
-            }
+            startIperf3ServerInstance(5000 + i);
         }
 
         // when
@@ -159,11 +150,7 @@ public class BandwidthServiceTests {
     public void testCheckForRunningIperf3UDPSenderInstance() throws InterruptedException, IOException, BandwidthServiceException {
         // given
         int port = 5001;
-        // start iperf3 receiver
-        Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m").start();
-        while (!iperf3Receiver.isAlive() ) {
-            Thread.sleep(1000);
-        }
+        startIperf3ServerInstance(port);
 
         // start iperf3 sender
         String host = "localhost";
@@ -184,10 +171,7 @@ public class BandwidthServiceTests {
         // given
         int port = 5001;
         // start iperf3 receiver
-        Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port) ,"-f", "m").start();
-        while (!iperf3Receiver.isAlive() ) {
-            Thread.sleep(1000);
-        }
+        startIperf3ServerInstance(port);
 
         // start iperf3 sender
         String host = "localhost";
@@ -203,15 +187,19 @@ public class BandwidthServiceTests {
         assertTrue(iperf3TCPSenderInstanceRunning);
     }
 
+    private Process startIperf3ServerInstance(int port) throws IOException, InterruptedException {
+        Process iperf3ServerInstance = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port) ,"-f", "m").start();
+        while (!iperf3ServerInstance.isAlive() ) {
+            Thread.sleep(1000);
+        }
+        return iperf3ServerInstance;
+    }
+
     @Test
     public void testCheckForRunningIperf3ReceiverInstance() throws IOException, InterruptedException, BandwidthServiceException {
         // given
         int port = 5001;
-        Process p = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m").start();
-
-        while (!p.isAlive()) {
-            Thread.sleep(1000);
-        }
+        startIperf3ServerInstance(port);
 
         // when
         boolean iperf3ReceiverInstanceRunning = bandwidthService.checkForRunningIperf3Receiver(port);
@@ -224,12 +212,8 @@ public class BandwidthServiceTests {
     public void testGetPidOfRunningIperf3Receiver() throws BandwidthServiceException, IOException, InterruptedException {
         // given
         int port = 5001;
-        Process p = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m").start();
-
-        while (!p.isAlive()) {
-            Thread.sleep(1000);
-        }
-        long expectedPidOfRunningIperf3Receiver = p.pid();
+        Process iperf3ServerInstance = startIperf3ServerInstance(port);
+        long expectedPidOfRunningIperf3Receiver = iperf3ServerInstance.pid();
 
         // when
         long actualPidOfRunningIperf3Receiver = bandwidthService.getPidOfRunningIperf3Receiver(port);

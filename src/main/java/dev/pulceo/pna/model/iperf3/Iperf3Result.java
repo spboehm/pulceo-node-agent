@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Data
 public class Iperf3Result {
-    private final String uuid = UUID.randomUUID().toString();
     private final String from;
     private final String to;
     private final String start;

@@ -5,7 +5,7 @@ import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.*;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
-import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class BandwidthService {
@@ -32,21 +32,29 @@ public class BandwidthService {
 
     public long startIperf3Server() throws BandwidthServiceException {
         try {
-            int nextAvailablePort = this.getNextAvailablePort();
+            int nextAvailablePort = getNextAvailablePort();
             Iperf3ServerCmd iperf3ServerCmd = new Iperf3ServerCmd(nextAvailablePort);
             Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperf3ServerCmd.getCmd())).start();
             return ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | ProcessException e) {
             throw new BandwidthServiceException("Could not start Iperf3 server process!", e);
         }
     }
 
-    private int getNextAvailablePort() throws BandwidthServiceException {
-        int nextPort = 5000 + this.atomicInteger.decrementAndGet();
-        if (nextPort < 5000) {
+    private int getNextAvailablePort() throws BandwidthServiceException, ProcessException {
+        List<String> listOfRunningIperf3ServerInstances = this.getListOfRunningIperf3Instances();
+        List<Integer> availablePorts = new ArrayList<Integer>();
+        for (int i = 0; i < Integer.parseInt(environment.getProperty("pna.iperf3.max.server.instances")); i++) {
+            availablePorts.add(5000 + i);
+        }
+        for (String runningIperf3ServerInstance : listOfRunningIperf3ServerInstances) {
+            availablePorts.remove(Integer.valueOf(Iperf3Utils.extractPortFromIperf3Cmd(runningIperf3ServerInstance)));
+        }
+        if (availablePorts.size() > 0) {
+            return availablePorts.get(0);
+        } else {
             throw new BandwidthServiceException("No ports available!");
         }
-        return nextPort;
     }
 
     public void stopIperf3Server(int port) throws BandwidthServiceException {
@@ -62,6 +70,15 @@ public class BandwidthService {
             while(checkForRunningIperf3Receiver(port)) {
                 Thread.sleep(100);
             }
+        } catch (InterruptedException | IOException e) {
+            throw new BandwidthServiceException("Could not stop iperf3 server!", e);
+        }
+    }
+
+    public void stopIperf3Server(long pid) throws BandwidthServiceException {
+        try {
+            Process p = new ProcessBuilder("kill", String.valueOf(pid)).start();
+            p.waitFor();
         } catch (InterruptedException | IOException e) {
             throw new BandwidthServiceException("Could not stop iperf3 server!", e);
         }

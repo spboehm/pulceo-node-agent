@@ -4,17 +4,14 @@ import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.service.BandwidthService;
-import dev.pulceo.pna.util.ProcessUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +38,7 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testStartIperf3Server() throws BandwidthServiceException {
+    public void testStartIperf3Server() throws BandwidthServiceException, InterruptedException {
         // given
 
         // when
@@ -69,7 +66,7 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testStartTooManyIperf3Instances() {
+    public void testStartTooManyIperf3Instances() throws BandwidthServiceException {
         // given
         int numberOfIperf3ServerInstances = 32;
 
@@ -78,6 +75,7 @@ public class BandwidthServiceTests {
             for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
                 bandwidthService.startIperf3Server();
             }
+            Thread.sleep(50000);
         });
 
         // then
@@ -85,7 +83,7 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testStopIperf3Server() throws InterruptedException, BandwidthServiceException, IOException {
+    public void testStopIperf3ServerByPort() throws InterruptedException, BandwidthServiceException, IOException {
         // given
         int port = 5001;
         // start iperf3 receiver
@@ -103,12 +101,50 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testGetListOfRunningIperf3Instances() throws BandwidthServiceException, ProcessException {
+    public void testStopIperf3ServerByPid() throws BandwidthServiceException {
+        // given
+        long pid = bandwidthService.startIperf3Server();
+
+        // when
+        bandwidthService.stopIperf3Server(pid);
+        boolean iperf3ServerInstanceRunning = bandwidthService.checkForRunningIperf3Receiver(5001);
+
+        // then
+        assertFalse(iperf3ServerInstanceRunning);
+    }
+
+    @Test
+    public void testStartMultipleIperf3ServerInstancesAndThenStartAnIperf3ServerInstance() throws BandwidthServiceException, InterruptedException, IOException {
+        // given
+        int numberOfIperf3ServerInstances = 16;
+
+        List<Long> pids = new ArrayList<>();
+        for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
+            Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(5000 + i), "-f", "m").start();
+            while (!iperf3Receiver.isAlive() ) {
+                Thread.sleep(1000);
+            }
+        }
+
+        bandwidthService.stopIperf3Server(5015);
+
+        // when
+        long pid = bandwidthService.startIperf3Server();
+
+        // then
+        assertTrue(pid > 0);
+    }
+
+    @Test
+    public void testGetListOfRunningIperf3Instances() throws BandwidthServiceException, ProcessException, IOException, InterruptedException {
         // given
         int expectedNumberOfIperf3ServerInstances = 16;
         List<Long> pids = new ArrayList<>();
         for (int i = 0; i < expectedNumberOfIperf3ServerInstances; i++) {
-            pids.add(bandwidthService.startIperf3Server());
+            Process iperf3Receiver = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(5000 + i), "-f", "m").start();
+            while (!iperf3Receiver.isAlive() ) {
+                Thread.sleep(1000);
+            }
         }
 
         // when

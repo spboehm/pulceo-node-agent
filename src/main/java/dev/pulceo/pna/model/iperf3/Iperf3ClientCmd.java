@@ -6,8 +6,6 @@ import java.util.UUID;
 
 @Data
 public class Iperf3ClientCmd {
-
-    private final String uuid = UUID.randomUUID().toString();
     private final String host;
     private final int port;
     private final Iperf3ClientProtocol iperf3Protocol;
@@ -28,5 +26,4 @@ public class Iperf3ClientCmd {
         }
             return false;
     }
-
 }

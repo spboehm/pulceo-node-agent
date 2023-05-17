@@ -38,7 +38,6 @@ public class JobServiceTests {
     @Test
     public void testScheduleIperf3BandwidthJob() throws IOException, InterruptedException, JobServiceException {
         // given
-        int port;
         BandwidthServiceTests.startIperf3ServerInstance(5001);
         long id = jobService.createJob(new BandwidthJob("localhost", "localhost", 5001, Iperf3ClientProtocol.TCP, 5));
         // when

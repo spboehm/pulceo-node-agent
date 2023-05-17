@@ -36,7 +36,7 @@ public class BandwidthServiceTests {
     public void killAllIperf3Instances() throws InterruptedException, IOException {
         Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
         p.waitFor();
-        this.bandwidthService = new BandwidthService(environment);
+        //this.bandwidthService = new BandwidthService(environment);
     }
 
     @Test

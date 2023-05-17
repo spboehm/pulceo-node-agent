@@ -4,14 +4,16 @@ import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.service.BandwidthService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,7 +68,7 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testStartTooManyIperf3Instances() throws BandwidthServiceException {
+    public void testStartTooManyIperf3Instances() throws BandwidthServiceException, InterruptedException {
         // given
         int numberOfIperf3ServerInstances = 32;
 
@@ -75,7 +77,6 @@ public class BandwidthServiceTests {
             for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
                 bandwidthService.startIperf3Server();
             }
-            Thread.sleep(50000);
         });
 
         // then
@@ -126,7 +127,7 @@ public class BandwidthServiceTests {
             }
         }
 
-        bandwidthService.stopIperf3Server(5015);
+        bandwidthService.stopIperf3Server(5012);
 
         // when
         long pid = bandwidthService.startIperf3Server();

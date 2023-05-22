@@ -1,13 +1,9 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.BandwidthJob;
 import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
 import dev.pulceo.pna.service.JobService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,7 +17,11 @@ public class JobServiceTests {
 
     @BeforeEach
     @AfterEach
-
+    public void killAllIperf3Instances() throws InterruptedException, IOException {
+        Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
+        p.waitFor();
+        //this.bandwidthService = new BandwidthService(environment);
+    }
 
     @Test
     public void testCreateBandwidthJob() {
@@ -29,21 +29,27 @@ public class JobServiceTests {
         BandwidthJob bandwidthJob = new BandwidthJob("localhost", "localhost", 5001, Iperf3ClientProtocol.TCP, 5);
 
         // when
-        long id  = this.jobService.createJob(bandwidthJob);
+        long id  = this.jobService.createBandwidthJob(bandwidthJob);
 
         // then
         Assertions.assertTrue(id > 0);
     }
 
     @Test
-    public void testScheduleIperf3BandwidthJob() throws IOException, InterruptedException, JobServiceException {
+    @Disabled
+    public void testScheduleBandwidthJob() throws Exception {
         // given
-        BandwidthServiceTests.startIperf3ServerInstance(5001);
-        long id = jobService.createJob(new BandwidthJob("localhost", "localhost", 5001, Iperf3ClientProtocol.TCP, 5));
+        int port = 5001;
+        BandwidthServiceTests.startIperf3ServerInstance(port);
+        BandwidthJob bandwidthJob = new BandwidthJob("localhost", "localhost", port, Iperf3ClientProtocol.TCP, 30);
+        long id = jobService.createBandwidthJob(bandwidthJob);
+
         // when
         jobService.scheduleIperf3BandwidthJob(id);
+        Thread.sleep(90000);
 
         // then
+
 
     }
 

@@ -28,7 +28,7 @@ public class JobServiceTests {
     }
 
     @Test
-    public void testCreateBandwidthJob() {
+    public void testCreateIperfTask() {
         // given
         IperfJob iperfJob = new IperfJob("localhost", "localhost", 5001, IperfClientProtocol.TCP, 15);
 
@@ -57,9 +57,17 @@ public class JobServiceTests {
         // given
         int port = 5001;
         BandwidthServiceTests.startIperf3ServerInstance(port);
+        int recurrence = 15;
         IperfJob iperfJob = new IperfJob("localhost", "localhost", port, IperfClientProtocol.TCP, 15);
+        long id = this.jobService.createIperfJob(iperfJob);
 
         // when
+        this.jobService.scheduleIperfJob(id);
+        Thread.sleep(recurrence * 1000);
+
+        // then
+        // todo wait for result
+
     }
 
 }

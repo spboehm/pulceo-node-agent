@@ -6,9 +6,12 @@ import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.IperfResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class JobService {
@@ -38,23 +41,10 @@ public class JobService {
         }
     }
 
-//    @Async
-//    public Future<IperfResult> scheduleIperf3BandwidthJob(long id) throws Exception {
-//        Optional<IperfJob> retrievedBandwidthJob = jobRepository.findById(id);
-//        if (retrievedBandwidthJob.isPresent()) {
-//            Runnable task = () -> {
-//                try {
-//                    IperfResult iperfResult = this.bandwidthService.measureBandwidth(retrievedBandwidthJob.get());
-//                    IperfResult savedIperfResult = this.iperfResultRepository.save(iperfResult);
-//                    System.out.println(savedIperfResult.toString());
-//                } catch (BandwidthServiceException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            };
-//            ScheduledFuture<?> iperfTaskScheduledFuture = taskScheduler.scheduleAtFixedRate(task, Duration.ofSeconds(15));
-//        } else {
-//            throw new Exception("");
-//        }
-//    }
+    @Async
+    public void scheduleIperfJob(long id) throws JobServiceException, ExecutionException, InterruptedException {
+        IperfJob retrievedIperfJob = this.readIperfJob(id);
+        taskScheduler.scheduleAtFixedRate(retrievedIperfJob.getIperfJobRunnable(), Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
+    }
 
 }

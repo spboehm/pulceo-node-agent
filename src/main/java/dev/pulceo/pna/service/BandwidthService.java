@@ -2,8 +2,10 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.tasks.IperfTask;
-import dev.pulceo.pna.model.iperf3.*;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfResult;
+import dev.pulceo.pna.model.iperf3.IperfServerCmd;
+import dev.pulceo.pna.model.job.IperfJob;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,6 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,28 +142,7 @@ public class BandwidthService {
 
 
     // sender-side
-    public IperfResult measureBandwidth(IperfTask iperfTask) throws BandwidthServiceException {
-        try {
-            String start = Instant.now().toString();
-            Process p;
-            if (iperfTask.getIperfClientProtocol() == IperfClientProtocol.TCP) {
-                p = new ProcessBuilder("/bin/iperf3", "-c", iperfTask.getDestinationHost(), "-p", String.valueOf(iperfTask.getPort()), "-f", "m").start();
-            } else {
-                p = new ProcessBuilder("/bin/iperf3", "-u", "-c", iperfTask.getDestinationHost(), "-p", String.valueOf(iperfTask.getPort()), "-f m").start();
-            }
-            p.waitFor();
-            String end = Instant.now().toString();
-            List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
-            IperfBandwidthMeasurement iperfBandwidthMeasurementSender = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfTask.getIperfClientProtocol(), iperf3Output, IperfRole.SENDER);
-            IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfTask.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
-            IperfResult iperfResult = new IperfResult(
-                    iperfTask.getSourceHost(), iperfTask.getDestinationHost(),
-                    start, end,
-                    iperfBandwidthMeasurementSender,
-                    iperfBandwidthMeasurementReceiver);
-            return iperfResult;
-        } catch (InterruptedException | IOException | ProcessException e) {
-            throw new BandwidthServiceException("Could not measure bandwidth!", e);
-        }
+    public IperfResult measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
+        return null;
     }
 }

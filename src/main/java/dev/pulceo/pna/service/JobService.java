@@ -1,16 +1,13 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.exception.BandwidthServiceException;
-import dev.pulceo.pna.model.tasks.IperfTask;
-import dev.pulceo.pna.model.iperf3.IperfResult;
+import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.model.job.IperfJob;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.IperfResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.Optional;
 
 @Service
@@ -28,30 +25,36 @@ public class JobService {
     @Autowired
     private TaskScheduler taskScheduler;
 
-    public long createBandwidthJob(IperfTask iperfTask) {
-        return this.jobRepository.save(iperfTask).getId();
+    public long createIperfJob(IperfJob iperfJob) {
+        return this.jobRepository.save(iperfJob).getId();
     }
 
-    public long createBandwidthResult(IperfResult iperfResult) {
-        return this.iperfResultRepository.save(iperfResult).getId();
-    }
-
-    @Async
-    public void scheduleIperf3BandwidthJob(long id) throws Exception {
-        Optional<IperfTask> retrievedBandwidthJob = jobRepository.findById(id);
-        if (retrievedBandwidthJob.isPresent()) {
-            Runnable task = () -> {
-                try {
-                    IperfResult iperfResult = this.bandwidthService.measureBandwidth(retrievedBandwidthJob.get());
-                    IperfResult savedIperfResult = this.iperfResultRepository.save(iperfResult);
-                } catch (BandwidthServiceException e) {
-                    throw new RuntimeException(e);
-                }
-            };
-            taskScheduler.scheduleAtFixedRate(task, Duration.ofSeconds(5));
+    public IperfJob readIperfJob(long id) throws JobServiceException {
+        Optional<IperfJob> retrievedIperfJob = this.jobRepository.findById(id);
+        if (retrievedIperfJob.isPresent()) {
+            return retrievedIperfJob.get();
         } else {
-            throw new Exception("");
+            throw new JobServiceException("Requested job was not found!");
         }
     }
+
+//    @Async
+//    public Future<IperfResult> scheduleIperf3BandwidthJob(long id) throws Exception {
+//        Optional<IperfJob> retrievedBandwidthJob = jobRepository.findById(id);
+//        if (retrievedBandwidthJob.isPresent()) {
+//            Runnable task = () -> {
+//                try {
+//                    IperfResult iperfResult = this.bandwidthService.measureBandwidth(retrievedBandwidthJob.get());
+//                    IperfResult savedIperfResult = this.iperfResultRepository.save(iperfResult);
+//                    System.out.println(savedIperfResult.toString());
+//                } catch (BandwidthServiceException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            };
+//            ScheduledFuture<?> iperfTaskScheduledFuture = taskScheduler.scheduleAtFixedRate(task, Duration.ofSeconds(15));
+//        } else {
+//            throw new Exception("");
+//        }
+//    }
 
 }

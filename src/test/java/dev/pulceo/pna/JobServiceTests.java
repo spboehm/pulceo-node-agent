@@ -1,9 +1,13 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.model.tasks.IperfTask;
+import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.job.IperfJob;
 import dev.pulceo.pna.service.JobService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,32 +30,36 @@ public class JobServiceTests {
     @Test
     public void testCreateBandwidthJob() {
         // given
-        IperfTask iperfTask = new IperfTask("localhost", "localhost", 5001, IperfClientProtocol.TCP, 5);
+        IperfJob iperfJob = new IperfJob("localhost", "localhost", 5001, IperfClientProtocol.TCP, 15);
 
         // when
-        long id  = this.jobService.createBandwidthJob(iperfTask);
+        long id  = this.jobService.createIperfJob(iperfJob);
 
         // then
         Assertions.assertTrue(id > 0);
     }
 
     @Test
-    @Disabled
+    public void testCreatedIperfJobIsInactive() throws JobServiceException {
+        // given
+        IperfJob iperfJob = new IperfJob("localhost", "localhost", 5001, IperfClientProtocol.TCP, 15);
+
+        // when
+        long savedIperfJob = this.jobService.createIperfJob(iperfJob);
+        IperfJob retrievedIperfJob = this.jobService.readIperfJob(savedIperfJob);
+
+        // then
+        Assertions.assertFalse(retrievedIperfJob.isActive());
+    }
+
+    @Test
     public void testScheduleBandwidthJob() throws Exception {
         // given
         int port = 5001;
         BandwidthServiceTests.startIperf3ServerInstance(port);
-        IperfTask iperfTask = new IperfTask("localhost", "localhost", port, IperfClientProtocol.TCP, 15);
-        long id = jobService.createBandwidthJob(iperfTask);
+        IperfJob iperfJob = new IperfJob("localhost", "localhost", port, IperfClientProtocol.TCP, 15);
 
         // when
-        jobService.scheduleIperf3BandwidthJob(id);
-        Thread.sleep(20);
-
-        // then
-
-
-
     }
 
 }

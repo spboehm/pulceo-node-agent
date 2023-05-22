@@ -10,19 +10,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Iperf3BandwidthMeasurement {
+public class IperfBandwidthMeasurement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Iperf3ClientProtocol iperf3Protocol;
+    private IperfClientProtocol iperf3Protocol;
     private int bitrate;
     private String bandwidthUnit = "Mbits/s";
-    private Iperf3Role iperf3Role;
+    private IperfRole iperfRole;
 
-    public Iperf3BandwidthMeasurement(Iperf3ClientProtocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) {
+    public IperfBandwidthMeasurement(IperfClientProtocol iperf3Protocol, int bitrate, IperfRole iperfRole) {
         this.iperf3Protocol = iperf3Protocol;
         this.bitrate = bitrate;
-        this.iperf3Role = iperf3Role;
+        this.iperfRole = iperfRole;
     }
 }

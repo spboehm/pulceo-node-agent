@@ -1,5 +1,5 @@
 package dev.pulceo.pna.model.iperf3;
 
-public enum Iperf3Role {
+public enum IperfRole {
     SENDER, RECEIVER;
 }

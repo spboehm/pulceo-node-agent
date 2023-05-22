@@ -1,14 +1,14 @@
 package dev.pulceo.pna.util;
 
-import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
-import dev.pulceo.pna.model.iperf3.Iperf3Role;
+import dev.pulceo.pna.model.iperf3.IperfBandwidthMeasurement;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfRole;
 
 import java.util.List;
 
 public class Iperf3Utils {
 
-    public static Iperf3BandwidthMeasurement extractIperf3BandwidthMeasurement(Iperf3ClientProtocol iperf3Protocol, List<String> iperf3Output, Iperf3Role iperf3Role) {
+    public static IperfBandwidthMeasurement extractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, List<String> iperf3Output, IperfRole iperfRole) {
         int indexOfBitrate = 0;
         int indexOfRetr = 0;
         String resultLine = "";
@@ -19,13 +19,13 @@ public class Iperf3Utils {
                 indexOfRetr = iperf3Output.get(i).indexOf("Retr");
                 break;
             }
-            if (iperf3Output.get(i).contains(iperf3Role.toString().toLowerCase())) {
+            if (iperf3Output.get(i).contains(iperfRole.toString().toLowerCase())) {
                 resultLine = iperf3Output.get(i);
             }
         }
         // extract bitrate, it is located between
         int bitrate = Integer.parseInt(resultLine.substring(indexOfBitrate, indexOfRetr).replaceAll("[^0-9]", ""));
-        return new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
+        return new IperfBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole);
     }
 
     // TODO: validate cmd, means if it is following the desired format

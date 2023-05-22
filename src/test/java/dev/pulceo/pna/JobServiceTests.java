@@ -1,7 +1,7 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.model.BandwidthJob;
-import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
+import dev.pulceo.pna.model.tasks.IperfTask;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +26,10 @@ public class JobServiceTests {
     @Test
     public void testCreateBandwidthJob() {
         // given
-        BandwidthJob bandwidthJob = new BandwidthJob("localhost", "localhost", 5001, Iperf3ClientProtocol.TCP, 5);
+        IperfTask iperfTask = new IperfTask("localhost", "localhost", 5001, IperfClientProtocol.TCP, 5);
 
         // when
-        long id  = this.jobService.createBandwidthJob(bandwidthJob);
+        long id  = this.jobService.createBandwidthJob(iperfTask);
 
         // then
         Assertions.assertTrue(id > 0);
@@ -41,14 +41,15 @@ public class JobServiceTests {
         // given
         int port = 5001;
         BandwidthServiceTests.startIperf3ServerInstance(port);
-        BandwidthJob bandwidthJob = new BandwidthJob("localhost", "localhost", port, Iperf3ClientProtocol.TCP, 30);
-        long id = jobService.createBandwidthJob(bandwidthJob);
+        IperfTask iperfTask = new IperfTask("localhost", "localhost", port, IperfClientProtocol.TCP, 15);
+        long id = jobService.createBandwidthJob(iperfTask);
 
         // when
         jobService.scheduleIperf3BandwidthJob(id);
-        Thread.sleep(90000);
+        Thread.sleep(20);
 
         // then
+
 
 
     }

@@ -2,7 +2,7 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import dev.pulceo.pna.service.BandwidthService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -160,7 +160,7 @@ public class BandwidthServiceTests {
         }
 
         // when
-        boolean iperf3UDPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(Iperf3ClientProtocol.UDP, host, port);
+        boolean iperf3UDPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(IperfClientProtocol.UDP, host, port);
 
         // then
         assertTrue(iperf3UDPSenderInstanceRunning);
@@ -181,7 +181,7 @@ public class BandwidthServiceTests {
         }
 
         // when
-        boolean iperf3TCPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(Iperf3ClientProtocol.TCP, host, port);
+        boolean iperf3TCPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(IperfClientProtocol.TCP, host, port);
 
         // then
         assertTrue(iperf3TCPSenderInstanceRunning);

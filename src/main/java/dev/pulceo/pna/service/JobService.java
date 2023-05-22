@@ -1,7 +1,7 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
-import dev.pulceo.pna.model.BandwidthJob;
+import dev.pulceo.pna.model.tasks.IperfTask;
 import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.IperfResultRepository;
@@ -28,9 +28,8 @@ public class JobService {
     @Autowired
     private TaskScheduler taskScheduler;
 
-    public long createBandwidthJob(BandwidthJob bandwidthJob) {
-        // TODO: check if already exists
-        return this.jobRepository.save(bandwidthJob).getId();
+    public long createBandwidthJob(IperfTask iperfTask) {
+        return this.jobRepository.save(iperfTask).getId();
     }
 
     public long createBandwidthResult(IperfResult iperfResult) {
@@ -39,17 +38,17 @@ public class JobService {
 
     @Async
     public void scheduleIperf3BandwidthJob(long id) throws Exception {
-        Optional<BandwidthJob> retrievedBandwidthJob = jobRepository.findById(id);
+        Optional<IperfTask> retrievedBandwidthJob = jobRepository.findById(id);
         if (retrievedBandwidthJob.isPresent()) {
             Runnable task = () -> {
                 try {
                     IperfResult iperfResult = this.bandwidthService.measureBandwidth(retrievedBandwidthJob.get());
-                    this.iperfResultRepository.save(iperfResult);
+                    IperfResult savedIperfResult = this.iperfResultRepository.save(iperfResult);
                 } catch (BandwidthServiceException e) {
                     throw new RuntimeException(e);
                 }
             };
-            taskScheduler.scheduleAtFixedRate(task, Duration.ofSeconds(retrievedBandwidthJob.get().getRecurrence()));
+            taskScheduler.scheduleAtFixedRate(task, Duration.ofSeconds(5));
         } else {
             throw new Exception("");
         }

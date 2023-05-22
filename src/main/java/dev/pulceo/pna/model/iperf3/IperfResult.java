@@ -17,16 +17,16 @@ public class IperfResult {
     private String startTime;
     private String endTime;
     @OneToOne(cascade = {CascadeType.ALL})
-    private Iperf3BandwidthMeasurement iperf3BandwidthMeasurementReceiver;
+    private IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver;
     @OneToOne(cascade = {CascadeType.ALL})
-    private Iperf3BandwidthMeasurement iperf3BandwidthMeasurementSender;
+    private IperfBandwidthMeasurement iperfBandwidthMeasurementSender;
 
-    public IperfResult(String sourceHost, String destinationHost, String startTime, String endTime, Iperf3BandwidthMeasurement iperf3BandwidthMeasurementReceiver, Iperf3BandwidthMeasurement iperf3BandwidthMeasurementSender) {
+    public IperfResult(String sourceHost, String destinationHost, String startTime, String endTime, IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver, IperfBandwidthMeasurement iperfBandwidthMeasurementSender) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.iperf3BandwidthMeasurementReceiver = iperf3BandwidthMeasurementReceiver;
-        this.iperf3BandwidthMeasurementSender = iperf3BandwidthMeasurementSender;
+        this.iperfBandwidthMeasurementReceiver = iperfBandwidthMeasurementReceiver;
+        this.iperfBandwidthMeasurementSender = iperfBandwidthMeasurementSender;
     }
 }

@@ -2,13 +2,11 @@ package dev.pulceo.pna.model.iperf3;
 
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class Iperf3ClientCmd {
+public class IperfClientCmd {
     private final String host;
     private final int port;
-    private final Iperf3ClientProtocol iperf3Protocol;
+    private final IperfClientProtocol iperf3Protocol;
     private final String format = "m";
 
     public String getCmd() {
@@ -21,7 +19,7 @@ public class Iperf3ClientCmd {
     }
 
     public boolean isUDPSender() {
-        if (this.iperf3Protocol == Iperf3ClientProtocol.UDP) {
+        if (this.iperf3Protocol == IperfClientProtocol.UDP) {
             return true;
         }
             return false;

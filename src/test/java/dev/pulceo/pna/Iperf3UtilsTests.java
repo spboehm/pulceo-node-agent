@@ -1,9 +1,9 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.Iperf3BandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
-import dev.pulceo.pna.model.iperf3.Iperf3Role;
+import dev.pulceo.pna.model.iperf3.IperfBandwidthMeasurement;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfRole;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.junit.jupiter.api.Test;
@@ -20,18 +20,18 @@ public class Iperf3UtilsTests {
 
     @Test
     public void testExtractIperf3BandwidthMeasurementForSender() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(Iperf3ClientProtocol.TCP, 100434, Iperf3Role.SENDER);
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 100434, IperfRole.SENDER);
     }
 
     @Test
     public void testExtractIperf3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(Iperf3ClientProtocol.TCP,100433, Iperf3Role.RECEIVER);
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP,100433, IperfRole.RECEIVER);
     }
     // TODO: UDP
 
-    private void testExtractIperf3BandwidthMeasurement(Iperf3ClientProtocol iperf3Protocol, int bitrate, Iperf3Role iperf3Role) throws IOException, ProcessException {
+    private void testExtractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, int bitrate, IperfRole iperfRole) throws IOException, ProcessException {
         // given
-        Iperf3BandwidthMeasurement expectedIperf3BandwidthMeasurement = new Iperf3BandwidthMeasurement(iperf3Protocol, bitrate, iperf3Role);
+        IperfBandwidthMeasurement expectedIperfBandwidthMeasurement = new IperfBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole);
 
         File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_client_result.txt");
         List<String> resultList;
@@ -40,10 +40,10 @@ public class Iperf3UtilsTests {
         }
 
         // when
-        Iperf3BandwidthMeasurement actualIperf3BandwidthMeasurement = Iperf3Utils.extractIperf3BandwidthMeasurement(iperf3Protocol, resultList, iperf3Role);
+        IperfBandwidthMeasurement actualIperfBandwidthMeasurement = Iperf3Utils.extractIperf3BandwidthMeasurement(iperf3Protocol, resultList, iperfRole);
 
         // then
-        assertEquals(expectedIperf3BandwidthMeasurement, actualIperf3BandwidthMeasurement);
+        assertEquals(expectedIperfBandwidthMeasurement, actualIperfBandwidthMeasurement);
     }
 
     @Test

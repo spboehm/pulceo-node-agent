@@ -1,7 +1,7 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.Iperf3ServerCmd;
+import dev.pulceo.pna.model.iperf3.IperfServerCmd;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -83,12 +83,12 @@ public class ProcessUtilsTests {
     public void testSplitCmdByWhitespaces() {
         // given
         int port = 5001;
-        Iperf3ServerCmd iperf3ServerCmd = new Iperf3ServerCmd(port);
+        IperfServerCmd iperfServerCmd = new IperfServerCmd(port);
         String[] expectedResult = new String[]{"/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m" };
         List<String> expectedResultList = Arrays.asList(expectedResult);
 
         // when
-        List<String> actualResultList = ProcessUtils.splitCmdByWhitespaces(iperf3ServerCmd.getCmd());
+        List<String> actualResultList = ProcessUtils.splitCmdByWhitespaces(iperfServerCmd.getCmd());
 
         // then
         Assertions.assertEquals(expectedResultList, actualResultList);

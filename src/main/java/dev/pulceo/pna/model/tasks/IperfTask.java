@@ -1,6 +1,6 @@
-package dev.pulceo.pna.model;
+package dev.pulceo.pna.model.tasks;
 
-import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class BandwidthJob {
+public class IperfTask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,14 +19,14 @@ public class BandwidthJob {
     private String sourceHost;
     private String destinationHost;
     private int port;
-    private Iperf3ClientProtocol iperf3ClientProtocol;
+    private IperfClientProtocol iperfClientProtocol;
     private int recurrence;
 
-    public BandwidthJob(String from, String to, int port, Iperf3ClientProtocol iperf3ClientProtocol, int recurrence) {
+    public IperfTask(String from, String to, int port, IperfClientProtocol iperfClientProtocol, int recurrence) {
         this.sourceHost = from;
         this.destinationHost = to;
         this.port = port;
-        this.iperf3ClientProtocol = iperf3ClientProtocol;
+        this.iperfClientProtocol = iperfClientProtocol;
         this.recurrence = recurrence;
     }
 

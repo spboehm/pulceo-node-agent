@@ -1,8 +1,8 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.model.iperf3.Iperf3ClientCmd;
-import dev.pulceo.pna.model.iperf3.Iperf3ClientProtocol;
-import dev.pulceo.pna.model.iperf3.Iperf3ServerCmd;
+import dev.pulceo.pna.model.iperf3.IperfClientCmd;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfServerCmd;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class Iperf3CmdTests {
         String cmdTCPReceiverShort = "/bin/iperf3 -s -p 5001 -f m";
 
         // when
-        String iperf3ServerCmd = new Iperf3ServerCmd(5001).getCmd();
+        String iperf3ServerCmd = new IperfServerCmd(5001).getCmd();
 
         // then
         Assertions.assertEquals(cmdTCPReceiverShort, iperf3ServerCmd);
@@ -27,7 +27,7 @@ public class Iperf3CmdTests {
         String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p 5001 -f m";
 
         // when
-        String iperf3ClientCmd = new Iperf3ClientCmd("localhost", 5001, Iperf3ClientProtocol.UDP).getCmd();
+        String iperf3ClientCmd = new IperfClientCmd("localhost", 5001, IperfClientProtocol.UDP).getCmd();
 
         // then
         Assertions.assertEquals(cmdUDPSenderShort, iperf3ClientCmd);
@@ -39,7 +39,7 @@ public class Iperf3CmdTests {
         String cmdTCPSenderShort = "/bin/iperf3 -c localhost -p 5001 -f m";
 
         // when
-        String iperf3ClientCmd = new Iperf3ClientCmd("localhost", 5001, Iperf3ClientProtocol.TCP).getCmd();
+        String iperf3ClientCmd = new IperfClientCmd("localhost", 5001, IperfClientProtocol.TCP).getCmd();
 
         // then
         Assertions.assertEquals(cmdTCPSenderShort, iperf3ClientCmd);

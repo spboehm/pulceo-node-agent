@@ -3,9 +3,7 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.iperf3.IperfServerCmd;
-import dev.pulceo.pna.model.job.IperfJob;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,8 +139,4 @@ public class BandwidthService {
     }
 
 
-    // sender-side
-    public IperfResult measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
-        return null;
-    }
 }

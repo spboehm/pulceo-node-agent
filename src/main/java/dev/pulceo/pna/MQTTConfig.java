@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.integration.router.HeaderValueRouter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,7 +21,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @EnableAsync
 @EnableScheduling
-@EnableIntegration
 public class MQTTConfig {
 
     /* Inbound */
@@ -42,9 +42,34 @@ public class MQTTConfig {
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "mqttInputChannel")
+    @ServiceActivator(inputChannel = "channelA")
     public MessageHandler handler() {
         return message -> System.out.println(message.getHeaders());
+    }
+
+    @Bean
+    public IntegrationFlow routerFlow1() {
+        return IntegrationFlow.from("mqttInputChannel")
+                .route(router())
+                .get();
+    }
+
+    @Bean
+    public HeaderValueRouter router() {
+        HeaderValueRouter router = new HeaderValueRouter("mqtt_receivedTopic");
+        router.setChannelMapping("topic1", "channelA");
+        router.setChannelMapping("topic2", "channelB");
+        return router;
+    }
+
+    @Bean
+    public MessageChannel channelA() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    public MessageChannel channelB() {
+        return new DirectChannel();
     }
 
     /* Outbound */

@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.PollableChannel;
 
 import java.io.IOException;
 
@@ -18,6 +20,9 @@ public class JobServiceTests {
 
     @Autowired
     JobService jobService;
+
+    @Autowired
+    PollableChannel jobServiceChannel;
 
     @BeforeEach
     @AfterEach
@@ -62,10 +67,13 @@ public class JobServiceTests {
         long id = this.jobService.createIperfJob(iperfJob);
 
         // when
-        this.jobService.scheduleIperfJob(id);
-        Thread.sleep(recurrence * 1000);
+        long localJobId = this.jobService.scheduleIperfJob(id);
+        //Thread.sleep(recurrence * 1000);
 
         // then
+        Message<?> message = this.jobServiceChannel.receive();
+        this.jobService.cancelIperfJob((int) localJobId);
+
         // todo wait for result
 
     }

@@ -3,30 +3,32 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.job.IperfJob;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
-import dev.pulceo.pna.repository.IperfResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class JobService {
 
     @Autowired
-    private BandwidthService bandwidthService;
-
-    @Autowired
     private BandwidthJobRepository jobRepository;
 
     @Autowired
-    private IperfResultRepository iperfResultRepository;
+    private TaskScheduler taskScheduler;
 
     @Autowired
-    private TaskScheduler taskScheduler;
+    private BandwidthService bandwidthService;
+
+    private final AtomicInteger atomicInteger = new AtomicInteger();
+
+    private final Map<Integer, ScheduledFuture<?>> hashMap = new ConcurrentHashMap<Integer, ScheduledFuture<?>>();
 
     public long createIperfJob(IperfJob iperfJob) {
         return this.jobRepository.save(iperfJob).getId();
@@ -41,10 +43,17 @@ public class JobService {
         }
     }
 
-    @Async
-    public void scheduleIperfJob(long id) throws JobServiceException, ExecutionException, InterruptedException {
+    public long scheduleIperfJob(long id) throws JobServiceException {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
-        taskScheduler.scheduleAtFixedRate(retrievedIperfJob.getIperfJobRunnable(), Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> { bandwidthService.measureBandwidth(retrievedIperfJob); }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
+        int taskId = atomicInteger.getAndIncrement();
+        this.hashMap.put(taskId, scheduledFuture);
+        return taskId;
+    }
+
+    public boolean cancelIperfJob(Integer id) {
+        this.hashMap.get(id).cancel(false);
+        return true;
     }
 
 }

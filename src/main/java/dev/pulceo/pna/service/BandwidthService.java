@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class BandwidthService {
     private Integer maxNumberOfIperf3Instances;
 
     @Autowired
-    private PollableChannel jobServiceChannel;
+    PollableChannel bandwidthServiceMessageChannel;
 
     public long startIperf3Server() throws BandwidthServiceException {
         try {
@@ -142,9 +141,8 @@ public class BandwidthService {
         return (getPidOfRunningIperf3Receiver(port) != -1);
     }
 
-    @Async
-    public CompletableFuture<IperfResult> measureBandwidth(IperfJob iperfJob) {
-        System.out.println(Thread.currentThread().getId());
+    // TODO: remove CompletableFuture
+    public CompletableFuture<IperfResult> measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
         try {
             String start = Instant.now().toString();
             Process p;
@@ -153,17 +151,20 @@ public class BandwidthService {
             } else {
                 p = new ProcessBuilder("/bin/iperf3", "-u", "-c", iperfJob.getDestinationHost(), "-p", String.valueOf(iperfJob.getPort()), "-f m").start();
             }
-            p.waitFor();
+            // TODO: handle error caused by iperf, if remote server could not be found; error = 1; success = 0;
+            if (p.waitFor() == 1) {
+                List<String> strings = ProcessUtils.readProcessOutput(p.getErrorStream());
+                throw new ProcessException(List.of(strings).toString());
+            }
             String end = Instant.now().toString();
             List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
             IperfBandwidthMeasurement iperfBandwidthMeasurementSender = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfJob.getIperfClientProtocol(), iperf3Output, IperfRole.SENDER);
             IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfJob.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
             IperfResult iperfResult = new IperfResult(iperfJob.getSourceHost(), iperfJob.getDestinationHost(), start, end, iperfBandwidthMeasurementSender, iperfBandwidthMeasurementReceiver);
-            this.jobServiceChannel.send(new GenericMessage<>(iperfResult));
+            this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
             return CompletableFuture.completedFuture(iperfResult);
         } catch (InterruptedException | IOException | ProcessException e) {
-            throw new RuntimeException("Could not measure bandwidth!", e);
+            throw new BandwidthServiceException("Could not measure bandwidth!", e);
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package dev.pulceo.pna;
+package dev.pulceo.pna.config;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.context.annotation.Bean;

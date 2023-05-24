@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.job.IperfJob;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
@@ -58,23 +59,25 @@ public class JobService {
         return retrievedIperfJob;
     }
 
-//    public IperfJob updateIperfJob(long id, int recurrence) {
-//
-//        return null;
-//    }
-
+    // TODO: do not forget to set the status flag active
     public long scheduleIperfJob(long id) throws JobServiceException {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
         long retrievedIperfJobId = retrievedIperfJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
-            bandwidthService.measureBandwidth(retrievedIperfJob);
+            try {
+                bandwidthService.measureBandwidth(retrievedIperfJob);
+            } catch (BandwidthServiceException e) {
+                throw new RuntimeException(e);
+            }
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
         this.hashMap.put(retrievedIperfJobId, scheduledFuture);
         return retrievedIperfJobId;
     }
 
-    public boolean cancelIperfJob(Integer id) {
+    // TODO: reimplement cancelIperfJob, consider active flag
+    public boolean cancelIperfJob(long id) {
         return this.hashMap.get(id).cancel(false);
     }
+
 
 }

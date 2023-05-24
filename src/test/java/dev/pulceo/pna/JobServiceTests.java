@@ -2,20 +2,21 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.job.IperfJob;
+import dev.pulceo.pna.service.BandwidthService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.PollableChannel;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class JobServiceTests {
@@ -24,7 +25,10 @@ public class JobServiceTests {
     JobService jobService;
 
     @Autowired
-    PollableChannel jobServiceChannel;
+    PollableChannel bandwidthServiceMessageChannel;
+
+    @Autowired
+    BandwidthService bandwidthService;
 
     @BeforeEach
     @AfterEach
@@ -135,14 +139,13 @@ public class JobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleIperfJob(id);
+        IperfResult iperfResult = (IperfResult) Objects.requireNonNull(this.bandwidthServiceMessageChannel.receive()).getPayload();
+        this.jobService.cancelIperfJob(localJobId);
 
         // then
-        Message<?> message = this.jobServiceChannel.receive();
-        this.jobService.cancelIperfJob((int) localJobId);
-
-        // todo wait for result
-        System.out.println(message.getPayload().toString());
-
+        assertNotNull(iperfResult);
+        assert("localhost".equals(iperfResult.getSourceHost()));
+        assert("localhost".equals(iperfResult.getDestinationHost()));
     }
 
 }

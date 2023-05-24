@@ -227,9 +227,12 @@ public class BandwidthServiceTests {
         // given
         int port = 5001;
         startIperf3ServerInstance(port);
+        System.out.println(Thread.currentThread().getId());
+
+
 
         // when
-        //Iperf3Result iperf3Result = bandwidthService.measureBandwidth("localhost", port, Iperf3ClientProtocol.TCP);
+        //IperfResult iperf3Result = bandwidthService.measureBandwidth();
 
         // then
 

@@ -21,7 +21,7 @@ public class IperfJob {
     private int port;
     private IperfClientProtocol iperfClientProtocol;
     private int recurrence;
-    private boolean active = false;
+    private boolean enabled = false;
 
     public IperfJob(String sourceHost, String destinationHost, int port, IperfClientProtocol iperfClientProtocol, int recurrence) {
         this.sourceHost = sourceHost;

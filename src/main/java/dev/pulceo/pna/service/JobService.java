@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class JobService {
@@ -26,9 +25,7 @@ public class JobService {
     @Autowired
     private BandwidthService bandwidthService;
 
-    private final AtomicInteger atomicInteger = new AtomicInteger();
-
-    private final Map<Integer, ScheduledFuture<?>> hashMap = new ConcurrentHashMap<Integer, ScheduledFuture<?>>();
+    private final Map<Long, ScheduledFuture<?>> hashMap = new ConcurrentHashMap<>();
 
     public long createIperfJob(IperfJob iperfJob) {
         return this.jobRepository.save(iperfJob).getId();
@@ -43,17 +40,41 @@ public class JobService {
         }
     }
 
+    public IperfJob enableIperfJob(long id) throws JobServiceException {
+        IperfJob retrievedIperfJob = this.readIperfJob(id);
+        if (!retrievedIperfJob.isEnabled()) {
+            retrievedIperfJob.setEnabled(true);
+            return this.jobRepository.save(retrievedIperfJob);
+        }
+        return retrievedIperfJob;
+    }
+
+    public IperfJob disableIperfJob(long id) throws JobServiceException {
+        IperfJob retrievedIperfJob = this.readIperfJob(id);
+        if (retrievedIperfJob.isEnabled()) {
+            retrievedIperfJob.setEnabled(false);
+            return this.jobRepository.save(retrievedIperfJob);
+        }
+        return retrievedIperfJob;
+    }
+
+//    public IperfJob updateIperfJob(long id, int recurrence) {
+//
+//        return null;
+//    }
+
     public long scheduleIperfJob(long id) throws JobServiceException {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
-        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> { bandwidthService.measureBandwidth(retrievedIperfJob); }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
-        int taskId = atomicInteger.getAndIncrement();
-        this.hashMap.put(taskId, scheduledFuture);
-        return taskId;
+        long retrievedIperfJobId = retrievedIperfJob.getId();
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            bandwidthService.measureBandwidth(retrievedIperfJob);
+        }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
+        this.hashMap.put(retrievedIperfJobId, scheduledFuture);
+        return retrievedIperfJobId;
     }
 
     public boolean cancelIperfJob(Integer id) {
-        this.hashMap.get(id).cancel(false);
-        return true;
+        return this.hashMap.get(id).cancel(false);
     }
 
 }

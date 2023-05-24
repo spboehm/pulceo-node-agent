@@ -144,6 +144,7 @@ public class BandwidthService {
 
     @Async
     public CompletableFuture<IperfResult> measureBandwidth(IperfJob iperfJob) {
+        System.out.println(Thread.currentThread().getId());
         try {
             String start = Instant.now().toString();
             Process p;

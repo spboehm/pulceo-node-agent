@@ -1,6 +1,7 @@
 package dev.pulceo.pna.model.iperf3;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class IperfResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     private String sourceHost;
     private String destinationHost;

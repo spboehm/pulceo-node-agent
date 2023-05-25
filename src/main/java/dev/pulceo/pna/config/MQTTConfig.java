@@ -28,7 +28,7 @@ public class MQTTConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", "testClient",
+                new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", "pulceo-node-agent2",
                         "topic1");
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
@@ -88,9 +88,9 @@ public class MQTTConfig {
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler =
-                new MqttPahoMessageHandler("testClient2", mqttClientFactory());
+                new MqttPahoMessageHandler("pulceo-node-agent", mqttClientFactory());
         messageHandler.setAsync(true);
-        messageHandler.setDefaultTopic("topic1");
+        messageHandler.setDefaultTopic("pulceo-node-agent");
         messageHandler.setConverter(new DefaultPahoMessageConverter());
         return messageHandler;
     }

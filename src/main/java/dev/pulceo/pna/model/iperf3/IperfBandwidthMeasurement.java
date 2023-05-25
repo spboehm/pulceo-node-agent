@@ -1,5 +1,6 @@
 package dev.pulceo.pna.model.iperf3;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +15,7 @@ public class IperfBandwidthMeasurement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     private IperfClientProtocol iperf3Protocol;
     private int bitrate;

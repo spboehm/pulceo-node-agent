@@ -60,6 +60,7 @@ public class JobService {
     }
 
     // TODO: do not forget to set the status flag active
+    // TODO: handle situation when the jobs are crashing
     public long scheduleIperfJob(long id) throws JobServiceException {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
         long retrievedIperfJobId = retrievedIperfJob.getId();

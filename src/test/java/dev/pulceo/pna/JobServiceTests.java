@@ -11,10 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.messaging.PollableChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +26,7 @@ public class JobServiceTests {
     JobService jobService;
 
     @Autowired
-    PollableChannel bandwidthServiceMessageChannel;
+    PublishSubscribeChannel bandwidthServiceMessageChannel;
 
     @Autowired
     BandwidthService bandwidthService;
@@ -139,13 +140,19 @@ public class JobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleIperfJob(id);
-        IperfResult iperfResult = (IperfResult) Objects.requireNonNull(this.bandwidthServiceMessageChannel.receive()).getPayload();
+        BlockingQueue<IperfResult> iperfResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.bandwidthServiceMessageChannel.subscribe(message -> {
+            iperfResultBlockingQueue.add((IperfResult) message.getPayload());
+        });
         this.jobService.cancelIperfJob(localJobId);
+        IperfResult iperfResult = iperfResultBlockingQueue.take();
 
         // then
         assertNotNull(iperfResult);
         assert("localhost".equals(iperfResult.getSourceHost()));
         assert("localhost".equals(iperfResult.getDestinationHost()));
+        assertTrue(iperfResult.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);
+        assertTrue(iperfResult.getIperfBandwidthMeasurementSender().getBitrate() > 0);
     }
 
 }

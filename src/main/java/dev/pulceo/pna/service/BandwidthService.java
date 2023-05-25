@@ -8,7 +8,7 @@ import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.PollableChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class BandwidthService {
@@ -28,7 +27,7 @@ public class BandwidthService {
     private Integer maxNumberOfIperf3Instances;
 
     @Autowired
-    PollableChannel bandwidthServiceMessageChannel;
+    PublishSubscribeChannel bandwidthServiceMessageChannel;
 
     public long startIperf3Server() throws BandwidthServiceException {
         try {
@@ -142,7 +141,7 @@ public class BandwidthService {
     }
 
     // TODO: remove CompletableFuture
-    public CompletableFuture<IperfResult> measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
+    public void measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
         try {
             String start = Instant.now().toString();
             Process p;
@@ -162,7 +161,6 @@ public class BandwidthService {
             IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfJob.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
             IperfResult iperfResult = new IperfResult(iperfJob.getSourceHost(), iperfJob.getDestinationHost(), start, end, iperfBandwidthMeasurementSender, iperfBandwidthMeasurementReceiver);
             this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
-            return CompletableFuture.completedFuture(iperfResult);
         } catch (InterruptedException | IOException | ProcessException e) {
             throw new BandwidthServiceException("Could not measure bandwidth!", e);
         }

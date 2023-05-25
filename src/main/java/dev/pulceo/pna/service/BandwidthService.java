@@ -139,7 +139,7 @@ public class BandwidthService {
     public boolean checkForRunningIperf3Receiver(int port) throws BandwidthServiceException {
         return (getPidOfRunningIperf3Receiver(port) != -1);
     }
-    
+
     public void measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
         try {
             String start = Instant.now().toString();

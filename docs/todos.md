@@ -9,3 +9,7 @@
 - [] Ensure that status flag of job is set properly in `scheduleIperfJob(...)`
 - [] Ensure that all jobs are rescheduled after application crash
 - [] Ensure that cancellation of jobs properly sets the active flag
+
+## Iperf3utils
+
+- [] Check for performance impacts of parameter `-Z` for iperf3 measurements.

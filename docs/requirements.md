@@ -6,11 +6,18 @@
 
 ### Links
 
+A link describes a physical or logical connection between homogeneous resources. 
+Possible resources are `Nodes`, `Groups`, or `Workloads`.
+
 #### Link-related operations
 
-| ID   | Requirement                                                                                                   | Status |
-|------|---------------------------------------------------------------------------------------------------------------|--------|
-| lro1 | The system must be able to create a link between nodes of any type, to express physical or logical relations. | OPEN   |
+| ID   | Requirement                                                                                        | Status |
+|------|----------------------------------------------------------------------------------------------------|--------|
+| lro1 | The system must be able to create a link between resources of type nodes, groups, or workloads.    | OPEN   |
+| lro2 | The system must be able to read a link between resources of type nodes, groups, or workloads.      | OPEN   |
+| lro3 | The system must be able to update a link between resources of type nodes, groups, or workloads.    | OPEN   |
+| lro4 | The system must be able to delete a link between resources of type nodes, groups, or workloads.    | OPEN   |
+| lro5 | The system must be able to prevent that a link is created or updated with heterogeneous resources. | OPEN   |
 
 
 #### Link-related metrics

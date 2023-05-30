@@ -8,6 +8,7 @@
 ## BandwidthService 
 
 - [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly.
+- [] Implement test with only one measurement result, otherwise tests last pretty long
 
 ## JobService
 
@@ -18,3 +19,4 @@
 ## Iperf3utils
 
 - [] Check for performance impacts of parameter `-Z` for iperf3 measurements.
+- [] Validate parameters for creating server and client processes

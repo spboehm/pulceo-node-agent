@@ -10,7 +10,7 @@ public class UdpConfig {
 
     // TODO: Replace with traditional Java Config
     @Bean
-    public IntegrationFlow udpEchoServer() {
+    public IntegrationFlow udpServerForNping() {
         return IntegrationFlow.from(Udp.inboundAdapter(4001).id("udpIn"))
                 .handle(Udp.outboundAdapter("headers['ip_packetAddress']")
                         .socketExpression("@udpIn.socket"))

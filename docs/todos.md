@@ -1,5 +1,10 @@
 # TODOs
 
+
+## UdpConfig
+
+- [] Replace UdpEchoServer with traditional Java-based configuration
+
 ## BandwidthService 
 
 - [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly.

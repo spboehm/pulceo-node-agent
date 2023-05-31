@@ -1,0 +1,16 @@
+
+Starting Nping 0.7.93 ( https://nmap.org/nping ) at 2023-05-31 11:27 CEST
+SENT (0.0019s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (0.0022s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (1.0036s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (1.0041s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (2.0055s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (2.0058s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (3.0072s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (3.0076s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (4.0089s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (4.0093s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+
+Max rtt: 0.447ms | Min rtt: 0.301ms | Avg rtt: 0.362ms
+UDP packets sent: 5 | Rcvd: 5 | Lost: 0 (0.00%)
+Nping done: 1 IP address pinged in 4.01 seconds

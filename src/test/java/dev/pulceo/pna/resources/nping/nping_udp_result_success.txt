@@ -1,0 +1,26 @@
+
+Starting Nping 0.7.93 ( https://nmap.org/nping ) at 2023-06-01 10:42 CEST
+SENT (0.0024s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (0.0027s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (1.0041s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (1.0045s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (2.0061s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (2.0067s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (3.0083s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (3.0089s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (4.0104s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (4.0109s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (5.0125s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (5.0129s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (6.0143s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (6.0148s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (7.0165s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (7.0173s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (8.0179s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (8.0184s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+SENT (9.0197s) UDP packet with 4 bytes to localhost:4000 (127.0.0.1:4000)
+RCVD (9.0201s) UDP packet with 4 bytes from localhost:4000 (127.0.0.1:4000)
+
+Max rtt: 0.749ms | Min rtt: 0.335ms | Avg rtt: 0.501ms
+UDP packets sent: 10 | Rcvd: 10 | Lost: 0 (0.00%)
+Nping done: 1 IP address pinged in 9.02 seconds

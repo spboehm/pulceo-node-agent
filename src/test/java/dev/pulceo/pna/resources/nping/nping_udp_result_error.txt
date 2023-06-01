@@ -1,0 +1,16 @@
+
+Starting Nping 0.7.93 ( https://nmap.org/nping ) at 2023-06-01 10:33 CEST
+SENT (0.0016s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (1.0033s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (2.0046s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (3.0063s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (4.0079s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (5.0092s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (6.0103s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (7.0117s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (8.0133s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+SENT (9.0146s) UDP packet with 4 bytes to www.uni-bamberg.de:40125 (141.13.240.24:40125)
+
+Max rtt: N/A | Min rtt: N/A | Avg rtt: N/A
+UDP packets sent: 10 | Rcvd: 0 | Lost: 10 (100.00%)
+Nping done: 1 IP address pinged in 10.02 seconds

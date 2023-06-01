@@ -1,0 +1,16 @@
+
+Starting Nping 0.7.93 ( https://nmap.org/nping ) at 2023-06-01 11:39 CEST
+SENT (0.0431s) Starting TCP Handshake > h5134.pi.uni-bamberg.de:80 (141.13.5.134:80)
+RCVD (0.0450s) Possible TCP RST received from 141.13.5.134:80 --> Connection refused
+SENT (1.0458s) Starting TCP Handshake > h5134.pi.uni-bamberg.de:80 (141.13.5.134:80)
+RCVD (1.0474s) Possible TCP RST received from 141.13.5.134:80 --> Connection refused
+SENT (2.0492s) Starting TCP Handshake > h5134.pi.uni-bamberg.de:80 (141.13.5.134:80)
+RCVD (2.0512s) Possible TCP RST received from 141.13.5.134:80 --> Connection refused
+SENT (3.0517s) Starting TCP Handshake > h5134.pi.uni-bamberg.de:80 (141.13.5.134:80)
+RCVD (3.0535s) Possible TCP RST received from 141.13.5.134:80 --> Connection refused
+SENT (4.0550s) Starting TCP Handshake > h5134.pi.uni-bamberg.de:80 (141.13.5.134:80)
+RCVD (4.0567s) Possible TCP RST received from 141.13.5.134:80 --> Connection refused
+
+Max rtt: N/A | Min rtt: N/A | Avg rtt: N/A
+TCP connection attempts: 5 | Successful connections: 0 | Failed: 5 (100.00%)
+Nping done: 1 IP address pinged in 4.06 seconds

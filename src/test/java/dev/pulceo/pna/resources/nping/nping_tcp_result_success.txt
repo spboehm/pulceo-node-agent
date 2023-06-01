@@ -1,0 +1,26 @@
+
+Starting Nping 0.7.93 ( https://nmap.org/nping ) at 2023-06-01 10:31 CEST
+SENT (0.0138s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (0.0148s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (1.0163s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (1.0174s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (2.0190s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (2.0199s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (3.0215s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (3.0226s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (4.0239s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (4.0247s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (5.0262s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (5.0274s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (6.0289s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (6.0298s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (7.0313s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (7.0322s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (8.0337s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (8.0346s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+SENT (9.0359s) Starting TCP Handshake > www.uni-bamberg.de:80 (141.13.240.24:80)
+RCVD (9.0367s) Handshake with www.uni-bamberg.de:80 (141.13.240.24:80) completed
+
+Max rtt: 1.156ms | Min rtt: 0.810ms | Avg rtt: 0.950ms
+TCP connection attempts: 10 | Successful connections: 10 | Failed: 0 (0.00%)
+Nping done: 1 IP address pinged in 9.04 seconds

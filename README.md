@@ -16,7 +16,8 @@ An MQTT broker must be run on the system locally, for example [eclipse-mosquitto
 #### Nping
 
 * General structure: `nping [Probe mode] [Options] {target specification}`
-* Round-trip delay (RTD) with protocol TCP: `/usr/bin/nping --tcp-connect -p 8080 -c 20 localhost`
+* Round-trip delay (RTD) with protocol TCP: `/usr/bin/nping --tcp-connect -p 8080 -c 20 localhost"`
+* Round-trip delay (RTD) with protocol UDP: `/usr/bin/nping --udp -p 8080 -c 20 localhost`
 
 #### Iperf
 

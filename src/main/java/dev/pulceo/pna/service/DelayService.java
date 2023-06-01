@@ -8,15 +8,19 @@ import org.springframework.stereotype.Service;
 public class DelayService {
 
     public boolean checkForRunningNpingInstance(NpingClientProtocol npingClientProtocol, String host, int port) {
+        // either tcp or udp
+
         return false;
     }
 
     private boolean checkForRunningNpingInstanceByHostAndPort(String host, int port, String runningNpingInstance) {
+        // either t
         return false;
     }
 
-    public void measureUdpDelay(NpingJob npingJob) {
+    public void measureDelay(NpingJob npingJob) {
 
     }
+
 
 }

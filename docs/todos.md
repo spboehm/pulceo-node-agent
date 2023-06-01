@@ -8,6 +8,7 @@
 
 - [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly.
 - [] Implement test with only one measurement result, otherwise tests last pretty long
+- [] Check client and sender semantics, respectively naming
 
 ## JobService
 
@@ -21,6 +22,7 @@
 - [] Validate parameters for creating server and client processes
 - [] Run tests withs different output parameters, in case output is falsely parsed
 - [] Check if output is correctly processed even if iperf has failed to parse the output
+- [] Check client and sender semantics, respectively naming
 
 ## NpingUtils
 

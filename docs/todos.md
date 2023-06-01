@@ -21,6 +21,7 @@
 - [] Check for performance impacts of parameter `-Z` for iperf3 measurements.
 - [] Validate parameters for creating server and client processes
 - [] Run tests withs different output parameters, in case output is falsely parsed
+- [] Check if output is correctly processed even if iperf has failed to parse the output
 
 ## NpingUtils
 

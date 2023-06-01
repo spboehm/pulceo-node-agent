@@ -1,6 +1,5 @@
 # TODOs
 
-
 ## UdpConfig
 
 - [] Replace UdpEchoServer with traditional Java-based configuration

@@ -24,7 +24,6 @@ public class NpingUtilsTests {
     @Test
     public void testExtractSuccessfulNpingDelayMeasurementTCP() throws ProcessException, IOException, NpingException {
         // given
-        // TODO: specify further
         NpingTCPDelayMeasurement expectedNpingTCPDelayMeasurement = new NpingTCPDelayMeasurement(1.156,0.810,0.950,10,10,0,0.00);
 
         File npingTCPResult = new File("src/test/java/dev/pulceo/pna/resources/nping/nping_tcp_result_success.txt");

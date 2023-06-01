@@ -56,13 +56,11 @@ public class NpingUtilsTests {
 
         // then
         assertEquals("Could not obtain nping TCP delay mesurement!", npingException.getMessage());
-
     }
 
     @Test
     public void testExtractSuccessfulNpingDelayMeasurementUDP() throws ProcessException, IOException, NpingException {
         // given
-        // TODO: specify further
         NpingUDPDelayMeasurement expectedNpingUDPDelayMeasurement = new NpingUDPDelayMeasurement(0.749,0.335,0.501,10,10,0,0.00);
 
         File npingUDPResult = new File("src/test/java/dev/pulceo/pna/resources/nping/nping_udp_result_success.txt");
@@ -94,7 +92,6 @@ public class NpingUtilsTests {
 
         // then
         assertEquals("Could not obtain nping UDP delay mesurement!", npingException.getMessage());
-
     }
 
 }

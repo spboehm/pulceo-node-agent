@@ -134,7 +134,7 @@ public class NpingUtils {
         // find position of --dest-ip
         int indexOfHost = cmd.indexOf("--dest-ip");
         int indexOfNextCommand = cmd.indexOf("-p");
-        return cmd.substring(indexOfHost + 9, indexOfNextCommand - 1);
+        return cmd.substring(indexOfHost + 10, indexOfNextCommand - 1);
     }
 
     public static int extractPortFromNpingCmd(String cmd) {

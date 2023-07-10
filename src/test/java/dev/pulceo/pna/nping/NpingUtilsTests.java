@@ -121,7 +121,7 @@ public class NpingUtilsTests {
         // given
         String expectedHost = "localhost";
         int expectedPort = 4001;
-        String cmdUDPInstance = "/usr/bin/nping -4 --udp -c 20 --dest-ip" + expectedHost + " -p " + expectedPort + " -e eth0 --data-length 66";
+        String cmdUDPInstance = "/usr/bin/nping -4 --udp -c 20 --dest-ip " + expectedHost + " -p " + expectedPort + " -e eth0 --data-length 66";
 
         // when
         String actualHost = NpingUtils.extractHostFromNpingCmd(cmdUDPInstance);
@@ -135,10 +135,11 @@ public class NpingUtilsTests {
         // given
         String expectedHost = "localhost";
         int expectedPort = 4001;
-        String cmdTCPInstance = "/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip" + expectedHost + " -p " + expectedPort + " -e eth0";
+        String cmdTCPInstance = "/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip " + expectedHost + " -p " + expectedPort + " -e eth0";
 
         // when
         String actualHost = NpingUtils.extractHostFromNpingCmd(cmdTCPInstance);
+        System.out.println(actualHost);
 
         // then
         assertEquals(expectedHost, actualHost);
@@ -149,7 +150,7 @@ public class NpingUtilsTests {
         // given
         String expectedHost = "localhost";
         int expectedPort = 4001;
-        String cmdUDPInstance = "/usr/bin/nping -4 --udp -c 20 --dest-ip" + expectedHost + " -p " + expectedPort + " -e eth0 --data-length 66";
+        String cmdUDPInstance = "/usr/bin/nping -4 --udp -c 20 --dest-ip " + expectedHost + " -p " + expectedPort + " -e eth0 --data-length 66";
 
         // when
         int actualPort = NpingUtils.extractPortFromNpingCmd(cmdUDPInstance);
@@ -163,7 +164,7 @@ public class NpingUtilsTests {
         // given
         String expectedHost = "localhost";
         int expectedPort = 4001;
-        String cmdTCPInstance = "/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip" + expectedHost + " -p " + expectedPort + " -e eth0";
+        String cmdTCPInstance = "/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip " + expectedHost + " -p " + expectedPort + " -e eth0";
 
         // when
         int actualPort = NpingUtils.extractPortFromNpingCmd(cmdTCPInstance);

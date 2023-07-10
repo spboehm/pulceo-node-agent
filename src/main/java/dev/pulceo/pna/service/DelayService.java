@@ -43,10 +43,12 @@ public class DelayService {
 
     private boolean checkForRunningNpingInstanceByHostAndPort(String host, int port, String runningNpingInstance) {
         // extract host from nping cmd
-
-
-        // extract port from nping cmd
-
+        System.out.println(host);
+        System.out.println(NpingUtils.extractPortFromNpingCmd(runningNpingInstance));
+        System.out.println(NpingUtils.extractHostFromNpingCmd(runningNpingInstance));
+        if (NpingUtils.extractHostFromNpingCmd(runningNpingInstance).equals(host)) {
+            return NpingUtils.extractPortFromNpingCmd(runningNpingInstance) == port;
+        }
         return false;
     }
 

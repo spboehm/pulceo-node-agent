@@ -10,7 +10,7 @@ public class NpingCmdTests {
     @Test
     public void testNpingTCPClientCmd() {
         // given
-        String cmdTCPClient = "/usr/bin/nping --tcp-connect -p 8080 -c 20 localhost -e eth0";
+        String cmdTCPClient = "/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip localhost -p 8080 -e eth0";
 
         // when
         String npingClientCmd = new NpingClientCmd(NpingClientProtocol.TCP,8080,20, "localhost", "eth0").getCmd();
@@ -22,7 +22,7 @@ public class NpingCmdTests {
     @Test
     public void testIperf3UDPClientCmd() {
         // given
-        String cmdUDPClient = "/usr/bin/nping --udp -p 8080 -c 20 localhost -e eth0";
+        String cmdUDPClient = "/usr/bin/nping -4 --udp -c 20 --dest-ip localhost -p 8080 -e eth0 --data-length 66";
 
         // when
         String npingClientCmd = new NpingClientCmd(NpingClientProtocol.UDP,8080,20, "localhost", "eth0").getCmd();

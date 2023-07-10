@@ -1,4 +1,4 @@
-package dev.pulceo.pna;
+package dev.pulceo.pna.iperf3;
 
 import dev.pulceo.pna.model.iperf3.IperfClientCmd;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;

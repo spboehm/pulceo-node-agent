@@ -23,8 +23,7 @@ public class NpingJob {
     private int recurrence;
     private boolean enabled = false;
 
-    public NpingJob(Long id, String sourceHost, String destinationHost, int port, NpingClientProtocol npingClientProtocol, int recurrence) {
-        this.id = id;
+    public NpingJob(String sourceHost, String destinationHost, int port, NpingClientProtocol npingClientProtocol, int recurrence) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.port = port;

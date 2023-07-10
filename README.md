@@ -15,16 +15,21 @@ An MQTT broker must be run on the system locally, for example [eclipse-mosquitto
 
 #### ping
 
-* General structure : `ping  [OPTIONS] {destination}`
-* Round-trip delay with protocol ICMP: `ping -4 s 66 -I eth0`
+* General structure : `ping [OPTIONS] {destination}`
+* Round-trip delay with protocol ICMP: `ping -4 -s 66 -I eth0`
 
 #### Nping
 
 * General structure: `nping [Probe mode] [Options] {target specification}`
-* Round-trip delay (RTD) with protocol TCP: `/usr/bin/nping --tcp-connect -p 8080 -c 20 localhost"`
-* Round-trip delay (RTD) with protocol UDP: `/usr/bin/nping --udp -p 8080 -c 20 localhost`
+* Round-trip delay (RTD) with protocol TCP: `/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip localhost -p 8080 -e eth0`
+* Round-trip delay (RTD) with protocol UDP: `/usr/bin/nping -4 --udp -c 20 --dest-ip localhost -p 8080 -e eth0 --data-length 66`
 
-#### Iperf
+#### Iperf3
+
+### Endpoints
+
+* UDP/4001: Endpoint for measuring latency
+* 
 
 ### Firewall
 

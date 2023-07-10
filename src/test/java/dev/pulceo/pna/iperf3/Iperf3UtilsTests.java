@@ -1,4 +1,4 @@
-package dev.pulceo.pna;
+package dev.pulceo.pna.iperf3;
 
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.IperfBandwidthMeasurement;

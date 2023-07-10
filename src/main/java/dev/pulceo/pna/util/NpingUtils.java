@@ -113,4 +113,35 @@ public class NpingUtils {
         }
         return new NpingUDPDelayMeasurement(maxRTT,minRTT,avgRTT,udpPacketsSent,udpReceivedPackets,udpLostPacketsAbsolute,udpLostPacketsRelative);
     }
+
+    public static boolean isUDP(String cmd) {
+        if (cmd.contains("--udp")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isTCP(String cmd) {
+        if (cmd.contains("--tcp-connect")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static String extractHostFromNpingCmd(String cmd) {
+        // find position of --dest-ip
+        int indexOfHost = cmd.indexOf("--dest-ip");
+        int indexOfNextCommand = cmd.indexOf("-p");
+        return cmd.substring(indexOfHost + 9, indexOfNextCommand - 1);
+    }
+
+    public static int extractPortFromNpingCmd(String cmd) {
+        // find position of -p
+        int indexOfPort = cmd.indexOf("-p");
+        int indexOfNextCommand = cmd.indexOf("-e");
+        return Integer.parseInt(cmd.substring(indexOfPort + 3, indexOfNextCommand - 1));
+    }
+
 }

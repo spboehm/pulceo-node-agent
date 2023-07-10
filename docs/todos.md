@@ -14,6 +14,7 @@
 ## DelayService
 
 - [] Ensure that multiple backends are available for determining the latency, example (`nping` and `ping`)
+- [] Ensure that the payload size can be specified for the latency test
 
 ## JobService
 

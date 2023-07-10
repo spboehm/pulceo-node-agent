@@ -154,16 +154,20 @@ public class BandwidthServiceTests {
 
         // start iperf3 sender
         String host = "localhost";
-        Process iperf3Sender = new ProcessBuilder("/bin/iperf3", "-c", host, "-u", "-p", String.valueOf(port), "-f", "m", "-t", "60").start();
-        while (!iperf3Sender.isAlive()) {
-            Thread.sleep(1000);
-        }
+        startIperf3UDPSenderInstance(host, port);
 
         // when
         boolean iperf3UDPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(IperfClientProtocol.UDP, host, port);
 
         // then
         assertTrue(iperf3UDPSenderInstanceRunning);
+    }
+
+    private static void startIperf3UDPSenderInstance(String host, int port) throws IOException, InterruptedException {
+        Process iperf3Sender = new ProcessBuilder("/bin/iperf3", "-c", host, "-u", "-p", String.valueOf(port), "-f", "m", "-t", "60").start();
+        while (!iperf3Sender.isAlive()) {
+            Thread.sleep(1000);
+        }
     }
 
     @Test
@@ -175,16 +179,20 @@ public class BandwidthServiceTests {
 
         // start iperf3 sender
         String host = "localhost";
-        Process iperf3Sender = new ProcessBuilder("/bin/iperf3", "-c", host, "-p", String.valueOf(port), "-f", "m", "-t", "60").start();
-        while (!iperf3Sender.isAlive()) {
-            Thread.sleep(1000);
-        }
+        startIperf3TCPSenderInstance(host, port);
 
         // when
         boolean iperf3TCPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(IperfClientProtocol.TCP, host, port);
 
         // then
         assertTrue(iperf3TCPSenderInstanceRunning);
+    }
+
+    private static void startIperf3TCPSenderInstance(String host, int port) throws IOException, InterruptedException {
+        Process iperf3Sender = new ProcessBuilder("/bin/iperf3", "-c", host, "-p", String.valueOf(port), "-f", "m", "-t", "60").start();
+        while (!iperf3Sender.isAlive()) {
+            Thread.sleep(1000);
+        }
     }
 
     public static Process startIperf3ServerInstance(int port) throws IOException, InterruptedException {

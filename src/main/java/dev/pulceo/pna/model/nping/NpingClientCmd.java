@@ -9,12 +9,13 @@ public class NpingClientCmd {
     private final int port;
     private final int rounds;
     private final String host;
+    private final String iface;
 
     public String getCmd() {
         if (isUDPClient()) {
-            return String.format("/usr/bin/nping --udp -p %s -c %s %s", port, rounds, host);
+            return String.format("/usr/bin/nping --udp -p %s -c %s %s -e %s", port, rounds, host, iface);
         } else {
-            return String.format("/usr/bin/nping --tcp-connect -p %s -c %s %s", port, rounds, host);
+            return String.format("/usr/bin/nping --tcp-connect -p %s -c %s %s -e %s", port, rounds, host, iface);
         }
     }
 

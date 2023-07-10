@@ -13,6 +13,11 @@ An MQTT broker must be run on the system locally, for example [eclipse-mosquitto
 
 ### Low-level libraries
 
+#### ping
+
+* General structure : `ping  [OPTIONS] {destination}`
+* Round-trip delay with protocol ICMP: `ping -4 s 66 -I eth0`
+
 #### Nping
 
 * General structure: `nping [Probe mode] [Options] {target specification}`

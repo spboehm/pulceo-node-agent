@@ -74,13 +74,15 @@ public class DelayService {
 
             String end = Instant.now().toString();
             List<String> npingOutput = ProcessUtils.readProcessOutput(p.getInputStream());
+            System.out.println(npingOutput);
             if (npingJob.getNpingClientProtocol() == NpingClientProtocol.TCP) {
                 NpingTCPDelayMeasurement npingTCPDelayMeasurement = NpingUtils.extractNpingTCPDelayMeasurement(NpingClientProtocol.TCP, npingOutput);
-                NpingTCPResult npingTCPResult = new NpingTCPResult(hostname, npingJob.getDestinationHost(), start, end, npingTCPDelayMeasurement);
+                NpingTCPResult npingTCPResult = new NpingTCPResult(hostname, npingJob.getDestinationHost(), start, end, npingTCPDelayMeasurement);;
                 this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
             } else {
                 NpingUDPDelayMeasurement npingUDPDelayMeasurement = NpingUtils.extractNpingUDPDelayMeasurement(NpingClientProtocol.UDP, npingOutput);
                 NpingUDPResult npingUDPResult = new NpingUDPResult(hostname, npingJob.getDestinationHost(), start, end, npingUDPDelayMeasurement);
+                System.out.println(npingUDPResult.toString());
                 this.delayServiceMessageChannel.send(new GenericMessage<>(npingUDPResult));
             }
 

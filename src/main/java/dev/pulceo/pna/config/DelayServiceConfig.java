@@ -21,7 +21,7 @@ public class DelayServiceConfig {
     MessageChannel mqttOutboundChannel;
 
     @Bean
-    public IntegrationFlow routerFlow2() {
+    public IntegrationFlow routerFlow3() {
         return IntegrationFlow.from("delayServiceMessageChannel")
                 .transform(Transformers.toJson())
                 .route(router3())

@@ -13,6 +13,7 @@
 - [] Improve process generation with ProcessBuilder
 - [] Set minimum values for recurrence
 - [] Remove Job semantics for `BandwidthJob`
+- [] Add `IperfRequest` instead of `IperfJob`
 
 ## DelayService
 
@@ -22,12 +23,14 @@
 - [] Improve process generation with ProcessBuilder
 - [] Set minimum values for recurrence
 - [] Remove Job semantics for `NpingJob`
+- [] Add `NpingRequest` instead of `NpingJob`
 
 ## JobService
 
 - [] Ensure that status flag of job is set properly in `scheduleIperfJob(...)`
 - [] Ensure that all jobs are rescheduled after application crash
 - [] Ensure that cancellation of jobs properly sets the active flag
+- 
 
 ## NpingUtils
 

@@ -6,15 +6,22 @@
 
 ## BandwidthService 
 
-- [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly.
+- [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly
 - [] Implement test with only one measurement result, otherwise tests last pretty long
 - [] Check client and sender semantics, respectively naming
 - [] Ensure that particular interfaces can be used for measuring bandwidth
+- [] Improve process generation with ProcessBuilder
+- [] Set minimum values for recurrence
+- [] Remove Job semantics for `BandwidthJob`
 
 ## DelayService
 
 - [] Ensure that multiple backends are available for determining the latency, example (`nping` and `ping`)
 - [] Ensure that the payload size can be specified for the latency test
+- [] Refactor `measureDelay()`, improve handling
+- [] Improve process generation with ProcessBuilder
+- [] Set minimum values for recurrence
+- [] Remove Job semantics for `NpingJob`
 
 ## JobService
 
@@ -26,6 +33,8 @@
 
 - [] Run tests with different output parameters, in case output is falsely parsed
 - [] Ensure that particular interfaces can be used for determining the delay, e.g., via env vars
+- [] Clarify method signature of `extractNpingTCPDelayMeasurement(...)`... First parameter is currently obsolete
+- [] Improve command generation out of `NpingCmd` class, avoid error-prone hard-coding
 
 ## Iperf3utils
 
@@ -35,3 +44,4 @@
 - [] Check if output is correctly processed even if iperf has failed to parse the output
 - [] Check client and sender semantics, respectively naming
 - [] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
+- [] Improve command generation out of `IperfCmd` class

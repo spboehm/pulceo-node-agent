@@ -1,6 +1,7 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.DelayServiceException;
+import dev.pulceo.pna.model.job.NpingJob;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.service.DelayService;
 import org.junit.jupiter.api.AfterEach;
@@ -61,12 +62,15 @@ public class DelayServiceTests {
     @Test
     public void testMeasureUDPDelay() throws DelayServiceException {
         // given
-
+        String sourceHost = "localhost";
+        int port = Integer.parseInt(Objects.requireNonNull(this.environment.getProperty("pna.delay.udp.port")));
+        NpingJob npingJob = new NpingJob("localhost", "localhost", port, NpingClientProtocol.UDP,15);
 
         // when
-
+        this.delayService.measureDelay(npingJob);
 
         // then
+
     }
 
     @Test

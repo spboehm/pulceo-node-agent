@@ -55,7 +55,7 @@ public class DelayServiceTests {
         startNpingUDPInstance(host, port, count);
 
         // when
-        boolean npingUDPInstanceRunning = this.delayService.checkForRunningNpingInstance(NpingClientProtocol.UDP, host, port);
+        boolean npingUDPInstanceRunning = this.delayService.checkForRunningNpingInstance(NpingClientProtocol.UDP, host);
 
         // then
         assertTrue(npingUDPInstanceRunning);

@@ -145,32 +145,4 @@ public class NpingUtilsTests {
         assertEquals(expectedHost, actualHost);
     }
 
-    @Test
-    public void testExtractPortFromNpingUDPInstance() {
-        // given
-        String expectedHost = "localhost";
-        int expectedPort = 4001;
-        String cmdUDPInstance = "/usr/bin/nping -4 --udp -c 20 --dest-ip " + expectedHost + " -p " + expectedPort + " -e eth0 --data-length 66";
-
-        // when
-        int actualPort = NpingUtils.extractPortFromNpingCmd(cmdUDPInstance);
-
-        // then
-        assertEquals(actualPort, expectedPort);
-    }
-
-    @Test
-    public void testExtractPortFromNpingTCPInstance() {
-        // given
-        String expectedHost = "localhost";
-        int expectedPort = 4001;
-        String cmdTCPInstance = "/usr/bin/nping -4 --tcp-connect -c 20 --dest-ip " + expectedHost + " -p " + expectedPort + " -e eth0";
-
-        // when
-        int actualPort = NpingUtils.extractPortFromNpingCmd(cmdTCPInstance);
-
-        // then
-        assertEquals(expectedPort, actualPort);
-    }
-
 }

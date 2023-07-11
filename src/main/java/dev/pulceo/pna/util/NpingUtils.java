@@ -137,11 +137,4 @@ public class NpingUtils {
         return cmd.substring(indexOfHost + 10, indexOfNextCommand - 1);
     }
 
-    public static int extractPortFromNpingCmd(String cmd) {
-        // find position of -p
-        int indexOfPort = cmd.indexOf("-p");
-        int indexOfNextCommand = cmd.indexOf("-e");
-        return Integer.parseInt(cmd.substring(indexOfPort + 3, indexOfNextCommand - 1));
-    }
-
 }

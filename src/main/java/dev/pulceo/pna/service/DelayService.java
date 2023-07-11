@@ -36,17 +36,17 @@ public class DelayService {
     @Autowired
     PublishSubscribeChannel delayServiceMessageChannel;
 
-    public boolean checkForRunningNpingInstance(NpingClientProtocol npingClientProtocol, String host, int port) throws DelayServiceException {
+    public boolean checkForRunningNpingInstance(NpingClientProtocol npingClientProtocol, String host) throws DelayServiceException {
         try {
             List<String> listOfRunningNpingInstances = ProcessUtils.getListOfRunningProcessesByName("nping");
             for (String runningNpingInstance : listOfRunningNpingInstances) {
                 if (npingClientProtocol == NpingClientProtocol.TCP) {
                     if (NpingUtils.isTCP(runningNpingInstance)) {
-                        return checkForRunningNpingInstanceByHostAndPort(host, port, runningNpingInstance);
+                        return checkForRunningNpingInstance(host, runningNpingInstance);
                     }
                 } else {
                     if (NpingUtils.isUDP(runningNpingInstance)) {
-                        return checkForRunningNpingInstanceByHostAndPort(host, port, runningNpingInstance);
+                        return checkForRunningNpingInstance(host, runningNpingInstance);
                     }
                 }
             }
@@ -56,12 +56,8 @@ public class DelayService {
         }
     }
 
-    private boolean checkForRunningNpingInstanceByHostAndPort(String host, int port, String runningNpingInstance) {
-        // extract host from nping cmd
-        if (NpingUtils.extractHostFromNpingCmd(runningNpingInstance).equals(host)) {
-            return NpingUtils.extractPortFromNpingCmd(runningNpingInstance) == port;
-        }
-        return false;
+    private boolean checkForRunningNpingInstance(String host, String runningNpingInstance) {
+        return NpingUtils.extractHostFromNpingCmd(runningNpingInstance).equals(host);
     }
 
     public NpingUDPResult measureUDPDelay(String destinationHost) throws DelayServiceException {

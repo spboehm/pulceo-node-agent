@@ -63,11 +63,7 @@ public class DelayService {
     public NpingUDPResult measureUDPDelay(String destinationHost) throws DelayServiceException {
         try {
             String start = Instant.now().toString();
-            Process npingProcess = new ProcessBuilder(new NpingClientCmd(NpingClientProtocol.UDP, this.npingDelayUDPPort, this.rounds, destinationHost, this.iface).getNpingCommandAsList()).start();
-            if (npingProcess.waitFor() == 1) {
-                List<String> strings = ProcessUtils.readProcessOutput(npingProcess.getErrorStream());
-                throw new ProcessException(List.of(strings).toString());
-            }
+            Process npingProcess = getNpingProcess(NpingClientProtocol.UDP, this.npingDelayUDPPort, destinationHost);
             String end = Instant.now().toString();
             List<String> npingProcessOutput = ProcessUtils.readProcessOutput(npingProcess.getInputStream());
             NpingUDPDelayMeasurement npingUDPDelayMeasurement = NpingUtils.extractNpingUDPDelayMeasurement(NpingClientProtocol.UDP, npingProcessOutput);
@@ -78,14 +74,19 @@ public class DelayService {
 
     }
 
+    private Process getNpingProcess(NpingClientProtocol npingClientProtocol, int npingPort, String destinationHost) throws IOException, InterruptedException, ProcessException {
+        Process npingProcess = new ProcessBuilder(new NpingClientCmd(npingClientProtocol, npingPort, this.rounds, destinationHost, this.iface).getNpingCommandAsList()).start();
+        if (npingProcess.waitFor() == 1) {
+            List<String> strings = ProcessUtils.readProcessOutput(npingProcess.getErrorStream());
+            throw new ProcessException(List.of(strings).toString());
+        }
+        return npingProcess;
+    }
+
     public NpingTCPResult measureTCPDelay(String destinationHost) throws DelayServiceException {
         try {
             String start = Instant.now().toString();
-            Process npingProcess = new ProcessBuilder(new NpingClientCmd(NpingClientProtocol.TCP, this.npingDelayTCPPort, this.rounds, destinationHost, this.iface).getNpingCommandAsList()).start();
-            if (npingProcess.waitFor() == 1) {
-                List<String> strings = ProcessUtils.readProcessOutput(npingProcess.getErrorStream());
-                throw new ProcessException(List.of(strings).toString());
-            }
+            Process npingProcess = getNpingProcess(NpingClientProtocol.TCP, this.npingDelayTCPPort, destinationHost);
             String end = Instant.now().toString();
             List<String> npingProcessOutput = ProcessUtils.readProcessOutput(npingProcess.getInputStream());
             NpingTCPDelayMeasurement npingTCPDelayMeasurement = NpingUtils.extractNpingTCPDelayMeasurement(NpingClientProtocol.TCP, npingProcessOutput);

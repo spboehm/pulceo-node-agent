@@ -25,6 +25,7 @@
 - [] Set minimum values for recurrence
 - [] Remove Job semantics for `NpingJob`
 - [] Add `NpingRequest` instead of `NpingJob`
+- [] Ensure that no duplicate measurements can be created
 - [x] Remove port from all methods
 
 ## JobService

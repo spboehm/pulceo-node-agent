@@ -1,8 +1,9 @@
 # TODOs
 
-## UdpConfig
+## Package config
 
 - [] Replace UdpEchoServer with traditional Java-based configuration
+- [] Revise all configurations, esp. `TcpConfig`, `UdpConfig`, `MQTTConfig`, and `DelayServiceConfig`
 
 ## BandwidthService 
 
@@ -30,7 +31,7 @@
 - [] Ensure that status flag of job is set properly in `scheduleIperfJob(...)`
 - [] Ensure that all jobs are rescheduled after application crash
 - [] Ensure that cancellation of jobs properly sets the active flag
-- 
+- [] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
 
 ## NpingUtils
 

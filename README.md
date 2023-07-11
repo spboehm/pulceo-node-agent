@@ -28,8 +28,8 @@ An MQTT broker must be run on the system locally, for example [eclipse-mosquitto
 
 ### Endpoints
 
-* UDP/4001: Endpoint for measuring latency
-* 
+* UDP/4001: Endpoint for measuring latency via UDP
+* TCP/4002: Endpoint for measuring latency via TCP
 
 ### Firewall
 

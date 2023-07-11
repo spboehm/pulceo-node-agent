@@ -2,6 +2,9 @@ package dev.pulceo.pna.model.nping;
 
 import lombok.Data;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Data
 public class NpingClientCmd {
 
@@ -13,7 +16,7 @@ public class NpingClientCmd {
 
     public String getCmd() {
         if (isUDPClient()) {
-            return String.format("/usr/bin/nping -4 --udp -c %s --dest-ip %s -p %s -e %s --data-length 66", rounds, host, port, iface);
+            return String.format("/usr/bin/nping -4 --udp -c %s --dest-ip %s -p %s -e %s", rounds, host, port, iface);
         } else {
             return String.format("/usr/bin/nping -4 --tcp-connect -c %s --dest-ip %s -p %s -e %s", rounds, host, port, iface);
         }
@@ -25,6 +28,10 @@ public class NpingClientCmd {
         } else {
             return false;
         }
+    }
+
+    public List<String> getNpingCommandAsList () {
+        return Arrays.asList(this.getCmd().split(" "));
     }
 
 }

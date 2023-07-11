@@ -16,10 +16,13 @@ public class NpingJob {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String sourceHost;
     private String destinationHost;
     private int port;
     private NpingClientProtocol npingClientProtocol;
+    private int rounds;
+
     private int recurrence;
     private boolean enabled = false;
 

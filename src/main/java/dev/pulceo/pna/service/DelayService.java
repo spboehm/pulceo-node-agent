@@ -3,14 +3,12 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.exception.NpingException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.job.NpingJob;
 import dev.pulceo.pna.model.nping.*;
 import dev.pulceo.pna.util.NpingUtils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,7 +19,16 @@ import java.util.List;
 public class DelayService {
 
     @Value("${pna.hostname:localhost}")
-    private String hostname;
+    private String sourceHost;
+
+    @Value("${pna.delay.udp.port:4001}")
+    private int npingDelayUDPPort;
+
+    @Value("${pna.delay.tcp.port:4002}")
+    private int npingDelayTCPPort;
+
+    @Value("${pna.nping.rounds:10}")
+    private int rounds;
 
     @Value("${pna.nping.interface:eth0}")
     private String iface;
@@ -57,41 +64,39 @@ public class DelayService {
         return false;
     }
 
-    public void measureDelay(NpingJob npingJob) throws DelayServiceException {
+    public NpingUDPResult measureUDPDelay(String destinationHost) throws DelayServiceException {
         try {
             String start = Instant.now().toString();
-            Process p;
-            if (npingJob.getNpingClientProtocol() == NpingClientProtocol.TCP) {
-                p = new ProcessBuilder("/usr/bin/nping", "-4", "--tcp-connect", "-c", String.valueOf(npingJob.getRecurrence()), "--dest-ip", npingJob.getDestinationHost(), "-p", String.valueOf(npingJob.getPort()), "-e", this.iface).start();
-            } else {
-                p = new ProcessBuilder("/usr/bin/nping", "-4", "--udp", "-c", String.valueOf(npingJob.getRecurrence()), "--dest-ip", npingJob.getDestinationHost(), "-p", String.valueOf(npingJob.getPort()), "-e", this.iface, "--data-length", "66").start();
-            }
-            // TODO: handle error caused by iperf, if remote server could not be found; error = 1; success = 0;
-            if (p.waitFor() == 1) {
-                List<String> strings = ProcessUtils.readProcessOutput(p.getErrorStream());
+            Process npingProcess = new ProcessBuilder(new NpingClientCmd(NpingClientProtocol.UDP, this.npingDelayUDPPort, this.rounds, destinationHost, this.iface).getNpingCommandAsList()).start();
+            if (npingProcess.waitFor() == 1) {
+                List<String> strings = ProcessUtils.readProcessOutput(npingProcess.getErrorStream());
                 throw new ProcessException(List.of(strings).toString());
             }
-
             String end = Instant.now().toString();
-            List<String> npingOutput = ProcessUtils.readProcessOutput(p.getInputStream());
-            System.out.println(npingOutput);
-            if (npingJob.getNpingClientProtocol() == NpingClientProtocol.TCP) {
-                NpingTCPDelayMeasurement npingTCPDelayMeasurement = NpingUtils.extractNpingTCPDelayMeasurement(NpingClientProtocol.TCP, npingOutput);
-                NpingTCPResult npingTCPResult = new NpingTCPResult(hostname, npingJob.getDestinationHost(), start, end, npingTCPDelayMeasurement);;
-                this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
-            } else {
-                NpingUDPDelayMeasurement npingUDPDelayMeasurement = NpingUtils.extractNpingUDPDelayMeasurement(NpingClientProtocol.UDP, npingOutput);
-                NpingUDPResult npingUDPResult = new NpingUDPResult(hostname, npingJob.getDestinationHost(), start, end, npingUDPDelayMeasurement);
-                System.out.println(npingUDPResult.toString());
-                this.delayServiceMessageChannel.send(new GenericMessage<>(npingUDPResult));
-            }
-
+            List<String> npingProcessOutput = ProcessUtils.readProcessOutput(npingProcess.getInputStream());
+            NpingUDPDelayMeasurement npingUDPDelayMeasurement = NpingUtils.extractNpingUDPDelayMeasurement(NpingClientProtocol.UDP, npingProcessOutput);
+            return new NpingUDPResult(this.sourceHost, destinationHost, start, end, npingUDPDelayMeasurement);
         } catch (IOException | InterruptedException | ProcessException | NpingException e) {
-            throw new DelayServiceException("Could not measure delay!", e);
+            throw new DelayServiceException("Could not measure UDP delay!", e);
         }
+
     }
 
-
-
-
+    public NpingTCPResult measureTCPDelay(String destinationHost) throws DelayServiceException {
+        try {
+            String start = Instant.now().toString();
+            Process npingProcess = new ProcessBuilder(new NpingClientCmd(NpingClientProtocol.TCP, this.npingDelayTCPPort, this.rounds, destinationHost, this.iface).getNpingCommandAsList()).start();
+            if (npingProcess.waitFor() == 1) {
+                List<String> strings = ProcessUtils.readProcessOutput(npingProcess.getErrorStream());
+                throw new ProcessException(List.of(strings).toString());
+            }
+            String end = Instant.now().toString();
+            List<String> npingProcessOutput = ProcessUtils.readProcessOutput(npingProcess.getInputStream());
+            NpingTCPDelayMeasurement npingTCPDelayMeasurement = NpingUtils.extractNpingTCPDelayMeasurement(NpingClientProtocol.TCP, npingProcessOutput);
+            return new NpingTCPResult(this.sourceHost, destinationHost, start, end, npingTCPDelayMeasurement);
+        } catch (IOException | InterruptedException | ProcessException | NpingException e) {
+            throw new DelayServiceException("Could not measure TCP delay!", e);
+        }
+    }
+    
 }

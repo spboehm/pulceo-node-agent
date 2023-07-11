@@ -25,7 +25,7 @@
 - [] Set minimum values for recurrence
 - [] Remove Job semantics for `NpingJob`
 - [] Add `NpingRequest` instead of `NpingJob`
-- [] Remove port from all methods
+- [x] Remove port from all methods
 
 ## JobService
 

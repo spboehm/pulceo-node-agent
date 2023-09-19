@@ -6,6 +6,8 @@
 
 An MQTT broker must be run on the system locally, for example [eclipse-mosquitto](https://mosquitto.org/). Consider using `mqtt/docker-compose.yml`.
 
+Just start the MQTT broker by running `docker-compose -f mqtt/docker-compose.yml up -d`.
+
 ### Dependencies
 
 * [iperf3](https://iperf.fr/iperf-download.php) must be installed on the system. The pulceo-node-agent does directly use the binary located in `bin`. Only version 3 is supported.
@@ -25,6 +27,9 @@ An MQTT broker must be run on the system locally, for example [eclipse-mosquitto
 * Round-trip delay (RTD) with protocol UDP: `/usr/bin/nping -4 --udp -c 20 --dest-ip localhost -p 8080 -e eth0 --data-length 66`
 
 #### Iperf3
+
+
+
 
 ### Endpoints
 

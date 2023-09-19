@@ -51,3 +51,8 @@
 - [] Check client and sender semantics, respectively naming
 - [] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
 - [] Improve command generation out of `IperfCmd` class
+
+## Application Startup
+
+- [] Connection probe MQTT
+- [] Existence of nping and iperf3 executable

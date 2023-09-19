@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class NpingJob {
+public class NpingTCPJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class NpingJob {
     private int recurrence;
     private boolean enabled = false;
 
-    public NpingJob(String sourceHost, String destinationHost, int port, NpingClientProtocol npingClientProtocol, int recurrence) {
+    public NpingTCPJob(String sourceHost, String destinationHost, int port, NpingClientProtocol npingClientProtocol, int recurrence) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.port = port;

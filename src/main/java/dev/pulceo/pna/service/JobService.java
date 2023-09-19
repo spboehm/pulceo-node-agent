@@ -3,7 +3,9 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.job.IperfJob;
+import dev.pulceo.pna.model.job.NpingTCPJob;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
+import dev.pulceo.pna.repository.NpingTCPJobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,10 @@ import java.util.concurrent.ScheduledFuture;
 public class JobService {
 
     @Autowired
-    private BandwidthJobRepository jobRepository;
+    private BandwidthJobRepository bandwidthJobRepository;
+
+    @Autowired
+    private NpingTCPJobRepository npingTCPJobRepository;
 
     @Autowired
     private TaskScheduler taskScheduler;
@@ -26,14 +31,31 @@ public class JobService {
     @Autowired
     private BandwidthService bandwidthService;
 
+    @Autowired
+    private DelayService delayService;
+
     private final Map<Long, ScheduledFuture<?>> hashMap = new ConcurrentHashMap<>();
 
+    public long createNpingUDPJob(NpingTCPJob npingTCPJob) {
+        return this.npingTCPJobRepository.save(npingTCPJob).getId();
+    }
+
+    public NpingTCPJob readNpingUDPJob(long id) throws JobServiceException {
+        Optional<NpingTCPJob> retrievedNpingTCPJob = this.npingTCPJobRepository.findById(id);
+        if (retrievedNpingTCPJob.isPresent()) {
+            return retrievedNpingTCPJob.get();
+        } else {
+            throw new JobServiceException("Requested job was not found!");
+        }
+
+    }
+
     public long createIperfJob(IperfJob iperfJob) {
-        return this.jobRepository.save(iperfJob).getId();
+        return this.bandwidthJobRepository.save(iperfJob).getId();
     }
 
     public IperfJob readIperfJob(long id) throws JobServiceException {
-        Optional<IperfJob> retrievedIperfJob = this.jobRepository.findById(id);
+        Optional<IperfJob> retrievedIperfJob = this.bandwidthJobRepository.findById(id);
         if (retrievedIperfJob.isPresent()) {
             return retrievedIperfJob.get();
         } else {
@@ -45,7 +67,7 @@ public class JobService {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
         if (!retrievedIperfJob.isEnabled()) {
             retrievedIperfJob.setEnabled(true);
-            return this.jobRepository.save(retrievedIperfJob);
+            return this.bandwidthJobRepository.save(retrievedIperfJob);
         }
         return retrievedIperfJob;
     }
@@ -54,7 +76,7 @@ public class JobService {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
         if (retrievedIperfJob.isEnabled()) {
             retrievedIperfJob.setEnabled(false);
-            return this.jobRepository.save(retrievedIperfJob);
+            return this.bandwidthJobRepository.save(retrievedIperfJob);
         }
         return retrievedIperfJob;
     }

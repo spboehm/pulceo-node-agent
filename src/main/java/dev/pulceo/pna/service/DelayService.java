@@ -27,11 +27,14 @@ public class DelayService {
     @Value("${pna.delay.tcp.port:4002}")
     private int npingDelayTCPPort;
 
-    @Value("${pna.nping.rounds:10}")
+    @Value("${pna.delay.rounds:10}")
     private int rounds;
 
-    @Value("${pna.nping.interface:eth0}")
+    @Value("${pna.delay.interface:eth0}")
     private String iface;
+
+    @Value("${pna.delay.udp.data.length}")
+    private int dataLength;
 
     @Autowired
     PublishSubscribeChannel delayServiceMessageChannel;
@@ -61,13 +64,18 @@ public class DelayService {
     }
 
     public NpingUDPResult measureUDPDelay(String destinationHost) throws DelayServiceException {
+        return this.measureUDPDelay(destinationHost, this.dataLength);
+    }
+
+
+    public NpingUDPResult measureUDPDelay(String destinationHost, int dataLength) throws DelayServiceException {
         try {
             String start = Instant.now().toString();
             Process npingProcess = getNpingProcess(NpingClientProtocol.UDP, this.npingDelayUDPPort, destinationHost);
             String end = Instant.now().toString();
             List<String> npingProcessOutput = ProcessUtils.readProcessOutput(npingProcess.getInputStream());
             NpingUDPDelayMeasurement npingUDPDelayMeasurement = NpingUtils.extractNpingUDPDelayMeasurement(NpingClientProtocol.UDP, npingProcessOutput);
-            return new NpingUDPResult(this.sourceHost, destinationHost, start, end, npingUDPDelayMeasurement);
+            return new NpingUDPResult(this.sourceHost, destinationHost, start, end, dataLength ,npingUDPDelayMeasurement);
         } catch (IOException | InterruptedException | ProcessException | NpingException e) {
             throw new DelayServiceException("Could not measure UDP delay!", e);
         }

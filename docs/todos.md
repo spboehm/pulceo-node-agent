@@ -19,7 +19,7 @@
 ## DelayService
 
 - [] Ensure that multiple backends are available for determining the latency, example (`nping` and `ping`)
-- [] Ensure that the payload size can be specified for the latency test
+- [x] Ensure that the payload size can be specified for the latency test, at least for TCP
 - [] Refactor `measureDelay()`, improve handling
 - [] Improve process generation with ProcessBuilder
 - [] Set minimum values for recurrence
@@ -34,6 +34,7 @@
 - [] Ensure that all jobs are rescheduled after application crash
 - [] Ensure that cancellation of jobs properly sets the active flag
 - [] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
+- [] Ensure that no duplicate jobs can be created
 
 ## NpingUtils
 
@@ -41,6 +42,7 @@
 - [] Ensure that particular interfaces can be used for determining the delay, e.g., via env vars
 - [] Clarify method signature of `extractNpingTCPDelayMeasurement(...)`... First parameter is currently obsolete
 - [] Improve command generation out of `NpingCmd` class, avoid error-prone hard-coding
+- [] Add dataLength validation in NpingCmd and respective tests
 
 ## Iperf3utils
 

@@ -62,7 +62,7 @@ public class DelayServiceTests {
     }
 
     @Test
-    public void testMeasureUDPDelay() throws DelayServiceException, InterruptedException {
+    public void testMeasureUDPDelay() throws DelayServiceException {
         // given
         String destinationHost = "localhost";
 
@@ -75,10 +75,33 @@ public class DelayServiceTests {
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getAvgRTT() > 0);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getMinRTT() > 0);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getMaxRTT() > 0);
-        assertEquals(npingUDPResult.getNpingUDPDelayMeasurement().getUdpPacketsSent(), Integer.parseInt(Objects.requireNonNull(environment.getProperty("pna.nping.rounds"))));
+        assertEquals(npingUDPResult.getNpingUDPDelayMeasurement().getUdpPacketsSent(), Integer.parseInt(Objects.requireNonNull(environment.getProperty("pna.delay.rounds"))));
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getUdpReceivedPackets() >= 0);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getUdpPacketsSent() >= 0);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getUdpLostPacketsRelative() >= 0);
+    }
+
+    @Test
+    public void testMeasureUDPDelayWithCustomDataLength() throws DelayServiceException {
+        // given
+        String destinationHost = "localhost";
+        int dataLength = 1024;
+
+        // when
+        NpingUDPResult npingUDPResult = this.delayService.measureUDPDelay(destinationHost, dataLength);
+
+        // then
+        assertEquals(npingUDPResult.getSourceHost(), "localhost");
+        assertEquals(npingUDPResult.getDestinationHost(), destinationHost);
+        assertEquals(npingUDPResult.getDataLength(), dataLength);
+        assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getAvgRTT() > 0);
+        assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getMinRTT() > 0);
+        assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getMaxRTT() > 0);
+        assertEquals(npingUDPResult.getNpingUDPDelayMeasurement().getUdpPacketsSent(), Integer.parseInt(Objects.requireNonNull(environment.getProperty("pna.delay.rounds"))));
+        assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getUdpReceivedPackets() >= 0);
+        assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getUdpPacketsSent() >= 0);
+        assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getUdpLostPacketsRelative() >= 0);
+
     }
 
     @Test
@@ -95,7 +118,7 @@ public class DelayServiceTests {
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getAvgRTT() > 0);
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMinRTT() > 0);
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMaxRTT() > 0);
-        assertEquals(npingTCPResult.getNpingTCPDelayMeasurement().getTcpConnectionAttempts(), Integer.parseInt(Objects.requireNonNull(environment.getProperty("pna.nping.rounds"))));
+        assertEquals(npingTCPResult.getNpingTCPDelayMeasurement().getTcpConnectionAttempts(), Integer.parseInt(Objects.requireNonNull(environment.getProperty("pna.delay.rounds"))));
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getTcpSuccessfulConnections() >= 0);
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getTcpFailedConnectionsAbsolute() >= 0);
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getTcpFailedConnectionsRelative() >= 0);

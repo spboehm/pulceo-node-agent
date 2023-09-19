@@ -22,7 +22,6 @@ public class NpingJob {
     private int port;
     private NpingClientProtocol npingClientProtocol;
     private int rounds;
-
     private int recurrence;
     private boolean enabled = false;
 

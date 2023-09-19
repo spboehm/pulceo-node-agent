@@ -19,6 +19,7 @@
 ## DelayService
 
 - [] Ensure that multiple backends are available for determining the latency, example (`nping` and `ping`)
+- [] Ensure that different rounds can be defined for determining the latency
 - [x] Ensure that the payload size can be specified for the latency test, at least for TCP
 - [] Refactor `measureDelay()`, improve handling
 - [] Improve process generation with ProcessBuilder

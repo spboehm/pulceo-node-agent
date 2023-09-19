@@ -1,6 +1,6 @@
-package dev.pulceo.pna.model.job;
+package dev.pulceo.pna.model.jobs;
 
-import dev.pulceo.pna.model.nping.NpingClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class NpingTCPJob {
+public class IperfJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,15 +19,16 @@ public class NpingTCPJob {
     private String sourceHost;
     private String destinationHost;
     private int port;
-    private NpingClientProtocol npingClientProtocol;
+    private IperfClientProtocol iperfClientProtocol;
     private int recurrence;
     private boolean enabled = false;
 
-    public NpingTCPJob(String sourceHost, String destinationHost, int port, NpingClientProtocol npingClientProtocol, int recurrence) {
+    public IperfJob(String sourceHost, String destinationHost, int port, IperfClientProtocol iperfClientProtocol, int recurrence) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.port = port;
-        this.npingClientProtocol = npingClientProtocol;
+        this.iperfClientProtocol = iperfClientProtocol;
         this.recurrence = recurrence;
     }
+
 }

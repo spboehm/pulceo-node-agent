@@ -3,7 +3,7 @@ package dev.pulceo.pna;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import dev.pulceo.pna.model.iperf3.IperfResult;
-import dev.pulceo.pna.model.job.IperfJob;
+import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.service.BandwidthService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;

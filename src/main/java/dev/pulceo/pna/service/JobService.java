@@ -2,8 +2,8 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
-import dev.pulceo.pna.model.job.IperfJob;
-import dev.pulceo.pna.model.job.NpingTCPJob;
+import dev.pulceo.pna.model.jobs.IperfJob;
+import dev.pulceo.pna.model.jobs.NpingTCPJob;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.NpingTCPJobRepository;
 import org.springframework.beans.factory.annotation.Autowired;

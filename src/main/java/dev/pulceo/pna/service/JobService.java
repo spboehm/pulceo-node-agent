@@ -34,20 +34,49 @@ public class JobService {
     @Autowired
     private DelayService delayService;
 
-    private final Map<Long, ScheduledFuture<?>> hashMap = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> delayJobHashMap = new ConcurrentHashMap<>();
 
-    public long createNpingUDPJob(NpingTCPJob npingTCPJob) {
+    public long createNpingTCPJob(NpingTCPJob npingTCPJob) {
         return this.npingTCPJobRepository.save(npingTCPJob).getId();
     }
 
-    public NpingTCPJob readNpingUDPJob(long id) throws JobServiceException {
+    public NpingTCPJob readNpingTCPJob(long id) throws JobServiceException {
         Optional<NpingTCPJob> retrievedNpingTCPJob = this.npingTCPJobRepository.findById(id);
         if (retrievedNpingTCPJob.isPresent()) {
             return retrievedNpingTCPJob.get();
         } else {
             throw new JobServiceException("Requested job was not found!");
         }
+    }
 
+    public NpingTCPJob enableNpingTCPJob(long id) throws JobServiceException {
+        NpingTCPJob retrievedNpingTCPJob = this.readNpingTCPJob(id);
+        if (!retrievedNpingTCPJob.isEnabled()) {
+            retrievedNpingTCPJob.setEnabled(true);
+            return this.npingTCPJobRepository.save(retrievedNpingTCPJob);
+        }
+        return retrievedNpingTCPJob;
+    }
+
+    public NpingTCPJob disableNpingTCPJob(long id) throws JobServiceException {
+        NpingTCPJob retrievedNpingTCPJob = this.readNpingTCPJob(id);
+        if (retrievedNpingTCPJob.isEnabled()) {
+            retrievedNpingTCPJob.setEnabled(false);
+            return this.npingTCPJobRepository.save(retrievedNpingTCPJob);
+        }
+        return retrievedNpingTCPJob;
+    }
+
+    // TODO: do not forget to set the status flag active
+    // TODO: handle situation when the jobs are crashing
+    public long scheduleNpingTCPJob(long id) throws JobServiceException {
+        return -1;
+    }
+
+    // TODO: reimplement cancelNpingJob, consider active flag
+    public boolean cancelNpingTCPJob(long id) {
+        return this.delayJobHashMap.get(id).cancel(false);
     }
 
     public long createIperfJob(IperfJob iperfJob) {
@@ -93,13 +122,13 @@ public class JobService {
                 throw new RuntimeException(e);
             }
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
-        this.hashMap.put(retrievedIperfJobId, scheduledFuture);
+        this.bandwidthJobHashMap.put(retrievedIperfJobId, scheduledFuture);
         return retrievedIperfJobId;
     }
 
     // TODO: reimplement cancelIperfJob, consider active flag
     public boolean cancelIperfJob(long id) {
-        return this.hashMap.get(id).cancel(false);
+        return this.bandwidthJobHashMap.get(id).cancel(false);
     }
 
 

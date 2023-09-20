@@ -20,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class JobServiceTests {
+public class IperfJobServiceTests {
 
     @Autowired
     JobService jobService;
@@ -40,7 +40,7 @@ public class JobServiceTests {
     }
 
     @Test
-    public void testCreateIperfTask() {
+    public void testCreateIperfJob() {
         // given
         IperfJob iperfJob = new IperfJob("localhost", "localhost", 5001, IperfClientProtocol.TCP, 15);
 
@@ -144,6 +144,7 @@ public class JobServiceTests {
         this.bandwidthServiceMessageChannel.subscribe(message -> {
             iperfResultBlockingQueue.add((IperfResult) message.getPayload());
         });
+        // initiate orderly shutdown
         this.jobService.cancelIperfJob(localJobId);
         IperfResult iperfResult = iperfResultBlockingQueue.take();
 

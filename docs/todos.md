@@ -1,5 +1,10 @@
 # TODOs
 
+## Overall Issues
+
+- [] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)
+- [] Inconsistent naming of delay vs. npingTCP, e.g. in (`JobService`)
+
 ## Package config
 
 - [] Replace UdpEchoServer with traditional Java-based configuration
@@ -8,6 +13,7 @@
 ## BandwidthService 
 
 - [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly
+- [] Reference defined port ranges in `BandwidthService`
 - [] Implement test with only one measurement result, otherwise tests last pretty long
 - [] Check client and sender semantics, respectively naming
 - [] Ensure that particular interfaces can be used for measuring bandwidth
@@ -36,6 +42,7 @@
 - [] Ensure that cancellation of jobs properly sets the active flag
 - [] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
 - [] Ensure that no duplicate jobs can be created
+- [] Add appropriate logging for 
 
 ## NpingUtils
 
@@ -59,3 +66,9 @@
 
 - [] Connection probe MQTT
 - [] Existence of nping and iperf3 executable
+
+## Tests
+
+- [] `dev.pulceo.pna.IperfJobServiceTests` misses additional tests for job cancellation
+- [] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
+- []

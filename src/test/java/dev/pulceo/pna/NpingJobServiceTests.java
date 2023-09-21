@@ -3,6 +3,7 @@ package dev.pulceo.pna;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
+import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.service.DelayService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;
@@ -10,11 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class NpingJobServiceTests {
@@ -22,8 +25,8 @@ public class NpingJobServiceTests {
     @Autowired
     JobService jobService;
 
-//    @Autowired
-//    PublishSubscribeChannel bandwidthServiceMessageChannel;
+    @Autowired
+    PublishSubscribeChannel delayServiceMessageChannel;
 
     @Autowired
     DelayService delayService;
@@ -39,7 +42,7 @@ public class NpingJobServiceTests {
     @Test
     public void testCreateNpingTCPJob() {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4001, NpingClientProtocol.TCP, 15);
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
 
         // when
         long id  = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -51,7 +54,7 @@ public class NpingJobServiceTests {
     @Test
     public void testCreatedNpingTCPJobIsInactive() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4001, NpingClientProtocol.TCP, 15);
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
 
         // when
         long savedIperfJob  = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -62,9 +65,9 @@ public class NpingJobServiceTests {
     }
 
     @Test
-    public void testEnableIperfJobWithDisabledJob() throws JobServiceException {
+    public void testEnableNpingTCPJobWithDisabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4001, NpingClientProtocol.TCP, 15);
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
 
         // newly created job is disabled by default, means active = false
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -78,9 +81,9 @@ public class NpingJobServiceTests {
     }
 
     @Test
-    public void testEnableIperfJobWithEnabledJob() throws JobServiceException {
+    public void testEnableNpingTCPJobWithEnabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4001, NpingClientProtocol.TCP, 15);
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingTCPJob.setEnabled(true);
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -94,9 +97,9 @@ public class NpingJobServiceTests {
     }
 
     @Test
-    public void testDisableIperfJobWithEnabledJob() throws JobServiceException {
+    public void testDisableNpingTCPJobWithEnabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4001, NpingClientProtocol.TCP, 15);
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingTCPJob.setEnabled(true);
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -111,9 +114,9 @@ public class NpingJobServiceTests {
 
 
     @Test
-    public void testDisableIperfJobWithDisabledJob() throws JobServiceException {
+    public void testDisableNpingTCPJobWithDisabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4001, NpingClientProtocol.TCP, 15);
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
         // newly created job is disabled by default, means active = false
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
 
@@ -125,31 +128,36 @@ public class NpingJobServiceTests {
         assertFalse(alreadyDisabledNpingTCPJob.isEnabled());
 
     }
-//
-//    @Test
-//    public void testScheduleIperf3Job() throws Exception {
-//        // given
-//        int port = 5001;
-//        BandwidthServiceTests.startIperf3ServerInstance(port);
-//        int recurrence = 15;
-//        IperfJob iperfJob = new IperfJob("localhost", "localhost", port, IperfClientProtocol.TCP, recurrence);
-//        long id = this.jobService.createIperfJob(iperfJob);
-//
-//        // when
-//        long localJobId = this.jobService.scheduleIperfJob(id);
-//        BlockingQueue<IperfResult> iperfResultBlockingQueue = new ArrayBlockingQueue<>(1);
-//        this.bandwidthServiceMessageChannel.subscribe(message -> {
-//            iperfResultBlockingQueue.add((IperfResult) message.getPayload());
-//        });
-//        this.jobService.cancelIperfJob(localJobId);
-//        IperfResult iperfResult = iperfResultBlockingQueue.take();
-//
-//        // then
-//        assertNotNull(iperfResult);
-//        assert("localhost".equals(iperfResult.getSourceHost()));
-//        assert("localhost".equals(iperfResult.getDestinationHost()));
-//        assertTrue(iperfResult.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);
-//        assertTrue(iperfResult.getIperfBandwidthMeasurementSender().getBitrate() > 0);
-//    }
+
+    @Test
+    public void testScheduleNpingTCPJob() throws Exception {
+        // given
+        // prepare TCP listener on port 4002
+        // implicitly done be SpringBootIntegration, see dev.pulceo.pna.config.TcpConfig
+        int recurrence = 15;
+        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, recurrence);
+        long id = this.jobService.createNpingTCPJob(npingTCPJob);
+
+        // when
+        long localJobId = this.jobService.scheduleNpingTCPJob(id);
+        BlockingQueue<NpingTCPResult> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.delayServiceMessageChannel.subscribe(message -> {
+            npingTCPResultBlockingQueue.add((NpingTCPResult) message.getPayload());
+        });
+        this.jobService.cancelNpingTCPJob(localJobId);
+        NpingTCPResult npingTCPResult = npingTCPResultBlockingQueue.take();
+        System.out.println(npingTCPResult);
+        // then
+        assertNotNull(npingTCPResult);
+        assert("localhost".equals(npingTCPResult.getSourceHost()));
+        assert("localhost".equals(npingTCPResult.getDestinationHost()));
+        assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMaxRTT() > 0);
+        assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMinRTT() > 0);
+        assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getAvgRTT() > 0);
+        assertEquals(1, npingTCPResult.getNpingTCPDelayMeasurement().getTcpConnectionAttempts());
+        assertEquals(1, npingTCPResult.getNpingTCPDelayMeasurement().getTcpSuccessfulConnections());
+        assertEquals(0, npingTCPResult.getNpingTCPDelayMeasurement().getTcpFailedConnectionsAbsolute());
+        assertEquals(0, npingTCPResult.getNpingTCPDelayMeasurement().getTcpFailedConnectionsRelative());
+    }
 
 }

@@ -1,12 +1,16 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
+import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
+import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.NpingTCPJobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +38,12 @@ public class JobService {
     @Autowired
     private DelayService delayService;
 
+    // TODO: consider renaming to job-related semantics
+    @Autowired
+    PublishSubscribeChannel delayServiceMessageChannel;
+
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
-    private final Map<Long, ScheduledFuture<?>> delayJobHashMap = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
 
     public long createNpingTCPJob(NpingTCPJob npingTCPJob) {
         return this.npingTCPJobRepository.save(npingTCPJob).getId();
@@ -71,12 +79,24 @@ public class JobService {
     // TODO: do not forget to set the status flag active
     // TODO: handle situation when the jobs are crashing
     public long scheduleNpingTCPJob(long id) throws JobServiceException {
-        return -1;
+        NpingTCPJob retrievedNpingTCPJob = this.readNpingTCPJob(id);
+        long retrievedNpingTCPJobId = retrievedNpingTCPJob.getId();
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            try {
+                NpingTCPResult npingTCPResult = delayService.measureTCPDelay(retrievedNpingTCPJob.getDestinationHost());
+                this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
+            } catch (DelayServiceException e) {
+                throw new RuntimeException(e);
+            }
+        }, Duration.ofSeconds(retrievedNpingTCPJob.getRecurrence()));
+
+        this.TCPDelayJobHashMap.put(retrievedNpingTCPJobId, scheduledFuture);
+        return retrievedNpingTCPJobId;
     }
 
     // TODO: reimplement cancelNpingJob, consider active flag
     public boolean cancelNpingTCPJob(long id) {
-        return this.delayJobHashMap.get(id).cancel(false);
+        return this.TCPDelayJobHashMap.get(id).cancel(false);
     }
 
     public long createIperfJob(IperfJob iperfJob) {

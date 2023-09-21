@@ -6,9 +6,7 @@ import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.nping.*;
 import dev.pulceo.pna.util.NpingUtils;
 import dev.pulceo.pna.util.ProcessUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -35,9 +33,6 @@ public class DelayService {
 
     @Value("${pna.delay.udp.data.length}")
     private int dataLength;
-
-    @Autowired
-    PublishSubscribeChannel delayServiceMessageChannel;
 
     public boolean checkForRunningNpingInstance(NpingClientProtocol npingClientProtocol, String host) throws DelayServiceException {
         try {

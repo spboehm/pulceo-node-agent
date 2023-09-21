@@ -21,6 +21,7 @@
 - [] Set minimum values for recurrence
 - [] Remove Job semantics for `BandwidthJob`
 - [] Add `IperfRequest` instead of `IperfJob`
+- [] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`
 
 ## DelayService
 
@@ -43,6 +44,7 @@
 - [] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
 - [] Ensure that no duplicate jobs can be created
 - [] Add appropriate logging for 
+- [] Consider moving PublishSubscribeChannels for bandwidth and delay to another place
 
 ## NpingUtils
 

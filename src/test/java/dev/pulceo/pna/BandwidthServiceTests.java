@@ -3,6 +3,9 @@ package dev.pulceo.pna;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfResult;
+import dev.pulceo.pna.model.iperf3.IperfRole;
+import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.service.BandwidthService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -235,14 +238,27 @@ public class BandwidthServiceTests {
         // given
         int port = 5001;
         startIperf3ServerInstance(port);
-        System.out.println(Thread.currentThread().getId());
-
-
+        int recurrence = 15;
+        // TODO: change to iperfrequest
+        IperfJob iperfJob = new IperfJob("localhost", "localhost", port, IperfClientProtocol.TCP, recurrence);
 
         // when
-        //IperfResult iperf3Result = bandwidthService.measureBandwidth();
-
+        IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfJob);
+        System.out.println(iperf3Result);
         // then
+        assertNotNull(iperf3Result);
+        assertEquals("localhost", iperf3Result.getSourceHost());
+        assertEquals("localhost", iperf3Result.getDestinationHost());
+        // Sender
+        assertEquals(IperfClientProtocol.TCP ,iperf3Result.getIperfBandwidthMeasurementSender().getIperf3Protocol());
+        assertTrue(iperf3Result.getIperfBandwidthMeasurementSender().getBitrate() > 0);
+        assertEquals("Mbits/s", iperf3Result.getIperfBandwidthMeasurementSender().getBandwidthUnit());
+        assertEquals(IperfRole.SENDER, iperf3Result.getIperfBandwidthMeasurementSender().getIperfRole());
+        // Receiver
+        assertEquals(IperfClientProtocol.TCP ,iperf3Result.getIperfBandwidthMeasurementReceiver().getIperf3Protocol());
+        assertTrue(iperf3Result.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);
+        assertEquals("Mbits/s", iperf3Result.getIperfBandwidthMeasurementReceiver().getBandwidthUnit());
+        assertEquals(IperfRole.RECEIVER, iperf3Result.getIperfBandwidthMeasurementReceiver().getIperfRole());
 
 
 

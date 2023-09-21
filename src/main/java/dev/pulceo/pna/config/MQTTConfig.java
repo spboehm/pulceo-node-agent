@@ -1,6 +1,7 @@
 package dev.pulceo.pna.config;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -18,6 +19,9 @@ import org.springframework.messaging.MessageHandler;
 
 @Configuration
 public class MQTTConfig {
+
+    @Value("${pna.id}")
+    private String deviceID;
 
     /* Inbound */
     @Bean
@@ -88,9 +92,9 @@ public class MQTTConfig {
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler =
-                new MqttPahoMessageHandler("pulceo-node-agent", mqttClientFactory());
+                new MqttPahoMessageHandler(deviceID, mqttClientFactory());
         messageHandler.setAsync(true);
-        messageHandler.setDefaultTopic("pulceo-node-agent");
+        messageHandler.setDefaultTopic(deviceID);
         messageHandler.setConverter(new DefaultPahoMessageConverter());
         return messageHandler;
     }

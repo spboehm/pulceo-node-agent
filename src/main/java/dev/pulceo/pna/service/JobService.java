@@ -3,6 +3,7 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
@@ -41,6 +42,10 @@ public class JobService {
     // TODO: consider renaming to job-related semantics
     @Autowired
     PublishSubscribeChannel delayServiceMessageChannel;
+
+    // TODO: consider renaming to job-related semantics
+    @Autowired
+    PublishSubscribeChannel bandwidthServiceMessageChannel;
 
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
@@ -137,7 +142,8 @@ public class JobService {
         long retrievedIperfJobId = retrievedIperfJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                bandwidthService.measureBandwidth(retrievedIperfJob);
+                IperfResult iperfResult = bandwidthService.measureBandwidth(retrievedIperfJob);
+                this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
             } catch (BandwidthServiceException e) {
                 throw new RuntimeException(e);
             }

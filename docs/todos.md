@@ -22,6 +22,7 @@
 - [] Remove Job semantics for `BandwidthJob`
 - [] Add `IperfRequest` instead of `IperfJob`
 - [] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`
+- [] Also include the retr tansmission in iperf3
 
 ## DelayService
 
@@ -60,7 +61,7 @@
 - [] Validate parameters for creating server and client processes
 - [] Run tests withs different output parameters, in case output is falsely parsed
 - [] Check if output is correctly processed even if iperf has failed to parse the output
-- [] Check client and sender semantics, respectively naming
+- [] Check client and sender semantics, respectively rename sender and receiver because it is ambiguous
 - [] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
 - [] Improve command generation out of `IperfCmd` class
 

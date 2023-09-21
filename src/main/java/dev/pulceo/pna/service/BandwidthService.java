@@ -9,7 +9,6 @@ import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -140,7 +139,7 @@ public class BandwidthService {
         return (getPidOfRunningIperf3Receiver(port) != -1);
     }
 
-    public void measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
+    public IperfResult measureBandwidth(IperfJob iperfJob) throws BandwidthServiceException {
         try {
             String start = Instant.now().toString();
             Process p;
@@ -158,8 +157,7 @@ public class BandwidthService {
             List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
             IperfBandwidthMeasurement iperfBandwidthMeasurementSender = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfJob.getIperfClientProtocol(), iperf3Output, IperfRole.SENDER);
             IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfJob.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
-            IperfResult iperfResult = new IperfResult(iperfJob.getSourceHost(), iperfJob.getDestinationHost(), start, end, iperfBandwidthMeasurementSender, iperfBandwidthMeasurementReceiver);
-            this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
+            return new IperfResult(iperfJob.getSourceHost(), iperfJob.getDestinationHost(), start, end, iperfBandwidthMeasurementReceiver, iperfBandwidthMeasurementSender);
         } catch (InterruptedException | IOException | ProcessException e) {
             throw new BandwidthServiceException("Could not measure bandwidth!", e);
         }

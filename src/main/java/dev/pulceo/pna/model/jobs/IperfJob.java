@@ -20,6 +20,7 @@ public class IperfJob {
     private String destinationHost;
     private int port;
     private IperfClientProtocol iperfClientProtocol;
+    private float bitrate = 1.0f;
     private int recurrence;
     private boolean enabled = false;
 
@@ -31,4 +32,13 @@ public class IperfJob {
         this.recurrence = recurrence;
     }
 
+    public IperfJob(String sourceHost, String destinationHost, int port, IperfClientProtocol iperfClientProtocol, float bitrate, int recurrence, boolean enabled) {
+        this.sourceHost = sourceHost;
+        this.destinationHost = destinationHost;
+        this.port = port;
+        this.iperfClientProtocol = iperfClientProtocol;
+        this.bitrate = bitrate;
+        this.recurrence = recurrence;
+        this.enabled = enabled;
+    }
 }

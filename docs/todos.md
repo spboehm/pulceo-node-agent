@@ -23,6 +23,8 @@
 - [] Add `IperfRequest` instead of `IperfJob`
 - [] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`
 - [] Also include the retr tansmission in iperf3
+- [] Include custom bitrate in iperf3
+- [] Add object-oriented style for running 
 
 ## DelayService
 
@@ -64,6 +66,7 @@
 - [] Check client and sender semantics, respectively rename sender and receiver because it is ambiguous
 - [] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
 - [] Improve command generation out of `IperfCmd` class
+- [x] Add additional test cases for UDP
 
 ## Application Startup
 

@@ -29,7 +29,7 @@ public class ProcessUtilsTests {
     @Test
     public void testReadProcessOutputFromIperf3Output () throws IOException, ProcessException {
         // given
-        File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_client_result.txt");
+        File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_tcp_client_result.txt");
 
         // when
         List<String> resultList;

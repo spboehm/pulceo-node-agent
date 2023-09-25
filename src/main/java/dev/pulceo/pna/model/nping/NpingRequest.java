@@ -31,9 +31,20 @@ public class NpingRequest {
         this.iface = iface;
     }
 
-    public NpingClientCmd toNpingClientCmd() {
-        return new NpingClientCmd(this.npingClientProtocol, this.port, this.rounds, this.destinationHost, this.iface);
+    public String getCmd() {
+        if (isUDPClient()) {
+            return String.format("/usr/bin/nping -4 --udp -c %s --dest-ip %s -p %s -e %s", rounds, destinationHost, port, iface);
+        } else {
+            return String.format("/usr/bin/nping -4 --tcp-connect -c %s --dest-ip %s -p %s -e %s", rounds, destinationHost, port, iface);
+        }
     }
 
+    public boolean isUDPClient() {
+        if (this.npingClientProtocol == NpingClientProtocol.UDP) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

@@ -42,10 +42,6 @@ public class IperfRequest {
         }
     }
 
-    public String[] getCmdAsArray() {
-        return this.getCmd().split(" ");
-    }
-
     public boolean isUDPSender() {
         if (this.iperfClientProtocol == IperfClientProtocol.UDP) {
             return true;

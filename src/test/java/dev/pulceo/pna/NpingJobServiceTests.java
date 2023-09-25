@@ -146,7 +146,7 @@ public class NpingJobServiceTests {
         });
         this.jobService.cancelNpingTCPJob(localJobId);
         NpingTCPResult npingTCPResult = npingTCPResultBlockingQueue.take();
-        System.out.println(npingTCPResult);
+
         // then
         assertNotNull(npingTCPResult);
         assert("localhost".equals(npingTCPResult.getSourceHost()));

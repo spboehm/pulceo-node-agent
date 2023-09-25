@@ -141,7 +141,7 @@ public class BandwidthService {
     public IperfResult measureBandwidth(IperfRequest iperfRequest) throws BandwidthServiceException {
         try {
             String start = Instant.now().toString();
-            Process p = new ProcessBuilder(iperfRequest.getCmdAsArray()).start();
+            Process p = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfRequest.getCmd())).start();
             // TODO: handle error caused by iperf, if remote server could not be found; error = 1; success = 0;
             if (p.waitFor() == 1) {
                 List<String> strings = ProcessUtils.readProcessOutput(p.getErrorStream());

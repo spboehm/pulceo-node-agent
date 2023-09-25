@@ -139,7 +139,6 @@ public class NpingUtilsTests {
 
         // when
         String actualHost = NpingUtils.extractHostFromNpingCmd(cmdTCPInstance);
-        System.out.println(actualHost);
 
         // then
         assertEquals(expectedHost, actualHost);

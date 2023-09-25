@@ -68,7 +68,7 @@ public class Iperf3UtilsTests {
 
         // when
         IperfBandwidthMeasurement actualIperfBandwidthMeasurement = Iperf3Utils.extractIperf3UDPBandwidthMeasurement(iperf3Protocol, resultList, iperfRole);
-        System.out.println(actualIperfBandwidthMeasurement.toString());
+
         // then
         assertEquals(expectedIperfUDPBandwidthMeasurement, actualIperfBandwidthMeasurement);
     }

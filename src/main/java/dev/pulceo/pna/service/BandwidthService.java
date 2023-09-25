@@ -149,9 +149,11 @@ public class BandwidthService {
             }
             String end = Instant.now().toString();
             List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
-            IperfBandwidthMeasurement iperfBandwidthMeasurementSender = Iperf3Utils.extractIperf3TCPBandwidthMeasurement(iperfRequest.getIperfClientProtocol(), iperf3Output, IperfRole.SENDER);
-            IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3TCPBandwidthMeasurement(iperfRequest.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
+
+            IperfBandwidthMeasurement iperfBandwidthMeasurementSender = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfRequest.getIperfClientProtocol(), iperf3Output, IperfRole.SENDER);
+            IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfRequest.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
             return new IperfResult(iperfRequest.getSourceHost(), iperfRequest.getDestinationHost(), start, end, iperfBandwidthMeasurementReceiver, iperfBandwidthMeasurementSender);
+
         } catch (InterruptedException | IOException | ProcessException e) {
             throw new BandwidthServiceException("Could not measure bandwidth!", e);
         }

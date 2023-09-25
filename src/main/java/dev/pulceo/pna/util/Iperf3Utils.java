@@ -9,7 +9,6 @@ import java.util.List;
 
 public class Iperf3Utils {
 
-
     public static IperfBandwidthMeasurement extractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, List<String> iperf3Output, IperfRole iperfRole) {
         if (iperf3Protocol == IperfClientProtocol.TCP) {
             return extractIperf3TCPBandwidthMeasurement(iperf3Protocol, iperf3Output, iperfRole);

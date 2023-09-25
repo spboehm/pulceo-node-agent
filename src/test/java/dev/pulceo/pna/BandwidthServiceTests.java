@@ -2,10 +2,7 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import dev.pulceo.pna.model.iperf3.IperfRequest;
-import dev.pulceo.pna.model.iperf3.IperfResult;
-import dev.pulceo.pna.model.iperf3.IperfRole;
+import dev.pulceo.pna.model.iperf3.*;
 import dev.pulceo.pna.service.BandwidthService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -234,7 +231,45 @@ public class BandwidthServiceTests {
     }
 
     @Test
-    public void testMeasureBandwidth() throws IOException, InterruptedException, BandwidthServiceException {
+    public void testMeasureUDPBandwidth() throws IOException, InterruptedException, BandwidthServiceException {
+        // given
+        int port = 5001;
+        startIperf3ServerInstance(port);
+        int recurrence = 15;
+        IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP);
+
+        // when
+        IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfUDPClientRequest);
+
+        // then
+        assertNotNull(iperf3Result);
+        assertEquals("localhost", iperf3Result.getSourceHost());
+        assertEquals("localhost", iperf3Result.getDestinationHost());
+        // Sender
+        assertEquals(IperfClientProtocol.UDP, iperf3Result.getIperfBandwidthMeasurementSender().getIperf3Protocol());
+        assertTrue(iperf3Result.getIperfBandwidthMeasurementSender().getBitrate() > 0);
+        assertEquals("Mbits/s", iperf3Result.getIperfBandwidthMeasurementSender().getBandwidthUnit());
+        assertEquals(IperfRole.SENDER, iperf3Result.getIperfBandwidthMeasurementSender().getIperfRole());
+        IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementSender = (IperfUDPBandwidthMeasurement) iperf3Result.getIperfBandwidthMeasurementSender();
+
+        assertTrue(iperfUDPBandwidthMeasurementSender.getJitter() >= 0.00f);
+        assertTrue(iperfUDPBandwidthMeasurementSender.getLostDatagrams() >= 0);
+        assertTrue(iperfUDPBandwidthMeasurementSender.getTotalDatagrams() > 0);
+
+        // Receiver
+        assertEquals(IperfClientProtocol.UDP, iperf3Result.getIperfBandwidthMeasurementReceiver().getIperf3Protocol());
+        assertTrue(iperf3Result.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);
+        assertEquals("Mbits/s", iperf3Result.getIperfBandwidthMeasurementReceiver().getBandwidthUnit());
+        assertEquals(IperfRole.RECEIVER, iperf3Result.getIperfBandwidthMeasurementReceiver().getIperfRole());
+        IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementReceiver = (IperfUDPBandwidthMeasurement) iperf3Result.getIperfBandwidthMeasurementReceiver();
+
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getJitter() >= 0.00f);
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getLostDatagrams() >= 0);
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getTotalDatagrams() > 0);
+    }
+
+    @Test
+    public void testMeasureTCPBandwidth() throws IOException, InterruptedException, BandwidthServiceException {
         // given
         int port = 5001;
         startIperf3ServerInstance(port);

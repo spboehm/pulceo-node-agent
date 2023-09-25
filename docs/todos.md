@@ -26,6 +26,9 @@
 - [x] Include custom bitrate in iperf3
 - [ ] Add object-oriented style for running 
 - [ ] Add test cases for TCP
+- [ ] Add appropriate validation for all input parameters of BandwidthService
+  - [ ] In UDP mode, bitrate must be one at least
+  - [ ] In TCP mode, bitrate can be 0
 
 ## DelayService
 

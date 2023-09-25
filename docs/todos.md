@@ -25,6 +25,7 @@
 - [ ] Also include the retr tansmission in iperf3
 - [x] Include custom bitrate in iperf3
 - [ ] Add object-oriented style for running 
+- [ ] Add test cases for TCP
 
 ## DelayService
 
@@ -38,6 +39,7 @@
 - [ ] Add `NpingRequest` instead of `NpingJob`
 - [ ] Ensure that no duplicate measurements can be created
 - [x] Remove port from all methods
+- [ ] Add test cases for UDP
 
 ## JobService
 
@@ -77,3 +79,4 @@
 
 - [ ] `dev.pulceo.pna.IperfJobServiceTests` misses additional tests for job cancellation
 - [ ] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
+- [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it.

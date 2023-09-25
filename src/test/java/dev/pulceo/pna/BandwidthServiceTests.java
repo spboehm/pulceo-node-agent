@@ -258,8 +258,5 @@ public class BandwidthServiceTests {
         assertTrue(iperf3Result.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);
         assertEquals("Mbits/s", iperf3Result.getIperfBandwidthMeasurementReceiver().getBandwidthUnit());
         assertEquals(IperfRole.RECEIVER, iperf3Result.getIperfBandwidthMeasurementReceiver().getIperfRole());
-
-
-
     }
 }

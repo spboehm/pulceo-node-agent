@@ -24,10 +24,10 @@ public class Iperf3CmdTests {
     @Test
     public void testIperf3UDPClientCmd() {
         // given
-        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p 5001 -f m";
+        String cmdUDPSenderShort = "/bin/iperf3 -c localhost -u -p 5001 -t 1 -f m";
 
         // when
-        String iperf3ClientCmd = new IperfClientCmd("localhost", 5001, IperfClientProtocol.UDP).getCmd();
+        String iperf3ClientCmd = new IperfClientCmd("localhost", 5001, 1, IperfClientProtocol.UDP).getCmd();
 
         // then
         Assertions.assertEquals(cmdUDPSenderShort, iperf3ClientCmd);
@@ -36,10 +36,10 @@ public class Iperf3CmdTests {
     @Test
     public void testIperf3TCPClientCmd() {
         // given
-        String cmdTCPSenderShort = "/bin/iperf3 -c localhost -p 5001 -f m";
+        String cmdTCPSenderShort = "/bin/iperf3 -c localhost -p 5001 -t 1 -f m";
 
         // when
-        String iperf3ClientCmd = new IperfClientCmd("localhost", 5001, IperfClientProtocol.TCP).getCmd();
+        String iperf3ClientCmd = new IperfClientCmd("localhost", 5001, 1, IperfClientProtocol.TCP).getCmd();
 
         // then
         Assertions.assertEquals(cmdTCPSenderShort, iperf3ClientCmd);

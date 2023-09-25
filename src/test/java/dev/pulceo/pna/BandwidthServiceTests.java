@@ -3,9 +3,9 @@ package dev.pulceo.pna;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf3.IperfRequest;
 import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.iperf3.IperfRole;
-import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.service.BandwidthService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -239,12 +239,11 @@ public class BandwidthServiceTests {
         int port = 5001;
         startIperf3ServerInstance(port);
         int recurrence = 15;
-        // TODO: change to iperfrequest
-        IperfJob iperfJob = new IperfJob("localhost", "localhost", port, IperfClientProtocol.TCP, recurrence);
+        IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
 
         // when
-        IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfJob);
-        System.out.println(iperf3Result);
+        IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfTCPClientRequest);
+
         // then
         assertNotNull(iperf3Result);
         assertEquals("localhost", iperf3Result.getSourceHost());

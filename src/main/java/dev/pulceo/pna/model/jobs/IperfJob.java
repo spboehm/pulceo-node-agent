@@ -1,10 +1,7 @@
 package dev.pulceo.pna.model.jobs;
 
-import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import dev.pulceo.pna.model.iperf3.IperfRequest;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,29 +13,16 @@ public class IperfJob {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String sourceHost;
-    private String destinationHost;
-    private int port;
-    private IperfClientProtocol iperfClientProtocol;
-    private float bitrate = 1.0f;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "iperfRequest_id", referencedColumnName = "id")
+    private IperfRequest iperfRequest;
     private int recurrence;
+    // default false
     private boolean enabled = false;
 
-    public IperfJob(String sourceHost, String destinationHost, int port, IperfClientProtocol iperfClientProtocol, int recurrence) {
-        this.sourceHost = sourceHost;
-        this.destinationHost = destinationHost;
-        this.port = port;
-        this.iperfClientProtocol = iperfClientProtocol;
+    public IperfJob(IperfRequest iperfRequest, int recurrence) {
+        this.iperfRequest = iperfRequest;
         this.recurrence = recurrence;
-    }
-
-    public IperfJob(String sourceHost, String destinationHost, int port, IperfClientProtocol iperfClientProtocol, float bitrate, int recurrence, boolean enabled) {
-        this.sourceHost = sourceHost;
-        this.destinationHost = destinationHost;
-        this.port = port;
-        this.iperfClientProtocol = iperfClientProtocol;
-        this.bitrate = bitrate;
-        this.recurrence = recurrence;
-        this.enabled = enabled;
     }
 }

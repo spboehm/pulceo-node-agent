@@ -14,16 +14,16 @@
 
 - [] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly
 - [] Reference defined port ranges in `BandwidthService`
-- [] Implement test with only one measurement result, otherwise tests last pretty long
+- [x] Implement test with only one measurement result, otherwise tests last pretty long
 - [] Check client and sender semantics, respectively naming
 - [] Ensure that particular interfaces can be used for measuring bandwidth
-- [] Improve process generation with ProcessBuilder
+- [x] Improve process generation with ProcessBuilder
 - [] Set minimum values for recurrence
-- [] Remove Job semantics for `BandwidthJob`
-- [] Add `IperfRequest` instead of `IperfJob`
-- [] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`
+- [x] Remove Job semantics for `BandwidthJob`
+- [x] Add `IperfRequest` instead of `IperfJob`
+- [x] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`
 - [] Also include the retr tansmission in iperf3
-- [] Include custom bitrate in iperf3
+- [x] Include custom bitrate in iperf3
 - [] Add object-oriented style for running 
 
 ## DelayService
@@ -65,7 +65,7 @@
 - [] Check if output is correctly processed even if iperf has failed to parse the output
 - [] Check client and sender semantics, respectively rename sender and receiver because it is ambiguous
 - [] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
-- [] Improve command generation out of `IperfCmd` class
+- [x] Improve command generation out of `IperfCmd` class
 - [x] Add additional test cases for UDP
 
 ## Application Startup
@@ -77,4 +77,3 @@
 
 - [] `dev.pulceo.pna.IperfJobServiceTests` misses additional tests for job cancellation
 - [] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
-- []

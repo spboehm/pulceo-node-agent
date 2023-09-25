@@ -18,12 +18,46 @@ public class IperfRequest {
     private String sourceHost;
     private String destinationHost;
     private int port;
+    // default is set to unlimited bandwidth (0)
+    private int bitrate = 0;
+    private int time;
+    // default format is Mbit ("m")
+    private final String format = "m";
     private IperfClientProtocol iperfClientProtocol;
 
-    public IperfRequest(String sourceHost, String destinationHost, int port, IperfClientProtocol iperfClientProtocol) {
+    public IperfRequest(String sourceHost, String destinationHost, int port, int bitrate, int time, IperfClientProtocol iperfClientProtocol) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.port = port;
+        this.bitrate = bitrate;
+        this.time = time;
         this.iperfClientProtocol = iperfClientProtocol;
+    }
+
+    public String getCmd() {
+        if (isUDPSender()) {
+            return String.format("/bin/iperf3 -c %s -u -p %s -b %sM -t %s -f %s", destinationHost, port, bitrate, time, format);
+        } else {
+            return String.format("/bin/iperf3 -c %s -p %s -b %sM -t %s -f %s", destinationHost, port, bitrate, time, format);
+        }
+    }
+
+    public String[] getCmdAsArray() {
+        return this.getCmd().split(" ");
+    }
+
+    public boolean isUDPSender() {
+        if (this.iperfClientProtocol == IperfClientProtocol.UDP) {
+            return true;
+        }
+        return false;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

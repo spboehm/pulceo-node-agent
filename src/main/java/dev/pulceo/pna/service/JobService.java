@@ -142,11 +142,13 @@ public class JobService {
         long retrievedIperfJobId = retrievedIperfJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                IperfResult iperfResult = bandwidthService.measureBandwidth(retrievedIperfJob);
+                // job.getObject
+                IperfResult iperfResult = bandwidthService.measureBandwidth(retrievedIperfJob.getIperfRequest());
                 this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
             } catch (BandwidthServiceException e) {
                 throw new RuntimeException(e);
             }
+
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
         this.bandwidthJobHashMap.put(retrievedIperfJobId, scheduledFuture);
         return retrievedIperfJobId;

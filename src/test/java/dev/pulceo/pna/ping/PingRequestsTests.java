@@ -11,10 +11,10 @@ public class PingRequestsTests {
     @Test
     public void testPingClientCmdIPv4() {
         // given
-        String exptectedPingClientCmd = "ping -4 -s 66 -I lo";
+        String exptectedPingClientCmd = "ping -4 -c 5 -s 66 -I lo localhost";
 
         // when
-        String actualPingCmd = new PingRequest("localhost", "localhost", IPVersion.IPv4, 66, "lo").getCmd();
+        String actualPingCmd = new PingRequest("localhost", "localhost", IPVersion.IPv4, 5, 66, "lo").getCmd();
 
         // then
         assertEquals(exptectedPingClientCmd, actualPingCmd);
@@ -23,10 +23,10 @@ public class PingRequestsTests {
     @Test
     public void testPingClientCmdIPv6() {
         // given
-        String exptectedPingClientCmd = "ping -6 -s 66 -I eth0";
+        String exptectedPingClientCmd = "ping -6 -c 10 -s 66 -I eth0 localhost";
 
         // when
-        String actualPingCmd = new PingRequest("localhost", "localhost", IPVersion.IPv6, 66, "eth0").getCmd();
+        String actualPingCmd = new PingRequest("localhost", "localhost", IPVersion.IPv6, 10,66, "eth0").getCmd();
 
         // then
         assertEquals(exptectedPingClientCmd, actualPingCmd);

@@ -19,19 +19,21 @@ public class PingRequest {
     private String sourceHost;
     private String destinationHost;
     private IPVersion ipVersion;
+    private int count;
     private int dataLength;
     private String iface;
 
-    public PingRequest(String sourceHost, String destinationHost, IPVersion ipVersion, int dataLength, String iface) {
+    public PingRequest(String sourceHost, String destinationHost, IPVersion ipVersion, int count, int dataLength, String iface) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.ipVersion = ipVersion;
+        this.count = count;
         this.dataLength = dataLength;
         this.iface = iface;
     }
 
     public String getCmd() {
-        return String.format("ping -%s -s %s -I %s", this.ipVersion.label, this.dataLength, this.iface);
+        return String.format("ping -%s -c %s -s %s -I %s %s", this.ipVersion.label, this.count, this.dataLength, this.iface, this.destinationHost);
     }
 
 }

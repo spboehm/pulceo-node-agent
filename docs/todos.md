@@ -89,3 +89,4 @@
 - [ ] `dev.pulceo.pna.IperfJobServiceTests` misses additional tests for job cancellation
 - [ ] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
 - [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 
+- [ ] add additional error cases of failed Iperf3 Measurements

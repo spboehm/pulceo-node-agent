@@ -18,7 +18,7 @@ Just start the MQTT broker by running `docker-compose -f mqtt/docker-compose.yml
 #### ping
 
 * General structure : `ping [OPTIONS] {destination}`
-* Round-trip delay with protocol ICMP: `ping -4 -s 66 -I eth0`
+* Round-trip delay with protocol ICMP: `ping -4 -c 10 -s 66 -I eth0`
 
 #### Nping
 

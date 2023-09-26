@@ -15,7 +15,7 @@ public class IperfUDPBandwidthMeasurement extends IperfBandwidthMeasurement {
     private int lostDatagrams;
     private int totalDatagrams;
 
-    public IperfUDPBandwidthMeasurement(IperfClientProtocol iperf3Protocol, int bitrate, IperfRole iperfRole, float jitter, int lostDatagrams, int totalDatagrams) {
+    public IperfUDPBandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, IperfRole iperfRole, float jitter, int lostDatagrams, int totalDatagrams) {
         super(iperf3Protocol, bitrate, iperfRole);
         this.jitter = jitter;
         this.lostDatagrams = lostDatagrams;

@@ -289,6 +289,7 @@ public class BandwidthServiceTests {
         assertTrue(iperf3Result.getIperfBandwidthMeasurementSender().getBitrate() > 0);
         assertEquals("Mbits/s", iperf3Result.getIperfBandwidthMeasurementSender().getBandwidthUnit());
         assertEquals(IperfRole.SENDER, iperf3Result.getIperfBandwidthMeasurementSender().getIperfRole());
+
         // Receiver
         assertEquals(IperfClientProtocol.TCP ,iperf3Result.getIperfBandwidthMeasurementReceiver().getIperf3Protocol());
         assertTrue(iperf3Result.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);

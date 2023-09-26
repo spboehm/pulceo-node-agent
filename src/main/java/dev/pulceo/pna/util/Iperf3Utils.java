@@ -33,7 +33,7 @@ public class Iperf3Utils {
             }
         }
         // extract bitrate, it is located between
-        int bitrate = Integer.parseInt(resultLine.substring(indexOfBitrate, indexOfRetr).replaceAll("[^0-9]", ""));
+        float bitrate = Float.parseFloat(resultLine.substring(indexOfBitrate, indexOfRetr).replaceAll("[^0-9|.]", ""));
         return new IperfBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole);
     }
 
@@ -58,10 +58,10 @@ public class Iperf3Utils {
         }
 
         // extract bitrate
-        int bitrate = Integer.parseInt(resultLine.substring(indexOfBitrate, indexOfJitter).replaceAll("[^0-9]", ""));
+        float bitrate = Float.parseFloat(resultLine.substring(indexOfBitrate, indexOfJitter).replaceAll("[^0-9|.]", ""));
 
         // extract Jitter
-        float jitter = Float.parseFloat(resultLine.substring(indexOfJitter, indexOfLostTotalDatagrams).replaceAll("[^0-9]", ""));
+        float jitter = Float.parseFloat(resultLine.substring(indexOfJitter, indexOfLostTotalDatagrams).replaceAll("[^0-9|.]", ""));
 
         // lost datagrams at position 0
         String[] lostTotalDatagramsSplittedBySlash = resultLine.substring(indexOfLostTotalDatagrams).split("/");

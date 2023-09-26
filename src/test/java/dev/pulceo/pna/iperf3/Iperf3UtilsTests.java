@@ -21,25 +21,25 @@ public class Iperf3UtilsTests {
 
     @Test
     public void testExtractIperf3TCPBandwidthMeasurementForSender() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 100434, IperfRole.SENDER);
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 5.14f, IperfRole.SENDER);
     }
 
     @Test
     public void testExtractIperfTCP3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP,100433, IperfRole.RECEIVER);
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP,5.14f, IperfRole.RECEIVER);
     }
 
     @Test
     public void testExtractIperf3UDPBandwidthMeasurementForSender() throws ProcessException, IOException {
-        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 101, IperfRole.SENDER);
+        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 5.01f, 0.000f, 0, 191, IperfRole.SENDER);
     }
 
     @Test
     public void testExtractIperfUDP3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
-        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 101, IperfRole.SENDER);
+        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 5.01f, 0.052f, 0, 191, IperfRole.RECEIVER);
     }
 
-    private void testExtractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, int bitrate, IperfRole iperfRole) throws IOException, ProcessException {
+    private void testExtractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, IperfRole iperfRole) throws IOException, ProcessException {
         // given
         IperfBandwidthMeasurement expectedIperfBandwidthMeasurement = new IperfBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole);
 
@@ -56,9 +56,9 @@ public class Iperf3UtilsTests {
         assertEquals(expectedIperfBandwidthMeasurement, actualIperfBandwidthMeasurement);
     }
 
-    private void testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol iperf3Protocol, int bitrate, IperfRole iperfRole) throws IOException, ProcessException {
+    private void testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, float jtter, int lostDatagrams, int totalDatagrams, IperfRole iperfRole) throws IOException, ProcessException {
         // given
-        IperfUDPBandwidthMeasurement expectedIperfUDPBandwidthMeasurement = new IperfUDPBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole, 0.000f, 0, 3845);
+        IperfUDPBandwidthMeasurement expectedIperfUDPBandwidthMeasurement = new IperfUDPBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole, jtter, lostDatagrams, totalDatagrams);
 
         File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_" + iperf3Protocol.toString().toLowerCase() + "_client_result.txt");
         List<String> resultList;

@@ -16,11 +16,11 @@ public class IperfBandwidthMeasurement {
     @JsonIgnore
     private Long id;
     private IperfClientProtocol iperf3Protocol;
-    private int bitrate;
+    private float bitrate;
     private String bandwidthUnit = "Mbits/s";
     private IperfRole iperfRole;
 
-    public IperfBandwidthMeasurement(IperfClientProtocol iperf3Protocol, int bitrate, IperfRole iperfRole) {
+    public IperfBandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, IperfRole iperfRole) {
         this.iperf3Protocol = iperf3Protocol;
         this.bitrate = bitrate;
         this.iperfRole = iperfRole;

@@ -29,8 +29,8 @@ Just start the MQTT broker by running `docker-compose -f mqtt/docker-compose.yml
 #### Iperf3
 
 * General structure: `/bin/iperf3 [-s|-c host] [options]`
-* Throughput with TCP: `/bin/iperf3 -s -p 5001 -f m` (server), `/bin/iperf3 -c localhost -p 5001 -n 10 -f m` (client)
-* Throughput with UDP: `/bin/iperf3 -s -p 5001 -f m` (server), `/bin/iperf3 -c localhost -u -p 5001 -b 1M -n 10 -f m` (client) 
+* Throughput with TCP: `/bin/iperf3 -s -p 5001 -f m --bind-dev lo` (server), `/bin/iperf3 -c localhost -p 5001 -n 10 -f m --bind-dev lo` (client)
+* Throughput with UDP: `/bin/iperf3 -s -p 5001 -f m --bind-dev lo` (server), `/bin/iperf3 -c localhost -u -p 5001 -b 1M -n 10 -f m --bind-dev lo` (client) 
 
 
 ### Endpoints

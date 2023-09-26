@@ -24,21 +24,23 @@ public class IperfRequest {
     // default format is Mbit ("m")
     private final String format = "m";
     private IperfClientProtocol iperfClientProtocol;
+    private String bindDev;
 
-    public IperfRequest(String sourceHost, String destinationHost, int port, int bitrate, int time, IperfClientProtocol iperfClientProtocol) {
+    public IperfRequest(String sourceHost, String destinationHost, int port, int bitrate, int time, IperfClientProtocol iperfClientProtocol, String bindDev) {
         this.sourceHost = sourceHost;
         this.destinationHost = destinationHost;
         this.port = port;
         this.bitrate = bitrate;
         this.time = time;
         this.iperfClientProtocol = iperfClientProtocol;
+        this.bindDev = bindDev;
     }
 
     public String getCmd() {
         if (isUDPSender()) {
-            return String.format("/bin/iperf3 -c %s -u -p %s -b %sM -t %s -f %s", destinationHost, port, bitrate, time, format);
+            return String.format("/bin/iperf3 -c %s -u -p %s -b %sM -t %s -f %s --bind-dev %s", destinationHost, port, bitrate, time, format, bindDev);
         } else {
-            return String.format("/bin/iperf3 -c %s -p %s -b %sM -t %s -f %s", destinationHost, port, bitrate, time, format);
+            return String.format("/bin/iperf3 -c %s -p %s -b %sM -t %s -f %s --bind-dev %s", destinationHost, port, bitrate, time, format, bindDev);
         }
     }
 

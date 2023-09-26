@@ -71,7 +71,7 @@
 - [ ] Run tests withs different output parameters, in case output is falsely parsed
 - [ ] Check if output is correctly processed even if iperf has failed to parse the output
 - [ ] Check client and sender semantics, respectively rename sender and receiver because it is ambiguous
-- [ ] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
+- [x] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
 - [x] Improve command generation out of `IperfCmd` class
 - [x] Add additional test cases for UDP
 - [x] Add additional test cases for integer results, case TCP

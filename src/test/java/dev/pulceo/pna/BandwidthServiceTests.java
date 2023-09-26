@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
@@ -26,6 +27,9 @@ public class BandwidthServiceTests {
 
     @Autowired
     Environment environment;
+
+    @Value("${pna.iperf3.bind.dev}")
+    private String bindDev;
 
     @Test
     void contextLoads() {
@@ -236,7 +240,7 @@ public class BandwidthServiceTests {
         int port = 5001;
         startIperf3ServerInstance(port);
         int recurrence = 15;
-        IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP);
+        IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bindDev);
 
         // when
         IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfUDPClientRequest);
@@ -275,7 +279,7 @@ public class BandwidthServiceTests {
         int port = 5001;
         startIperf3ServerInstance(port);
         int recurrence = 15;
-        IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
 
         // when
         IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfTCPClientRequest);

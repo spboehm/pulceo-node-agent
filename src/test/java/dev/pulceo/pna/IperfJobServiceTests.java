@@ -32,6 +32,8 @@ public class IperfJobServiceTests {
     @Autowired
     BandwidthService bandwidthService;
 
+    private String bindDev = "lo";
+
     @BeforeEach
     @AfterEach
     public void killAllIperf3Instances() throws InterruptedException, IOException {
@@ -43,7 +45,7 @@ public class IperfJobServiceTests {
     @Test
     public void testCreateIperfJob() {
         // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
 
         // when
@@ -56,7 +58,7 @@ public class IperfJobServiceTests {
     @Test
     public void testCreatedIperfJobIsInactive() throws JobServiceException {
         // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
 
         // when
@@ -70,7 +72,7 @@ public class IperfJobServiceTests {
     @Test
     public void testEnableIperfJobWithDisabledJob() throws JobServiceException {
         // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         // newly created job is disabled by default, means active = false
         long savedIperfJobId = this.jobService.createIperfJob(iperfJob);
@@ -86,7 +88,7 @@ public class IperfJobServiceTests {
     @Test
     public void testEnableIperfJobWithEnabledJob() throws JobServiceException {
         // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         iperfJob.setEnabled(true);
@@ -104,7 +106,7 @@ public class IperfJobServiceTests {
     @Test
     public void testDisableIperfJobWithEnabledJob() throws JobServiceException {
         // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         iperfJob.setEnabled(true);
@@ -122,7 +124,7 @@ public class IperfJobServiceTests {
     @Test
     public void testDisableIperfJobWithDisabledJob() throws JobServiceException {
         // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         // newly created job is disabled by default, means active = false
         long savedIperfJobId = this.jobService.createIperfJob(iperfJob);
@@ -141,9 +143,7 @@ public class IperfJobServiceTests {
         // given
         int port = 5001;
         BandwidthServiceTests.startIperf3ServerInstance(port);
-        int recurrence = 15;
-        // given
-        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP);
+        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         long id = this.jobService.createIperfJob(iperfJob);
 

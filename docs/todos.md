@@ -4,6 +4,7 @@
 
 - [ ] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)
 - [ ] Inconsistent naming of delay vs. npingTCP, e.g. in (`JobService`)
+- [ ] Implement support for IPv6 
 
 ## Package config
 
@@ -16,7 +17,7 @@
 - [ ] Reference defined port ranges in `BandwidthService`
 - [x] Implement test with only one measurement result, otherwise tests last pretty long
 - [ ] Check client and sender semantics, respectively naming
-- [ ] Ensure that particular interfaces can be used for measuring bandwidth
+- [x] Ensure that particular interfaces can be used for measuring bandwidth
 - [x] Improve process generation with ProcessBuilder
 - [ ] Set minimum values for recurrence
 - [x] Remove Job semantics for `BandwidthJob`
@@ -81,9 +82,10 @@
 
 - [ ] Connection probe MQTT
 - [ ] Existence of nping and iperf3 executable
+- [ ] Disable Devtools by setting 'spring.devtools.add-properties' to false
 
 ## Tests
 
 - [ ] `dev.pulceo.pna.IperfJobServiceTests` misses additional tests for job cancellation
 - [ ] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
-- [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it.
+- [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 

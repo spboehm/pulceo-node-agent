@@ -19,31 +19,54 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Iperf3UtilsTests {
 
+
+
+
     @Test
     public void testExtractIperf3TCPBandwidthMeasurementForSender() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 5.14f, IperfRole.SENDER);
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 5.14f, IperfRole.SENDER, "src/test/java/dev/pulceo/pna/resources/iperf3_tcp_client_result.txt");
     }
 
     @Test
     public void testExtractIperfTCP3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
-        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP,5.14f, IperfRole.RECEIVER);
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP,5.14f, IperfRole.RECEIVER, "src/test/java/dev/pulceo/pna/resources/iperf3_tcp_client_result.txt");
+    }
+
+    @Test
+    public void testExtractIperf3TCPBandwidthMeasurementWithIntegerResultForSender() throws ProcessException, IOException {
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 92337.0f, IperfRole.SENDER, "src/test/java/dev/pulceo/pna/resources/iperf3_tcp_client_result_with_integer_result.txt");
+    }
+
+    @Test
+    public void testExtractIperfTCP3BandwidthMeasuremenWithIntegerResultForReceiver() throws ProcessException, IOException {
+        testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP,92337.0f, IperfRole.RECEIVER, "src/test/java/dev/pulceo/pna/resources/iperf3_tcp_client_result_with_integer_result.txt");
     }
 
     @Test
     public void testExtractIperf3UDPBandwidthMeasurementForSender() throws ProcessException, IOException {
-        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 5.01f, 0.000f, 0, 191, IperfRole.SENDER);
+        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 5.01f, 0.000f, 0, 191, IperfRole.SENDER, "src/test/java/dev/pulceo/pna/resources/iperf3_udp_client_result.txt");
     }
 
     @Test
     public void testExtractIperfUDP3BandwidthMeasurementForReceiver() throws ProcessException, IOException {
-        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 5.01f, 0.052f, 0, 191, IperfRole.RECEIVER);
+        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 5.01f, 0.052f, 0, 191, IperfRole.RECEIVER, "src/test/java/dev/pulceo/pna/resources/iperf3_udp_client_result.txt");
     }
 
-    private void testExtractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, IperfRole iperfRole) throws IOException, ProcessException {
+    @Test
+    public void testExtractIperf3UDPBandwidthMeasurementWithIntegerResultForSender() throws ProcessException, IOException {
+        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 84143.0f, 0.000f, 0, 3209820, IperfRole.SENDER, "src/test/java/dev/pulceo/pna/resources/iperf3_udp_client_result_with_integer_result.txt");
+    }
+
+    @Test
+    public void testExtractIperfUDP3BandwidthMeasurementWithIntegerResultForReceiver() throws ProcessException, IOException {
+        testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol.UDP, 83841.0f, 0.001f, 11514, 3209820, IperfRole.RECEIVER, "src/test/java/dev/pulceo/pna/resources/iperf3_udp_client_result_with_integer_result.txt");
+    }
+
+    private void testExtractIperf3BandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, IperfRole iperfRole, String testfile) throws IOException, ProcessException {
         // given
         IperfBandwidthMeasurement expectedIperfBandwidthMeasurement = new IperfBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole);
 
-        File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_" + iperf3Protocol.toString().toLowerCase() + "_client_result.txt");
+        File iperf3ClientResult = new File(testfile);
         List<String> resultList;
         try(InputStream inputStream = new FileInputStream(iperf3ClientResult)) {
             resultList = ProcessUtils.readProcessOutput(inputStream);
@@ -56,11 +79,11 @@ public class Iperf3UtilsTests {
         assertEquals(expectedIperfBandwidthMeasurement, actualIperfBandwidthMeasurement);
     }
 
-    private void testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, float jtter, int lostDatagrams, int totalDatagrams, IperfRole iperfRole) throws IOException, ProcessException {
+    private void testExtractIperf3UDPBandwidthMeasurement(IperfClientProtocol iperf3Protocol, float bitrate, float jtter, int lostDatagrams, int totalDatagrams, IperfRole iperfRole, String testfile) throws IOException, ProcessException {
         // given
         IperfUDPBandwidthMeasurement expectedIperfUDPBandwidthMeasurement = new IperfUDPBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole, jtter, lostDatagrams, totalDatagrams);
 
-        File iperf3ClientResult = new File("src/test/java/dev/pulceo/pna/resources/iperf3_" + iperf3Protocol.toString().toLowerCase() + "_client_result.txt");
+        File iperf3ClientResult = new File(testfile);
         List<String> resultList;
         try(InputStream inputStream = new FileInputStream(iperf3ClientResult)) {
             resultList = ProcessUtils.readProcessOutput(inputStream);

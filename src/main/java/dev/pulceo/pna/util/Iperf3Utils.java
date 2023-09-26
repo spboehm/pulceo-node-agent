@@ -65,11 +65,11 @@ public class Iperf3Utils {
 
         // lost datagrams at position 0
         String[] lostTotalDatagramsSplittedBySlash = resultLine.substring(indexOfLostTotalDatagrams).split("/");
-        int lostDatagrams = Integer.parseInt(lostTotalDatagramsSplittedBySlash[0]);
+        int lostDatagrams = Integer.parseInt(lostTotalDatagramsSplittedBySlash[0].trim());
 
         // total datagrams at position 1 of lostTotalDatagramsSplittedBySlash, result finally at position 0
         String[] totalDatagramsSplittedByWhitespace = lostTotalDatagramsSplittedBySlash[1].split(" ");
-        int totalDatagrams = Integer.parseInt(totalDatagramsSplittedByWhitespace[0]);
+        int totalDatagrams = Integer.parseInt(totalDatagramsSplittedByWhitespace[0].trim());
 
         return new IperfUDPBandwidthMeasurement(iperf3Protocol, bitrate, iperfRole, jitter, lostDatagrams, totalDatagrams);
     }

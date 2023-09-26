@@ -74,7 +74,8 @@
 - [ ] Ensure that particular interfaces can be determined for measuring the bandwidth, e.g., via env vars
 - [x] Improve command generation out of `IperfCmd` class
 - [x] Add additional test cases for UDP
-- [ ] Add additional test cases for integer results, case TCP
+- [x] Add additional test cases for integer results, case TCP
+- [ ] Check if additional tests for isTCPSender / testIsUDPSender are required
 
 ## Application Startup
 

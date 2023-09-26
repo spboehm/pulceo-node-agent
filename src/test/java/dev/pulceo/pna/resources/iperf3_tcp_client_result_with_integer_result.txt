@@ -1,0 +1,19 @@
+Connecting to host localhost, port 5001
+[  5] local ::1 port 45784 connected to ::1 port 5001
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  11.6 GBytes  99313 Mbits/sec    0   2.56 MBytes
+[  5]   1.00-2.00   sec  11.5 GBytes  98526 Mbits/sec    0   2.56 MBytes
+[  5]   2.00-3.00   sec  11.3 GBytes  97160 Mbits/sec    0   2.56 MBytes
+[  5]   3.00-4.00   sec  10.6 GBytes  90754 Mbits/sec    0   2.56 MBytes
+[  5]   4.00-5.00   sec  11.2 GBytes  96090 Mbits/sec    0   2.56 MBytes
+[  5]   5.00-6.00   sec  10.5 GBytes  89978 Mbits/sec    0   2.56 MBytes
+[  5]   6.00-7.00   sec  10.1 GBytes  86590 Mbits/sec    0   2.56 MBytes
+[  5]   7.00-8.00   sec  10.1 GBytes  86581 Mbits/sec    0   2.56 MBytes
+[  5]   8.00-9.00   sec  10.3 GBytes  88186 Mbits/sec    0   2.68 MBytes
+[  5]   9.00-10.00  sec  10.5 GBytes  90193 Mbits/sec    0   2.68 MBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   107 GBytes  92337 Mbits/sec    0             sender
+[  5]   0.00-10.00  sec   107 GBytes  92337 Mbits/sec                  receiver
+
+iperf Done.

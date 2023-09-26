@@ -78,7 +78,7 @@ public class DelayService {
     }
 
     private Process getNpingProcess(NpingClientProtocol npingClientProtocol, int npingPort, String destinationHost) throws IOException, InterruptedException, ProcessException {
-        Process npingProcess = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(new NpingRequest(this.sourceHost, destinationHost, npingPort, npingClientProtocol, 1, this.iface).getCmd())).start();
+        Process npingProcess = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(new NpingRequest(this.sourceHost, destinationHost, npingPort, npingClientProtocol, this.rounds, this.iface).getCmd())).start();
         if (npingProcess.waitFor() == 1) {
             List<String> strings = ProcessUtils.readProcessOutput(npingProcess.getErrorStream());
             throw new ProcessException(List.of(strings).toString());

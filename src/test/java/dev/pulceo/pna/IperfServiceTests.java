@@ -3,7 +3,7 @@ package dev.pulceo.pna;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf3.*;
-import dev.pulceo.pna.service.BandwidthService;
+import dev.pulceo.pna.service.IperfService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +20,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class BandwidthServiceTests {
+public class IperfServiceTests {
 
     @Autowired
-    BandwidthService bandwidthService;
+    IperfService iperfService;
 
     @Autowired
     Environment environment;
@@ -48,7 +48,7 @@ public class BandwidthServiceTests {
         // given
 
         // when
-        long pid = bandwidthService.startIperf3Server();
+        long pid = iperfService.startIperf3Server();
 
         // then
         assertTrue(pid > 0);
@@ -62,7 +62,7 @@ public class BandwidthServiceTests {
         // when
         List<Long> pids = new ArrayList<>();
         for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
-            pids.add(bandwidthService.startIperf3Server());
+            pids.add(iperfService.startIperf3Server());
         }
 
         // then
@@ -79,7 +79,7 @@ public class BandwidthServiceTests {
         // when
         BandwidthServiceException bandwidthServiceException = assertThrows(BandwidthServiceException.class, () -> {
             for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
-                bandwidthService.startIperf3Server();
+                iperfService.startIperf3Server();
             }
         });
 
@@ -95,8 +95,8 @@ public class BandwidthServiceTests {
         startIperf3ServerInstance(port);
 
         // when
-        bandwidthService.stopIperf3Server(5001);
-        boolean iperf3ServerInstanceRunning = bandwidthService.checkForRunningIperf3Receiver(port);
+        iperfService.stopIperf3Server(5001);
+        boolean iperf3ServerInstanceRunning = iperfService.checkForRunningIperf3Receiver(port);
 
         // then
         assertFalse(iperf3ServerInstanceRunning);
@@ -105,11 +105,11 @@ public class BandwidthServiceTests {
     @Test
     public void testStopIperf3ServerByPid() throws BandwidthServiceException {
         // given
-        long pid = bandwidthService.startIperf3Server();
+        long pid = iperfService.startIperf3Server();
 
         // when
-        bandwidthService.stopIperf3Server(pid);
-        boolean iperf3ServerInstanceRunning = bandwidthService.checkForRunningIperf3Receiver(5001);
+        iperfService.stopIperf3Server(pid);
+        boolean iperf3ServerInstanceRunning = iperfService.checkForRunningIperf3Receiver(5001);
 
         // then
         assertFalse(iperf3ServerInstanceRunning);
@@ -125,10 +125,10 @@ public class BandwidthServiceTests {
             startIperf3ServerInstance(5000 + i);
         }
 
-        bandwidthService.stopIperf3Server(5012);
+        iperfService.stopIperf3Server(5012);
 
         // when
-        long pid = bandwidthService.startIperf3Server();
+        long pid = iperfService.startIperf3Server();
 
         // then
         assertTrue(pid > 0);
@@ -144,7 +144,7 @@ public class BandwidthServiceTests {
         }
 
         // when
-        List<String> actualListOfRunningIperf3Instances = bandwidthService.getListOfRunningIperf3Instances();
+        List<String> actualListOfRunningIperf3Instances = iperfService.getListOfRunningIperf3Instances();
 
         // then
         Assertions.assertEquals(expectedNumberOfIperf3ServerInstances, actualListOfRunningIperf3Instances.size());
@@ -161,7 +161,7 @@ public class BandwidthServiceTests {
         startIperf3UDPSenderInstance(host, port);
 
         // when
-        boolean iperf3UDPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(IperfClientProtocol.UDP, host, port);
+        boolean iperf3UDPSenderInstanceRunning = iperfService.checkForRunningIperf3Sender(IperfClientProtocol.UDP, host, port);
 
         // then
         assertTrue(iperf3UDPSenderInstanceRunning);
@@ -186,7 +186,7 @@ public class BandwidthServiceTests {
         startIperf3TCPSenderInstance(host, port);
 
         // when
-        boolean iperf3TCPSenderInstanceRunning = bandwidthService.checkForRunningIperf3Sender(IperfClientProtocol.TCP, host, port);
+        boolean iperf3TCPSenderInstanceRunning = iperfService.checkForRunningIperf3Sender(IperfClientProtocol.TCP, host, port);
 
         // then
         assertTrue(iperf3TCPSenderInstanceRunning);
@@ -214,7 +214,7 @@ public class BandwidthServiceTests {
         startIperf3ServerInstance(port);
 
         // when
-        boolean iperf3ReceiverInstanceRunning = bandwidthService.checkForRunningIperf3Receiver(port);
+        boolean iperf3ReceiverInstanceRunning = iperfService.checkForRunningIperf3Receiver(port);
 
         // then
         assertTrue(iperf3ReceiverInstanceRunning);
@@ -228,7 +228,7 @@ public class BandwidthServiceTests {
         long expectedPidOfRunningIperf3Receiver = iperf3ServerInstance.pid();
 
         // when
-        long actualPidOfRunningIperf3Receiver = bandwidthService.getPidOfRunningIperf3Receiver(port);
+        long actualPidOfRunningIperf3Receiver = iperfService.getPidOfRunningIperf3Receiver(port);
 
         // then
         assertEquals(expectedPidOfRunningIperf3Receiver, actualPidOfRunningIperf3Receiver);
@@ -243,7 +243,7 @@ public class BandwidthServiceTests {
         IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bindDev);
 
         // when
-        IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfUDPClientRequest);
+        IperfResult iperf3Result = this.iperfService.measureBandwidth(iperfUDPClientRequest);
 
         // then
         assertNotNull(iperf3Result);
@@ -282,7 +282,7 @@ public class BandwidthServiceTests {
         IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
 
         // when
-        IperfResult iperf3Result = this.bandwidthService.measureBandwidth(iperfTCPClientRequest);
+        IperfResult iperf3Result = this.iperfService.measureBandwidth(iperfTCPClientRequest);
 
         // then
         assertNotNull(iperf3Result);

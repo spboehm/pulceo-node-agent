@@ -34,10 +34,10 @@ public class JobService {
     private TaskScheduler taskScheduler;
 
     @Autowired
-    private BandwidthService bandwidthService;
+    private IperfService iperfService;
 
     @Autowired
-    private DelayService delayService;
+    private NpingService npingService;
 
     // TODO: consider renaming to job-related semantics
     @Autowired
@@ -88,7 +88,7 @@ public class JobService {
         long retrievedNpingTCPJobId = retrievedNpingTCPJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                NpingTCPResult npingTCPResult = delayService.measureTCPDelay(retrievedNpingTCPJob.getDestinationHost());
+                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingTCPJob.getDestinationHost());
                 this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
             } catch (DelayServiceException e) {
                 throw new RuntimeException(e);
@@ -143,7 +143,7 @@ public class JobService {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 // job.getObject
-                IperfResult iperfResult = bandwidthService.measureBandwidth(retrievedIperfJob.getIperfRequest());
+                IperfResult iperfResult = iperfService.measureBandwidth(retrievedIperfJob.getIperfRequest());
                 this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
             } catch (BandwidthServiceException e) {
                 throw new RuntimeException(e);

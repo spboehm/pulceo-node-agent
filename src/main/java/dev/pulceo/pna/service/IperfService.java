@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BandwidthService {
+public class IperfService {
 
     @Value("${pna.hostname}")
     private String hostname;

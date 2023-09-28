@@ -5,7 +5,7 @@ import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import dev.pulceo.pna.model.iperf3.IperfRequest;
 import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
-import dev.pulceo.pna.service.BandwidthService;
+import dev.pulceo.pna.service.IperfService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ public class IperfJobServiceTests {
     PublishSubscribeChannel bandwidthServiceMessageChannel;
 
     @Autowired
-    BandwidthService bandwidthService;
+    IperfService iperfService;
 
     private String bindDev = "lo";
 
@@ -142,7 +142,7 @@ public class IperfJobServiceTests {
     public void testScheduleIperf3Job() throws Exception {
         // given
         int port = 5001;
-        BandwidthServiceTests.startIperf3ServerInstance(port);
+        IperfServiceTests.startIperf3ServerInstance(port);
         IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         long id = this.jobService.createIperfJob(iperfJob);

@@ -4,7 +4,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
-import dev.pulceo.pna.service.DelayService;
+import dev.pulceo.pna.service.NpingService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ public class NpingJobServiceTests {
     PublishSubscribeChannel delayServiceMessageChannel;
 
     @Autowired
-    DelayService delayService;
+    NpingService npingService;
 
     @BeforeEach
     @AfterEach

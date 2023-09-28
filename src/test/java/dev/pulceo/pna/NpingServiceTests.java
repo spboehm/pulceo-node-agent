@@ -4,7 +4,7 @@ import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.nping.NpingUDPResult;
-import dev.pulceo.pna.service.DelayService;
+import dev.pulceo.pna.service.NpingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class DelayServiceTests {
+public class NpingServiceTests {
 
     @Autowired
-    DelayService delayService;
+    NpingService npingService;
 
     @Autowired
     Environment environment;
@@ -55,7 +55,7 @@ public class DelayServiceTests {
         startNpingUDPInstance(host, port, count);
 
         // when
-        boolean npingUDPInstanceRunning = this.delayService.checkForRunningNpingInstance(NpingClientProtocol.UDP, host);
+        boolean npingUDPInstanceRunning = this.npingService.checkForRunningNpingInstance(NpingClientProtocol.UDP, host);
 
         // then
         assertTrue(npingUDPInstanceRunning);
@@ -67,7 +67,7 @@ public class DelayServiceTests {
         String destinationHost = "localhost";
 
         // when
-        NpingUDPResult npingUDPResult = this.delayService.measureUDPDelay(destinationHost);
+        NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost);
 
         // then
         assertEquals(npingUDPResult.getSourceHost(), "localhost");
@@ -88,7 +88,7 @@ public class DelayServiceTests {
         int dataLength = 1024;
 
         // when
-        NpingUDPResult npingUDPResult = this.delayService.measureUDPDelay(destinationHost, dataLength);
+        NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost, dataLength);
 
         // then
         assertEquals(npingUDPResult.getSourceHost(), "localhost");
@@ -110,7 +110,7 @@ public class DelayServiceTests {
         String destinationHost = "localhost";
 
         // when
-        NpingTCPResult npingTCPResult = this.delayService.measureTCPDelay(destinationHost);
+        NpingTCPResult npingTCPResult = this.npingService.measureTCPDelay(destinationHost);
 
         // then
         assertEquals(npingTCPResult.getSourceHost(), "localhost");

@@ -10,6 +10,4 @@ public class PulceoNodeAgentApplication {
 		SpringApplication.run(PulceoNodeAgentApplication.class, args);
 	}
 
-
-
 }

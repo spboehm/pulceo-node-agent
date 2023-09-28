@@ -1,14 +1,9 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.DelayServiceException;
-import dev.pulceo.pna.exception.NpingException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.nping.NpingClientProtocol;
-import dev.pulceo.pna.model.nping.NpingUDPDelayMeasurement;
-import dev.pulceo.pna.model.nping.NpingUDPResult;
 import dev.pulceo.pna.model.ping.PingRequest;
 import dev.pulceo.pna.model.ping.PingResult;
-import dev.pulceo.pna.util.NpingUtils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +22,7 @@ public class PingService {
             List<String> pingProcessOuput = ProcessUtils.readProcessOutput(pingProcess.getInputStream());
             //NpingUDPDelayMeasurement npingUDPDelayMeasurement = NpingUtils.extractNpingUDPDelayMeasurement(NpingClientProtocol.UDP, npingProcessOutput);
             //return new NpingUDPResult(this.sourceHost, destinationHost, start, end, dataLength ,npingUDPDelayMeasurement);
+            return new PingResult();
         } catch (IOException  | ProcessException e) {
             throw new DelayServiceException("Could not measure UDP delay!", e);
         }

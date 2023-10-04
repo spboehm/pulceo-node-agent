@@ -13,7 +13,11 @@
 
 ## All network-related services
 
-- [] Set the network interfaces appropriately in all `Request` classes
+- [ ] Set the network interfaces appropriately in all `Request` classes
+
+## All service tests
+
+- [ ] Check order of expected and actual
 
 ## BandwidthService 
 

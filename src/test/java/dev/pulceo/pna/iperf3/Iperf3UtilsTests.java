@@ -19,9 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Iperf3UtilsTests {
 
-
-
-
     @Test
     public void testExtractIperf3TCPBandwidthMeasurementForSender() throws ProcessException, IOException {
         testExtractIperf3BandwidthMeasurement(IperfClientProtocol.TCP, 5.14f, IperfRole.SENDER, "src/test/java/dev/pulceo/pna/resources/iperf3_tcp_client_result.txt");

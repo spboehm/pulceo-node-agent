@@ -78,6 +78,10 @@
 - [x] Add additional test cases for integer results, case TCP
 - [ ] Check if additional tests for isTCPSender / testIsUDPSender are required
 
+## Helper classes (package `utils`)
+
+- [ ] Refactor int and float parsing methods in `NpingUtils`, `Iperf3Utils`, `PingUtils`
+
 ## Application Startup
 
 - [ ] Connection probe MQTT

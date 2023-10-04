@@ -11,6 +11,10 @@
 - [ ] Replace UdpEchoServer with traditional Java-based configuration
 - [ ] Revise all configurations, esp. `TcpConfig`, `UdpConfig`, `MQTTConfig`, and `DelayServiceConfig`
 
+## All network-related services
+
+- [] Set the network interfaces appropriately in all `Request` classes
+
 ## BandwidthService 
 
 - [ ] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly
@@ -28,9 +32,10 @@
 - [ ] Add object-oriented style for running 
 - [x] Add test cases for TCP
 - [ ] Add appropriate validation for all input parameters of BandwidthService
-  - [ ] In UDP mode, bitrate must be one at least
+  - [ ] In UDP mode, bitrate must be 1 at least
   - [ ] In TCP mode, bitrate can be 0
 - [ ] Ensure that `IperfBandwidthMeasurement` has the right inheritance
+- [ ] Rework waiting on starting process in `measure...()`
 
 ## DelayService
 
@@ -46,6 +51,11 @@
 - [x] Remove port from all methods
 - [ ] Add test cases for UDP
 - [ ] Ensure that the inheritance is correctly chosen
+- [ ] Rework waiting on starting process in `measure...()`
+
+## PingService
+
+- [ ] Rework waiting on starting process in `measure...()`
 
 ## JobService
 
@@ -77,6 +87,10 @@
 - [x] Add additional test cases for UDP
 - [x] Add additional test cases for integer results, case TCP
 - [ ] Check if additional tests for isTCPSender / testIsUDPSender are required
+
+## PingUtils
+
+- [] Check error handling of PingUtils in case of `name or service not found`, might not be good idea to pass the output of the nping proces to the user
 
 ## Helper classes (package `utils`)
 

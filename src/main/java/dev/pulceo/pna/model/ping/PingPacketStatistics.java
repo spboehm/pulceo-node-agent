@@ -1,14 +1,16 @@
 package dev.pulceo.pna.model.ping;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class PingPacketStatistics {
 
-        private final int packetsTransmitted;
-        private final int packetsReceived;
-        private final float packetLoss;
-        private final int time;
+        private int packetsTransmitted;
+        private int packetsReceived;
+        private float packetLoss;
+        private int time;
 
         public PingPacketStatistics(int packetsTransmitted, int packetsReceived, float packetLoss, int time) {
             this.packetsTransmitted = packetsTransmitted;

@@ -1,14 +1,16 @@
 package dev.pulceo.pna.model.ping;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class RttStatistics {
 
-    private final float rttMin;
-    private final float rttAvg;
-    private final float rttMax;
-    private final float rttMdev;
+    private float rttMin;
+    private float rttAvg;
+    private float rttMax;
+    private float rttMdev;
 
     public RttStatistics(float rttMin, float rttAvg, float rttMax, float rttMdev) {
         this.rttMin = rttMin;

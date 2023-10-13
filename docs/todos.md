@@ -1,5 +1,13 @@
 # TODOs
 
+## Data model
+
+- [ ] Add CreatedDate
+- [ ] Add CreatedBy
+- [ ] Add LastModifiedDate
+- [ ] Add LastModifiedBy
+- [ ] Add UUID
+
 ## Overall Issues
 
 - [ ] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)
@@ -60,6 +68,7 @@
 ## PingService
 
 - [ ] Rework waiting on starting process in `measure...()`
+- [ ] Add 
 
 ## JobService
 
@@ -112,3 +121,4 @@
 - [ ] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
 - [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 
 - [ ] add additional error cases of failed Iperf3 Measurements
+- [ ] Add missing tests for `PingJobServiceTests`

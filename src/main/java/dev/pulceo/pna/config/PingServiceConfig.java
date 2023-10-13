@@ -13,7 +13,7 @@ import org.springframework.messaging.MessageChannel;
 public class PingServiceConfig {
 
     @Bean
-    public PublishSubscribeChannel bandwidthServiceMessageChannel() {
+    public PublishSubscribeChannel pingServiceMessageChannel() {
         return new PublishSubscribeChannel();
     }
 
@@ -21,15 +21,15 @@ public class PingServiceConfig {
     MessageChannel mqttOutboundChannel;
 
     @Bean
-    public IntegrationFlow routerFlow2() {
-        return IntegrationFlow.from("bandwidthServiceMessageChannel")
+    public IntegrationFlow routerFlow4() {
+        return IntegrationFlow.from("pingServiceMessageChannel")
                 .transform(Transformers.toJson())
-                .route(router2())
+                .route(router4())
                 .get();
     }
 
     @Bean
-    public PayloadTypeRouter router2() {
+    public PayloadTypeRouter router4() {
         PayloadTypeRouter router = new PayloadTypeRouter();
         router.setDefaultOutputChannel(mqttOutboundChannel);
         return router;

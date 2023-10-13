@@ -1,4 +1,7 @@
 package dev.pulceo.pna.repository;
 
-public interface PingJobRepository {
+import dev.pulceo.pna.model.jobs.PingJob;
+import org.springframework.data.repository.CrudRepository;
+
+public interface PingJobRepository extends CrudRepository<PingJob, Long> {
 }

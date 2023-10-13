@@ -30,6 +30,13 @@ public class PingServiceTests {
         p.waitFor();
     }
 
+    private static void startPingInstance() throws IOException, InterruptedException {
+        Process pingInstance = new ProcessBuilder("/usr/bin/ping", "-4", "-c", "10", "-s", "66", "-I", "lo", "localhost").start();
+        while (!pingInstance.isAlive()) {
+            Thread.sleep(1000);
+        }
+    }
+
     @Test
     public void testMeasurePingDelay() throws PingServiceException, PingException {
         // given
@@ -49,8 +56,6 @@ public class PingServiceTests {
         assertTrue(actualPingResult.getPingDelayMeasurement().getRttAvg() > 0.0f);
         assertTrue(actualPingResult.getPingDelayMeasurement().getRttMax() > 0.0f);
         assertTrue(actualPingResult.getPingDelayMeasurement().getRttMdev() >= 0.0f);
-
-
 
     }
 

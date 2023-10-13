@@ -3,12 +3,16 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.exception.PingServiceException;
 import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
+import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
+import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.NpingTCPJobRepository;
+import dev.pulceo.pna.repository.PingJobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.support.GenericMessage;
@@ -31,6 +35,9 @@ public class JobService {
     private NpingTCPJobRepository npingTCPJobRepository;
 
     @Autowired
+    private PingJobRepository pingJobRepository;
+
+    @Autowired
     private TaskScheduler taskScheduler;
 
     @Autowired
@@ -38,6 +45,9 @@ public class JobService {
 
     @Autowired
     private NpingService npingService;
+
+    @Autowired
+    private PingService pingService;
 
     // TODO: consider renaming to job-related semantics
     @Autowired
@@ -47,8 +57,12 @@ public class JobService {
     @Autowired
     PublishSubscribeChannel bandwidthServiceMessageChannel;
 
+    @Autowired
+    PublishSubscribeChannel pingServiceMessageChannel;
+
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> pingJobHashMap = new ConcurrentHashMap<>();
 
     public long createNpingTCPJob(NpingTCPJob npingTCPJob) {
         return this.npingTCPJobRepository.save(npingTCPJob).getId();
@@ -159,5 +173,54 @@ public class JobService {
         return this.bandwidthJobHashMap.get(id).cancel(false);
     }
 
+    // create
+    public long createPingJob(PingJob pingJob) {
+        return this.pingJobRepository.save(pingJob).getId();
+    }
 
+    // read
+    public  PingJob readPingJob(long id) throws JobServiceException {
+        Optional<PingJob> retrievedPingJob = this.pingJobRepository.findById(id);
+        if (retrievedPingJob.isPresent()) {
+            return retrievedPingJob.get();
+        } else {
+            throw new JobServiceException("Requested job was not found!");
+        }
+    }
+
+    // enable
+    public PingJob enablePingJob(long id) throws JobServiceException {
+        PingJob retrievedPingJob = this.readPingJob(id);
+        if (!retrievedPingJob.isEnabled()) {
+            retrievedPingJob.setEnabled(true);
+            return this.pingJobRepository.save(retrievedPingJob);
+        }
+        return retrievedPingJob;
+    }
+
+    // disable
+    public PingJob disablePingJob(long id) throws JobServiceException {
+        PingJob retrievedPingJob = this.readPingJob(id);
+        if (retrievedPingJob.isEnabled()) {
+            retrievedPingJob.setEnabled(false);
+            return this.pingJobRepository.save(retrievedPingJob);
+        }
+        return retrievedPingJob;
+    }
+
+    // schedule
+    public long schedulePingJob(long id) throws JobServiceException {
+        PingJob retrievedPingJob = this.readPingJob(id);
+        long retrievedPingJobId = retrievedPingJob.getId();
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            try {
+                PingResult pingResult = pingService.measureRoundTripTime(retrievedPingJob.getPingRequest());
+                //
+            } catch (PingServiceException e) {
+                throw new RuntimeException(e);
+            }
+        }, Duration.ofSeconds(retrievedPingJob.getRecurrence()));
+        this.pingJobHashMap.put(retrievedPingJobId, scheduledFuture);
+        return retrievedPingJobId;
+    }
 }

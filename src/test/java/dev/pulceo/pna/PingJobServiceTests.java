@@ -4,6 +4,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.ping.IPVersion;
 import dev.pulceo.pna.model.ping.PingRequest;
+import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.PingService;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -139,13 +142,32 @@ public class PingJobServiceTests {
     @Test
     public void testSchedulePingJob() throws Exception {
         // given
-
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingJob pingJob = new PingJob(pingRequest, 15);
+        long pingJobId = this.jobService.createPingJob(pingJob);
 
         // when
-
+        long scheduledPingJobId = this.jobService.schedulePingJob(pingJobId);
+        BlockingQueue<PingResult> pingResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.pingServiceMessageChannel.subscribe(message -> {
+            pingResultBlockingQueue.add((PingResult) message.getPayload());
+        });
+        // initiate orderly shutdown
+        this.jobService.cancelPingJob(scheduledPingJobId);
+        PingResult pingResult = pingResultBlockingQueue.take();
 
         // then
-
+        assertNotNull(pingResult);
+        assert("localhost".equals(pingResult.getSourceHost()));
+        assert("localhost".equals(pingResult.getDestinationHost()));
+        assertEquals(1, pingResult.getPingDelayMeasurement().getPacketsTransmitted());
+        assertTrue(pingResult.getPingDelayMeasurement().getPacketsReceived() >= 0);
+        assertTrue(pingResult.getPingDelayMeasurement().getPacketLoss() >= 0.0);
+        assertTrue(pingResult.getPingDelayMeasurement().getTime() >= 0);
+        assertTrue(pingResult.getPingDelayMeasurement().getRttMin() >= 0);
+        assertTrue(pingResult.getPingDelayMeasurement().getRttAvg() >= 0);
+        assertTrue(pingResult.getPingDelayMeasurement().getRttMax() >= 0);
+        assertTrue(pingResult.getPingDelayMeasurement().getRttMdev() >= 0);
     }
 
 }

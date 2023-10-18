@@ -113,7 +113,7 @@ public class JobService {
         return retrievedNpingTCPJobId;
     }
 
-    // TODO: reimplement cancelNpingJob, consider active flag
+    // TODO: reimplement cancelNpingJob, consider active flag checked for unscheduling
     public boolean cancelNpingTCPJob(long id) {
         return this.TCPDelayJobHashMap.get(id).cancel(false);
     }
@@ -208,19 +208,22 @@ public class JobService {
         return retrievedPingJob;
     }
 
-    // schedule
     public long schedulePingJob(long id) throws JobServiceException {
         PingJob retrievedPingJob = this.readPingJob(id);
         long retrievedPingJobId = retrievedPingJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 PingResult pingResult = pingService.measureRoundTripTime(retrievedPingJob.getPingRequest());
-                //
+                this.pingServiceMessageChannel.send(new GenericMessage<>(pingResult));
             } catch (PingServiceException e) {
                 throw new RuntimeException(e);
             }
         }, Duration.ofSeconds(retrievedPingJob.getRecurrence()));
         this.pingJobHashMap.put(retrievedPingJobId, scheduledFuture);
         return retrievedPingJobId;
+    }
+
+    public boolean cancelPingJob(long id) {
+        return this.pingJobHashMap.get(id).cancel(false);
     }
 }

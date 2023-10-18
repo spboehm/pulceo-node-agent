@@ -21,4 +21,8 @@ public class PingJob {
     // default false
     private boolean enabled = false;
 
+    public PingJob(PingRequest pingRequest, int recurrence) {
+        this.pingRequest = pingRequest;
+        this.recurrence = recurrence;
+    }
 }

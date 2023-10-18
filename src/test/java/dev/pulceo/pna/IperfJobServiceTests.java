@@ -32,7 +32,7 @@ public class IperfJobServiceTests {
     @Autowired
     IperfService iperfService;
 
-    private String bindDev = "lo";
+    private final String bindDev = "lo";
 
     @BeforeEach
     @AfterEach

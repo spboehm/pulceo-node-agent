@@ -15,8 +15,7 @@ import org.springframework.integration.channel.PublishSubscribeChannel;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class PingJobServiceTests {
@@ -30,6 +29,8 @@ public class PingJobServiceTests {
     @Autowired
     PingService pingService;
 
+    private final String iface = "lo";
+
     @BeforeEach
     @AfterEach
     public void killAllPingInstances() throws InterruptedException, IOException {
@@ -40,7 +41,7 @@ public class PingJobServiceTests {
     @Test
     public void testCreatePingJob() {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
 
         // when
@@ -54,14 +55,14 @@ public class PingJobServiceTests {
     // testCreatedNpingTCPJobIsInactive
 
     @Test
-    public void testCreatedPingJobisInactive() throws JobServiceException {
+    public void testCreatedPingJobIsInactive() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
 
         // when
-        long savedPingJob = this.jobService.createPingJob(pingJob);
-        PingJob retrievedPingJob = this.jobService.readPingJob(savedPingJob);
+        long savedPingJobId = this.jobService.createPingJob(pingJob);
+        PingJob retrievedPingJob = this.jobService.readPingJob(savedPingJobId);
 
         // then
         assertFalse(retrievedPingJob.isEnabled());
@@ -70,28 +71,81 @@ public class PingJobServiceTests {
     @Test
     public void testEnablePingJobWithDisabledJob() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
         // newly created job is disabled by default, means active = false
-        long savedPingJob = this.jobService.createPingJob(pingJob);
+        long savedPingJobId = this.jobService.createPingJob(pingJob);
 
         // when
-        PingJob enabledPingJob = this.jobService.enablePingJob(savedPingJob);
+        PingJob enabledPingJob = this.jobService.enablePingJob(savedPingJobId);
 
         // then
         assertFalse(pingJob.isEnabled());
         assertTrue(enabledPingJob.isEnabled());
-
     }
 
-    // testEnableNpingTCPJobWithDisabledJob
+    @Test
+    public void testEnablePingJobWithEnabledJob() throws JobServiceException {
+        // given
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingJob pingJob = new PingJob(pingRequest, 15);
+        // set to enabled, because newly created job is disabled by default, means active = false
+        pingJob.setEnabled(true);
+        long savedPingJobId = this.jobService.createPingJob(pingJob);
 
-    // testEnableNpingTCPJobWithEnabledJob
+        // when
+        PingJob alreadyEnabledPingJob = this.jobService.enablePingJob(savedPingJobId);
 
-    // testDisableNpingTCPJobWithEnabledJob
+        // then
+        assertTrue(pingJob.isEnabled());
+        assertTrue(alreadyEnabledPingJob.isEnabled());
+    }
 
-    // testDisableNpingTCPJobWithDisabledJob
+    @Test
+    // given
+    public void testDisablePingJobWithEnabledJob() throws JobServiceException {
+        // given
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingJob pingJob = new PingJob(pingRequest, 15);
+        // set to enabled, because newly created job is disabled by default, means active = false
+        pingJob.setEnabled(true);
+        long savedPingJobId = this.jobService.createPingJob(pingJob);
 
-    // testScheduleNpingTCPJob
+        // when
+        PingJob enabledPingJob = this.jobService.disablePingJob(savedPingJobId);
+
+        // then
+        assertTrue(pingJob.isEnabled());
+        assertFalse(enabledPingJob.isEnabled());
+    }
+
+    @Test
+    public void testDisablePingJobWithDisabledJob() throws JobServiceException {
+        // given
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingJob pingJob = new PingJob(pingRequest, 15);
+        // newly created job is disabled by default, means active = false
+        long savedPingJobId = this.jobService.createPingJob(pingJob);
+
+        // when
+        PingJob alreadyDisabledJob = this.jobService.disablePingJob(savedPingJobId);
+
+        // then
+        assertFalse(pingJob.isEnabled());
+        assertFalse(alreadyDisabledJob.isEnabled());
+    }
+
+    // TODO: implement here
+    @Test
+    public void testSchedulePingJob() throws Exception {
+        // given
+
+
+        // when
+
+
+        // then
+
+    }
 
 }

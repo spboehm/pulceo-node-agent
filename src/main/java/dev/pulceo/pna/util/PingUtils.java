@@ -64,4 +64,10 @@ public class PingUtils {
         return Float.parseFloat(split[index].replaceAll("[^0-9|.]", "").trim());
     }
 
+    public static String extractHostFromPingCmd(String cmd) {
+        // destination always at the end
+        String[] splitCmd = cmd.split(" ");
+        return splitCmd[splitCmd.length - 1];
+    }
+
 }

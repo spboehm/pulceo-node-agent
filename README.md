@@ -17,6 +17,13 @@ Just start the MQTT broker by running `docker-compose -f mqtt/docker-compose.yml
 
 #### ping
 
+Version:
+
+```bash
+ping from iputils 20221126
+libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): yes
+```
+
 * General structure : `ping [OPTIONS] {destination}`
 * Round-trip delay with protocol ICMP: `/usr/bin/ping -4 -c 10 -s 66 -I eth0`
 

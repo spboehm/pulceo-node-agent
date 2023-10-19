@@ -40,11 +40,11 @@ public class NpingService {
             for (String runningNpingInstance : listOfRunningNpingInstances) {
                 if (npingClientProtocol == NpingClientProtocol.TCP) {
                     if (NpingUtils.isTCP(runningNpingInstance)) {
-                        return checkForRunningNpingInstance(host, runningNpingInstance);
+                        return isHostPartOfRunningNpingInstance(host, runningNpingInstance);
                     }
                 } else {
                     if (NpingUtils.isUDP(runningNpingInstance)) {
-                        return checkForRunningNpingInstance(host, runningNpingInstance);
+                        return isHostPartOfRunningNpingInstance(host, runningNpingInstance);
                     }
                 }
             }
@@ -54,7 +54,7 @@ public class NpingService {
         }
     }
 
-    private boolean checkForRunningNpingInstance(String host, String runningNpingInstance) {
+    private boolean isHostPartOfRunningNpingInstance(String host, String runningNpingInstance) {
         return NpingUtils.extractHostFromNpingCmd(runningNpingInstance).equals(host);
     }
 

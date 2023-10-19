@@ -17,6 +17,22 @@ import java.util.List;
 @Service
 public class PingService {
 
+    public boolean checkForRunningPingInstance(String destinationHost) throws PingServiceException {
+        try {
+            List<String> listOfRunningPingInstances = ProcessUtils.getListOfRunningProcessesByName("ping");
+            for (String runningPingInstance : listOfRunningPingInstances) {
+                return isHostPartofRunningPingInstanceCmd(destinationHost, runningPingInstance);
+            }
+        } catch (ProcessException e) {
+            throw new PingServiceException("Could not check for running ping instance!", e);
+        }
+        return false;
+    }
+
+    private boolean isHostPartofRunningPingInstanceCmd(String host, String runningPingInstance) {
+        return PingUtils.extractHostFromPingCmd(runningPingInstance).equals(host);
+    }
+
     public PingResult measureRoundTripTime(PingRequest pingRequest) throws PingServiceException {
         try {
             String start = Instant.now().toString();

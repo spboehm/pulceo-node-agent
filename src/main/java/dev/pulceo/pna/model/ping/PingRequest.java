@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PingRequest {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

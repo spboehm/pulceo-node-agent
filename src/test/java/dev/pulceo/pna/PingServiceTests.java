@@ -30,11 +30,25 @@ public class PingServiceTests {
         p.waitFor();
     }
 
-    private static void startPingInstance() throws IOException, InterruptedException {
-        Process pingInstance = new ProcessBuilder("/usr/bin/ping", "-4", "-c", "10", "-s", "66", "-I", "lo", "localhost").start();
+    private static void startPingInstance(String destinationHost) throws IOException, InterruptedException {
+        Process pingInstance = new ProcessBuilder("/usr/bin/ping", "-4", "-s", "66", "-I", "lo", destinationHost).start();
         while (!pingInstance.isAlive()) {
             Thread.sleep(1000);
         }
+    }
+
+    @Test
+    public void testCheckForRunningPingInstance() throws IOException, InterruptedException, PingServiceException {
+        // given
+        String destinationHost = "localhost";
+        startPingInstance(destinationHost);
+
+        // when
+        boolean pingInstanceRunning = pingService.checkForRunningPingInstance(destinationHost);
+
+        // then
+        assertTrue(pingInstanceRunning);
+
     }
 
     @Test

@@ -13,6 +13,7 @@
 - [ ] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)
 - [ ] Inconsistent naming of delay vs. npingTCP, e.g. in (`JobService`)
 - [ ] Implement support for IPv6 
+- [ ] SourceHost should be removed from `PingRequest`, `IperfRequest`, and `NpingReqeuest` 
 
 ## Package config
 

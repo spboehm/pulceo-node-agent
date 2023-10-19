@@ -64,5 +64,16 @@ public class PingUtilsTests {
         assertEquals(expectedPingDelayMeasurement, actualPingDelayMeasurement);
     }
 
+    @Test
+    public void testExtractHostFromPingInstance() {
+        // given
+        String expectedHost = "localhost";
+        String cmdPingInstance = "/usr/bin/ping -4 -c 10 -s 66 -I eth0 " + expectedHost;
 
+        // when
+        String actualHost = PingUtils.extractHostFromPingCmd(cmdPingInstance);
+
+        // then
+        assertEquals(expectedHost, actualHost);
+    }
 }

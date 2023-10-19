@@ -26,7 +26,7 @@ public class PingUtils {
                 return new PingDelayMeasurement(pingPacketStatistics.getPacketsTransmitted(), pingPacketStatistics.getPacketsReceived(), pingPacketStatistics.getPacketLoss(), pingPacketStatistics.getTime(), rttStatistics.getRttMin(), rttStatistics.getRttAvg(), rttStatistics.getRttMax(), rttStatistics.getRttMdev());
             }
         }
-        throw new PingException(pingOutput.get(0).toString());
+        throw new PingException(pingOutput.get(0));
     }
 
     private static PingPacketStatistics extractPingPacketStatistics(String resultLine) {

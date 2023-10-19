@@ -31,9 +31,8 @@ public class PingUtilsTests {
     }
 
     @Test
-    public void testExtractPingDelayMeasurementWithError() throws ProcessException, IOException, PingException {
+    public void testExtractPingDelayMeasurementWithError() throws ProcessException, IOException {
         // given
-        PingDelayMeasurement expecPingDelayMeasurement = new PingDelayMeasurement();
         File pingResult = new File("src/test/java/dev/pulceo/pna/resources/ping/ping_4_result_error_name_not_found.txt");
         List<String> resultList;
         try(InputStream inputStream = new FileInputStream(pingResult)) {
@@ -42,7 +41,7 @@ public class PingUtilsTests {
 
         // when
         PingException pingException = assertThrows(PingException.class, () -> {
-            PingDelayMeasurement actualPingDelayMeasurement = PingUtils.extractPingDelayMeasurement(resultList);
+            PingUtils.extractPingDelayMeasurement(resultList);
         });
 
         // then

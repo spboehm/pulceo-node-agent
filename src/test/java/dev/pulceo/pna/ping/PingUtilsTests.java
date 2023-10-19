@@ -40,9 +40,7 @@ public class PingUtilsTests {
         }
 
         // when
-        PingException pingException = assertThrows(PingException.class, () -> {
-            PingUtils.extractPingDelayMeasurement(resultList);
-        });
+        PingException pingException = assertThrows(PingException.class, () -> PingUtils.extractPingDelayMeasurement(resultList));
 
         // then
         assertEquals("ping: s: Name or service not known", pingException.getMessage());

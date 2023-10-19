@@ -1,6 +1,5 @@
 package dev.pulceo.pna;
 
-import dev.pulceo.pna.exception.PingException;
 import dev.pulceo.pna.exception.PingServiceException;
 import dev.pulceo.pna.model.ping.IPVersion;
 import dev.pulceo.pna.model.ping.PingRequest;
@@ -14,7 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class PingServiceTests {
@@ -51,7 +51,7 @@ public class PingServiceTests {
     }
 
     @Test
-    public void testMeasurePingDelay() throws PingServiceException, PingException {
+    public void testMeasurePingDelay() throws PingServiceException {
         // given
         PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
 

@@ -69,7 +69,6 @@
 ## PingService
 
 - [ ] Rework waiting on starting process in `measure...()`
-- [ ] Add 
 
 ## JobService
 
@@ -86,7 +85,7 @@
 - [ ] Run tests with different output parameters, in case output is falsely parsed
 - [ ] Ensure that particular interfaces can be used for determining the delay, e.g., via env vars
 - [ ] Clarify method signature of `extractNpingTCPDelayMeasurement(...)`... First parameter is currently obsolete
-- [ ] Improve command generation out of `NpingCmd` class, avoid error-prone hard-coding
+- [x] Improve command generation out of `NpingCmd` class, avoid error-prone hard-coding
 - [ ] Add dataLength validation in NpingCmd and respective tests
 
 ## Iperf3utils
@@ -104,7 +103,7 @@
 
 ## PingUtils
 
-- [] Check error handling of PingUtils in case of `name or service not found`, might not be good idea to pass the output of the nping proces to the user
+- [ ] Check error handling of PingUtils in case of `name or service not found`, might not be good idea to pass the output of the nping proces to the user
 
 ## Helper classes (package `utils`)
 
@@ -122,4 +121,4 @@
 - [ ] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
 - [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 
 - [ ] add additional error cases of failed Iperf3 Measurements
-- [ ] Add missing tests for `PingJobServiceTests`
+- [x] Add missing tests for `PingJobServiceTests`

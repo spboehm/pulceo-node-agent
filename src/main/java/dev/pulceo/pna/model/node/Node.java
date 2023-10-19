@@ -1,24 +1,25 @@
-package dev.pulceo.pna.model;
+package dev.pulceo.pna.model.node;
 
+import dev.pulceo.pna.model.Resource;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import java.util.UUID;
 
+@Entity
 @Data
 @NoArgsConstructor
-@Entity
-public class Node {
+@EqualsAndHashCode(callSuper = true)
+public class Node extends Resource {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "UUID is required!")
-    private final String uuid = UUID.randomUUID().toString();
     @NotBlank(message= "Name is required!")
     private String name;
     @NotNull(message = "Node type is required!")
@@ -32,13 +33,7 @@ public class Node {
     private String NodeLocationCity = "";
     @NotEmpty(message="Node location country is required!")
     private String NodeLocationCountry = "";
-    @NotEmpty(message ="Node location longitude is required!")
     private double NodeLocationLongitude = 0.000000;
-    @NotEmpty(message="Node location latitude is required!")
     private double NodeLocationLatitude = 0.000000;
 
-    public Node(String name, NodeType type) {
-        this.name = name;
-        this.type = type;
-    }
 }

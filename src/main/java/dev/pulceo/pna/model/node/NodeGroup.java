@@ -1,4 +1,4 @@
-package dev.pulceo.pna.model;
+package dev.pulceo.pna.model.node;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -3,10 +3,7 @@ package dev.pulceo.pna.model.node;
 import dev.pulceo.pna.model.Resource;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 
@@ -14,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Node extends Resource {
 
@@ -23,22 +21,36 @@ public class Node extends Resource {
     @NotNull(message = "Node type is required!")
     private NodeType type;
 
-    @Builder.Default
     @Min(1)
     @Max(16)
-    private int layer = 1;
+    private int layer;
 
-    @Builder.Default
     @NotNull(message="Node role is required!")
-    private NodeRole role = NodeRole.WORKLOAD;
+    private NodeRole role;
 
-    @NotEmpty(message="Node location city is required!")
-    private String NodeLocationCity;
+    @NotBlank(message="Node location country is required!")
+    private String nodeLocationCountry;
 
-    @NotEmpty(message="Node location country is required!")
-    private String NodeLocationCountry;
+    @NotBlank(message="Node location city is required!")
+    private String nodeLocationCity;
 
-    private double NodeLocationLongitude;
-    private double NodeLocationLatitude;
+    @Min(-180)
+    @Max(180)
+    private double nodeLocationLongitude;
+
+    @Min(-90)
+    @Max(90)
+    private double nodeLocationLatitude;
+
+    public Node(String name, String nodeLocationCountry, String nodeLocationCity) {
+        this.name = name;
+        this.type = NodeType.EDGE;
+        this.layer = 1;
+        this.role = NodeRole.WORKLOAD;
+        this.nodeLocationCountry = nodeLocationCountry;
+        this.nodeLocationCity = nodeLocationCity;
+        this.nodeLocationLongitude = 0.000000;
+        this.nodeLocationLatitude = 0.000000;
+    }
 
 }

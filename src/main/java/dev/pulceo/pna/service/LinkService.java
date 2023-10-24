@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class LinkService {
 
     @Autowired
-    LinkService linkService;
+
 
     public long createLink(Link link) {
 

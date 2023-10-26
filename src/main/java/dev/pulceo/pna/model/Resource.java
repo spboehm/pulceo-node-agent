@@ -15,6 +15,6 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public abstract class Resource extends BaseEntity {
 
-    private final UUID uuid;
+    private final UUID uuid = UUID.randomUUID();
 
 }

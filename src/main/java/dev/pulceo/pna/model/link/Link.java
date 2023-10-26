@@ -2,6 +2,7 @@ package dev.pulceo.pna.model.link;
 
 
 import dev.pulceo.pna.model.Resource;
+import dev.pulceo.pna.model.ResourceType;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +19,9 @@ import lombok.experimental.SuperBuilder;
 public class Link extends Resource  {
 
     private String name;
-
-    private long srcNodeId;
-    private long destNodeId;
+    private ResourceType resourceType;
+    private long srcId;
+    private long destId;
+    private LinkDirectionType linkDirectionType;
 
 }

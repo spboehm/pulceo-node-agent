@@ -15,6 +15,10 @@ public class LinkService {
     NodeService nodeService;
 
     public long createLink(Link link) {
+        // TODO ensure that resources exists
         return this.linkRepository.save(link).getId();
     }
+
+
+
 }

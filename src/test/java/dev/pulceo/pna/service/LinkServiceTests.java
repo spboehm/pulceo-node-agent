@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,11 @@ public class LinkServiceTests {
     LinkService linkService;
 
     @Test
-    public void testCreateLink() {
+    public void testCreateLinkWithExistingNodes() {
         // given
         long srcNodeId = nodeService.createNode(new Node("testSrcNode", "Germany", "Bamberg"));
         long destNodeId = nodeService.createNode(new Node("testDestNode", "Germany", "Bamberg"));
-        Link link = new Link("testLink", srcNodeId, destNodeId);
+        Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
 
         // when
         long id = this.linkService.createLink(link);
@@ -31,6 +32,8 @@ public class LinkServiceTests {
         assertTrue(id > 0);
 
     }
+
+    // TODO: add nodes
 
 
 }

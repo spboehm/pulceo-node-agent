@@ -20,8 +20,14 @@ public class Link extends Resource  {
 
     private String name;
     private ResourceType resourceType;
+    private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     private long srcId;
     private long destId;
-    private LinkDirectionType linkDirectionType;
 
+    public Link(String name, ResourceType resourceType, long srcId, long destId) {
+        this.name = name;
+        this.resourceType = resourceType;
+        this.srcId = srcId;
+        this.destId = destId;
+    }
 }

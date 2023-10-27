@@ -33,6 +33,19 @@ public class LinkServiceTests {
 
     }
 
+    public void testCreateLinkWithNotExistingNodes() {
+        // given
+        long srcNodeId = 99999;
+        long destNodeId = 100000;
+        Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
+
+        // when
+        long id = this.linkService.createLink(link);
+
+        // then
+        
+    }
+
     // TODO: add nodes
 
 

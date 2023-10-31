@@ -5,6 +5,8 @@ import dev.pulceo.pna.repository.NodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class NodeService {
 
@@ -13,6 +15,10 @@ public class NodeService {
 
     public long createNode(Node node) {
         return this.nodeRepository.save(node).getId();
+    }
+
+    public Optional<Node> readNode(long id) {
+        return this.nodeRepository.findById(id);
     }
 
 }

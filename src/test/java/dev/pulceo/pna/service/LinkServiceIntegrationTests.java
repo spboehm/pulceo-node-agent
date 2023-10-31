@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
@@ -7,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
-public class LinkServiceTests {
+public class LinkServiceIntegrationTests {
 
     @Autowired
     NodeService nodeService;
@@ -19,7 +20,7 @@ public class LinkServiceTests {
     LinkService linkService;
 
     @Test
-    public void testCreateLinkWithExistingNodes() {
+    public void testCreateLinkWithExistingNodes() throws LinkServiceException {
         // given
         long srcNodeId = nodeService.createNode(new Node("testSrcNode", "Germany", "Bamberg"));
         long destNodeId = nodeService.createNode(new Node("testDestNode", "Germany", "Bamberg"));
@@ -32,21 +33,4 @@ public class LinkServiceTests {
         assertTrue(id > 0);
 
     }
-
-    public void testCreateLinkWithNotExistingNodes() {
-        // given
-        long srcNodeId = 99999;
-        long destNodeId = 100000;
-        Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
-
-        // when
-        long id = this.linkService.createLink(link);
-
-        // then
-        
-    }
-
-    // TODO: add nodes
-
-
 }

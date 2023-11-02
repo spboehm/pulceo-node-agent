@@ -6,6 +6,8 @@ import dev.pulceo.pna.repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class LinkService {
 
@@ -22,6 +24,10 @@ public class LinkService {
             throw new LinkServiceException("Destination node with id %d does not exist!".formatted(link.getDestId()));
         }
         return this.linkRepository.save(link).getId();
+    }
+
+    public Optional<Link> readLink(long id) throws LinkServiceException {
+        return this.linkRepository.findById(id);
     }
 
 }

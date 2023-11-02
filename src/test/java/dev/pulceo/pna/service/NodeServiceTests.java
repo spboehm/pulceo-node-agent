@@ -25,5 +25,17 @@ public class NodeServiceTests {
         assertTrue(id > 0);
     }
 
+    // TODO: add read node
+
+    @Test
+    public void testReadNode() {
+        // given
+
+        // when
+
+        // then
+
+    }
+
 
 }

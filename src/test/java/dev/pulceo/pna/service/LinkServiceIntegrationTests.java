@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.Assert.assertTrue;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class LinkServiceIntegrationTests {
@@ -31,6 +33,21 @@ public class LinkServiceIntegrationTests {
 
         // then
         assertTrue(id > 0);
+    }
 
+    @Test
+    public void testReadLink() throws LinkServiceException {
+        // given
+        long srcNodeId = nodeService.createNode(new Node("testSrcNode", "Germany", "Bamberg"));
+        long destNodeId = nodeService.createNode(new Node("testDestNode", "Germany", "Bamberg"));
+        Link expectedLink = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
+        long createdLinkId = this.linkService.createLink(expectedLink);
+
+        // when
+        Optional<Link> optionalOfReadLink = this.linkService.readLink(createdLinkId);
+
+        // then
+        assertTrue(optionalOfReadLink.isPresent());
+        assertEquals(expectedLink, optionalOfReadLink.get());
     }
 }

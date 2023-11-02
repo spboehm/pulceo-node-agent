@@ -52,7 +52,21 @@ public class LinkServiceIntegrationTests {
     }
 
     @Test
-    public void testReadAllLinks() {
+    public void testReadAllLinks() throws LinkServiceException {
+        // given
+        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
+        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        this.linkService.createLink(testLink1);
+        long secondSrcNodeId = nodeService.createNode(new Node("testSrcNode2", "Germany", "Erlangen"));
+        long secondDestNodeId = nodeService.createNode(new Node("testDestNode2", "Germany", "Erlangen"));
+        Link testLink2 = new Link("testLink2", ResourceType.NODE, secondSrcNodeId, secondDestNodeId);
+        this.linkService.createLink(testLink2);
+
+        // when
+
+
+        // then
 
     }
 }

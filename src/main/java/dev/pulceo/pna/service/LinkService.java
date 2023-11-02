@@ -6,6 +6,7 @@ import dev.pulceo.pna.repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,8 +27,12 @@ public class LinkService {
         return this.linkRepository.save(link).getId();
     }
 
-    public Optional<Link> readLink(long id) throws LinkServiceException {
+    public Optional<Link> readLink(long id) {
         return this.linkRepository.findById(id);
+    }
+
+    public List<Link> readAllLinks() {
+        return this.linkRepository.findAll();
     }
 
 }

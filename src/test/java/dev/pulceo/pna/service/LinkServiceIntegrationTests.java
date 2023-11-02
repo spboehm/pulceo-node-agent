@@ -50,4 +50,9 @@ public class LinkServiceIntegrationTests {
         assertTrue(optionalOfReadLink.isPresent());
         assertEquals(expectedLink, optionalOfReadLink.get());
     }
+
+    @Test
+    public void testReadAllLinks() {
+
+    }
 }

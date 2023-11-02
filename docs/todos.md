@@ -7,6 +7,7 @@
 - [ ] Add LastModifiedDate
 - [ ] Add LastModifiedBy
 - [ ] Add UUID
+- [ ] Nodes - ensure that the local node-idea is properly injected
 
 ## Overall Issues
 
@@ -27,6 +28,14 @@
 ## All service tests
 
 - [ ] Check order of expected and actual
+
+## NodeService
+
+- [ ] Prevent creating duplicates of Nodes
+
+## LinkService
+
+- [ ] Prevent creating duplicated of Links
 
 ## BandwidthService 
 
@@ -114,6 +123,11 @@
 - [ ] Connection probe MQTT
 - [ ] Existence of nping and iperf3 executable
 - [ ] Disable Devtools by setting 'spring.devtools.add-properties' to false
+- [ ] Ensure that device id is properly set
+
+## Miscellaneous
+
+- [x] ensure that osiv is set to false
 
 ## Tests
 

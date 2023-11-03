@@ -11,8 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class LinkServiceIntegrationTests {
@@ -69,7 +68,25 @@ public class LinkServiceIntegrationTests {
         List<Link> listOfAllLinks = this.linkService.readAllLinks();
 
         // then
-        assertEquals(testLink1, listOfAllLinks.get(0));
-        assertEquals(testLink2, listOfAllLinks.get(1));
+        assertTrue(listOfAllLinks.contains(testLink1));
+        assertTrue(listOfAllLinks.contains(testLink2));
     }
+
+    @Test
+    public void testReadLinkByDestNodeWithExistingDestNode() throws LinkServiceException {
+        // given
+        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
+        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        this.linkService.createLink(testLink1);
+
+        // when
+        Optional<Link> link = this.linkService.readLinkByDestNode(firstDestNodeId);
+
+
+        // then
+        assertTrue(link.isPresent());
+        assertEquals(testLink1, link.get());
+    }
+
 }

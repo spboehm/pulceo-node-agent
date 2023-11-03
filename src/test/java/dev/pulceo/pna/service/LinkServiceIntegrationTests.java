@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class LinkServiceIntegrationTests {
@@ -64,9 +66,10 @@ public class LinkServiceIntegrationTests {
         this.linkService.createLink(testLink2);
 
         // when
-
+        List<Link> listOfAllLinks = this.linkService.readAllLinks();
 
         // then
-
+        assertEquals(testLink1, listOfAllLinks.get(0));
+        assertEquals(testLink2, listOfAllLinks.get(1));
     }
 }

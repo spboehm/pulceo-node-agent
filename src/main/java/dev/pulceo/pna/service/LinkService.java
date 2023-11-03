@@ -37,7 +37,4 @@ public class LinkService {
 
     public Optional<Link> readLinkByDestNode(long id) { return this.linkRepository.findLinkByDestId(id); }
 
-
-
-
 }

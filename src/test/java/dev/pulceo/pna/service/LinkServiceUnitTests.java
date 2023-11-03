@@ -60,4 +60,17 @@ public class LinkServiceUnitTests {
         assertEquals("Destination node with id 2 does not exist!", linkServiceException.getMessage());
     }
 
+    @Test
+    public void testReadLinkByDestNodeWithNotExistingNode() {
+        // given
+        long destNodeId = 2;
+        when(nodeService.readNode(destNodeId)).thenReturn(Optional.empty());
+
+        // when
+        Optional<Link> link = this.linkService.readLinkByDestNode(destNodeId);
+
+        // then
+        assertTrue(link.isEmpty());
+    }
+
 }

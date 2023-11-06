@@ -1,6 +1,5 @@
 package dev.pulceo.pna.model.jobs;
 
-import dev.pulceo.pna.model.HasId;
 import dev.pulceo.pna.model.ping.PingRequest;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,11 +8,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class PingJob implements HasId, HasJobType, Job {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@PrimaryKeyJoinColumn(name = "pingJobId")
+public class PingJob extends Job {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pingRequest_id", referencedColumnName = "id")
@@ -27,8 +23,4 @@ public class PingJob implements HasId, HasJobType, Job {
         this.recurrence = recurrence;
     }
 
-    @Override
-    public Jobtype getJobType() {
-        return Jobtype.PING;
-    }
 }

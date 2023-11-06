@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.jobs.PingJob;
@@ -96,7 +97,7 @@ public class LinkServiceIntegrationTests {
     }
 
     @Test
-    public void testAddJobToExistingLink() throws LinkServiceException {
+    public void testAddPingJobJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
         long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
         long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
@@ -108,10 +109,11 @@ public class LinkServiceIntegrationTests {
         long pingJobId = this.jobService.createPingJob(pingJob);
 
         // when
-        // this.linkService.addJob(linkId, pingJob);
+        this.linkService.addJobToLink(linkId, pingJobId);
 
         // then
-
+        Optional<Link> updatedLink = this.linkService.readLink(linkId);
+        assertEquals(pingJobId, updatedLink.get().getPingJob().getId());
 
     }
 

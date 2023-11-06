@@ -6,11 +6,13 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.PingServiceException;
 import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
+import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
+import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.repository.NpingTCPJobRepository;
 import dev.pulceo.pna.repository.PingJobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class JobService {
     private PingJobRepository pingJobRepository;
 
     @Autowired
+    private JobRepository jobRepository;
+
+    @Autowired
     private TaskScheduler taskScheduler;
 
     @Autowired
@@ -63,6 +68,15 @@ public class JobService {
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> pingJobHashMap = new ConcurrentHashMap<>();
+
+    public Optional<Job> readJob(long id) throws JobServiceException {
+        Optional<Job> retrievedJob = this.jobRepository.findById(id);
+        if (retrievedJob.isPresent()) {
+            return retrievedJob;
+        } else {
+            throw new JobServiceException("Requested job was not found!");
+        }
+    }
 
     public long createNpingTCPJob(NpingTCPJob npingTCPJob) {
         return this.npingTCPJobRepository.save(npingTCPJob).getId();

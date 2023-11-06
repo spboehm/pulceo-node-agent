@@ -1,8 +1,11 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.Job;
+import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
+import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ public class LinkService {
 
     @Autowired
     LinkRepository linkRepository;
+
+    @Autowired
+    JobRepository jobRepository;
 
     @Autowired
     JobService jobService;
@@ -41,31 +47,35 @@ public class LinkService {
 
     public Optional<Link> readLinkByDestNode(long id) { return this.linkRepository.findLinkByDestId(id); }
 
-    public void addJob(long linkId, Job job) {
+    public void addJobToLink(long linkId, long jobId) throws LinkServiceException, JobServiceException {
         // TODO: check if link exists AND check if job exists AND if job is not already allocated?
-        if (checkIfLinkExists(linkId) && checkIfJobExists(job) && checkIfJobIsNotAlreadyAllocated(job)) {
-
+        Optional<Link> link = this.readLink(linkId);
+        if (link.isEmpty()) {
+            throw new LinkServiceException("Link with id %d does not exist!".formatted(linkId));
         }
 
+        Optional<Job> job = this.jobService.readJob(jobId);
+        if (job.isEmpty()) {
+            throw new LinkServiceException("Job with id %d does not exist!".formatted(jobId));
+        }
 
-
-    }
-
-    private boolean checkIfLinkExists(long linkId) {
-        return this.readLink(linkId).isPresent();
-    }
-
-
-    private boolean checkIfJobExists(Job job) {
-        switch (job.getJobType()) {
-            case PING: return this.jobService.readPingJobOptional(job.getId()).isPresent();
-            default: return false;
+        if (isJobAlreadyAllocated(jobId)) {
+            throw new LinkServiceException("Job with id %d is already allocated!".formatted(jobId));
+        } else {
+            Link linkToBeUpdated = link.get();
+            Job readJob = job.get();
+            switch (readJob.getClass().getSimpleName()) {
+                // TODO: check if job can be assigned
+                case "PingJob": linkToBeUpdated.setPingJob((PingJob) readJob); break;
+                // TODO: add the other job types
+                default: return;
+            }
+            this.linkRepository.save(linkToBeUpdated);
         }
     }
 
-    private boolean checkIfJobIsNotAlreadyAllocated(Job job) {
-        // TODO: implement here
-        return true;
+    private boolean isJobAlreadyAllocated(long jobId) {
+        return false;
     }
 
 }

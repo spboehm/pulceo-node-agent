@@ -16,6 +16,8 @@
 - [ ] Implement support for IPv6 
 - [ ] SourceHost should be removed from `PingRequest`, `IperfRequest`, and `NpingReqeuest` 
 - [ ] Consider using `Optional` for all read operations in service classes
+- [ ] `Long` vs. `long`
+- [ ] Consider removing inherit `Repositories` in favor of `JobRepository`
 
 ## Package config
 

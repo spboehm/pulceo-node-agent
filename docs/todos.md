@@ -18,6 +18,7 @@
 - [ ] Consider using `Optional` for all read operations in service classes
 - [ ] `Long` vs. `long`
 - [ ] Consider removing inherit `Repositories` in favor of `JobRepository`
+- [ ] Check `JPA mappings` in all `model` classes
 
 ## Package config
 

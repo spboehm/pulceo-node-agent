@@ -179,13 +179,17 @@ public class JobService {
     }
 
     // read
-    public  PingJob readPingJob(long id) throws JobServiceException {
+    public PingJob readPingJob(long id) throws JobServiceException {
         Optional<PingJob> retrievedPingJob = this.pingJobRepository.findById(id);
         if (retrievedPingJob.isPresent()) {
             return retrievedPingJob.get();
         } else {
             throw new JobServiceException("Requested job was not found!");
         }
+    }
+
+    public Optional<PingJob> readPingJobOptional(long id) {
+        return this.pingJobRepository.findById(id);
     }
 
     // enable

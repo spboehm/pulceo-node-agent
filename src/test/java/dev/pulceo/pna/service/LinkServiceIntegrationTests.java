@@ -2,8 +2,11 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
+import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.ping.IPVersion;
+import dev.pulceo.pna.model.ping.PingRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,9 @@ public class LinkServiceIntegrationTests {
 
     @Autowired
     LinkService linkService;
+
+    @Autowired
+    JobService jobService;
 
     @Test
     public void testCreateLinkWithExistingNodes() throws LinkServiceException {
@@ -87,6 +93,26 @@ public class LinkServiceIntegrationTests {
         // then
         assertTrue(link.isPresent());
         assertEquals(testLink1, link.get());
+    }
+
+    @Test
+    public void testAddJobToExistingLink() throws LinkServiceException {
+        // given
+        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
+        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        long linkId = this.linkService.createLink(testLink1);
+
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingJob pingJob = new PingJob(pingRequest, 15);
+        long pingJobId = this.jobService.createPingJob(pingJob);
+
+        // when
+        // this.linkService.addJob(linkId, pingJob);
+
+        // then
+
+
     }
 
 }

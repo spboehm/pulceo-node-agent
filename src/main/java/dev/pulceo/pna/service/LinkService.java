@@ -1,6 +1,7 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.LinkServiceException;
+import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.repository.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class LinkService {
 
     @Autowired
     LinkRepository linkRepository;
+
+    @Autowired
+    JobService jobService;
 
     @Autowired
     NodeService nodeService;
@@ -36,5 +40,32 @@ public class LinkService {
     }
 
     public Optional<Link> readLinkByDestNode(long id) { return this.linkRepository.findLinkByDestId(id); }
+
+    public void addJob(long linkId, Job job) {
+        // TODO: check if link exists AND check if job exists AND if job is not already allocated?
+        if (checkIfLinkExists(linkId) && checkIfJobExists(job) && checkIfJobIsNotAlreadyAllocated(job)) {
+
+        }
+
+
+
+    }
+
+    private boolean checkIfLinkExists(long linkId) {
+        return this.readLink(linkId).isPresent();
+    }
+
+
+    private boolean checkIfJobExists(Job job) {
+        switch (job.getJobType()) {
+            case PING: return this.jobService.readPingJobOptional(job.getId()).isPresent();
+            default: return false;
+        }
+    }
+
+    private boolean checkIfJobIsNotAlreadyAllocated(Job job) {
+        // TODO: implement here
+        return true;
+    }
 
 }

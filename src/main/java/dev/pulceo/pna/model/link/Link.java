@@ -3,11 +3,12 @@ package dev.pulceo.pna.model.link;
 
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.ResourceType;
+import dev.pulceo.pna.model.jobs.IperfJob;
+import dev.pulceo.pna.model.jobs.NpingTCPJob;
+import dev.pulceo.pna.model.jobs.PingJob;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.OneToOne;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -20,9 +21,20 @@ public class Link extends Resource  {
 
     private String name;
     private ResourceType resourceType;
+    @Builder.Default
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     private long srcId;
     private long destId;
+    @OneToOne
+    private PingJob pingJob;
+    @OneToOne
+    private NpingTCPJob npingTCPJob;
+    @OneToOne
+    private NpingTCPJob npingUDPJob;
+    @OneToOne
+    private IperfJob iperfTCPJob;
+    @OneToOne
+    private IperfJob iperfUDP;
 
     public Link(String name, ResourceType resourceType, long srcId, long destId) {
         this.name = name;

@@ -15,6 +15,7 @@
 - [ ] Inconsistent naming of delay vs. npingTCP, e.g. in (`JobService`)
 - [ ] Implement support for IPv6 
 - [ ] SourceHost should be removed from `PingRequest`, `IperfRequest`, and `NpingReqeuest` 
+- [ ] Consider using `Optional` for all read operations in service classes
 
 ## Package config
 
@@ -88,6 +89,7 @@
 - [ ] Ensure that no duplicate jobs can be created
 - [ ] Add appropriate logging for 
 - [ ] Consider moving PublishSubscribeChannels for bandwidth and delay to another place
+- [ ] Consider working with `Optional` for all read operations
 
 ## NpingUtils
 

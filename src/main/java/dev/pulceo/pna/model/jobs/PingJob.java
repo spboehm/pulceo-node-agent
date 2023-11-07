@@ -3,11 +3,13 @@ package dev.pulceo.pna.model.jobs;
 import dev.pulceo.pna.model.ping.PingRequest;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @PrimaryKeyJoinColumn(name = "pingJobId")
 public class PingJob extends Job {
 

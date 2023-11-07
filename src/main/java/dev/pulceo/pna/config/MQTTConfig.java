@@ -37,6 +37,7 @@ public class MQTTConfig {
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
+        adapter.connectComplete(true);
         adapter.setOutputChannel(mqttInputChannel());
         return adapter;
     }
@@ -78,6 +79,7 @@ public class MQTTConfig {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
         options.setServerURIs(new String[] { "tcp://localhost:1883"});
+        options.setAutomaticReconnect(true);
         factory.setConnectionOptions(options);
         return factory;
     }
@@ -94,7 +96,7 @@ public class MQTTConfig {
         MqttPahoMessageHandler messageHandler =
                 new MqttPahoMessageHandler(deviceID, mqttClientFactory());
         messageHandler.setAsync(true);
-        messageHandler.setDefaultTopic(deviceID);
+        messageHandler.setDefaultTopic(deviceID + "/");
         messageHandler.setConverter(new DefaultPahoMessageConverter());
         return messageHandler;
     }

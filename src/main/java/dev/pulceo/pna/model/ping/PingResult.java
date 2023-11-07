@@ -1,19 +1,17 @@
 package dev.pulceo.pna.model.ping;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import dev.pulceo.pna.model.Resource;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class PingResult {
+public class PingResult extends Resource {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Long id;
     private String sourceHost;
     private String destinationHost;
     private String startTime;

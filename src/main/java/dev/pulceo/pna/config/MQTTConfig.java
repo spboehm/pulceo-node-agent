@@ -21,7 +21,10 @@ import org.springframework.messaging.MessageHandler;
 public class MQTTConfig {
 
     @Value("${pna.id}")
-    private String deviceID;
+    private String deviceId;
+
+    @Value("${pna.mqtt.client.id}")
+    private String mqttClientId;
 
     /* Inbound */
     @Bean
@@ -32,7 +35,7 @@ public class MQTTConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", "pulceo-node-agent2",
+                new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", mqttClientId,
                         "topic1");
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
@@ -94,9 +97,9 @@ public class MQTTConfig {
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler =
-                new MqttPahoMessageHandler(deviceID, mqttClientFactory());
+                new MqttPahoMessageHandler(deviceId, mqttClientFactory());
         messageHandler.setAsync(true);
-        messageHandler.setDefaultTopic(deviceID + "/");
+        messageHandler.setDefaultTopic(deviceId + "/");
         messageHandler.setConverter(new DefaultPahoMessageConverter());
         return messageHandler;
     }

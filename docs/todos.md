@@ -142,3 +142,8 @@
 - [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 
 - [ ] add additional error cases of failed Iperf3 Measurements
 - [x] Add missing tests for `PingJobServiceTests`
+- [ ] `LinkServiceUnitTests` misses proper configuration of `properties`. Consider excluding external dependencies completely.
+
+## Package config
+
+- [ ] Adjust naming of variables inside configuration classes

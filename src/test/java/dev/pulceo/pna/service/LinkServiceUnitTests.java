@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 // Override default application.properties, otherwise port collision might occur
+// TODO: replace with prop configuration or task exclusion
 @SpringBootTest(properties = { "pna.delay.tcp.port=5002", "pna.delay.udp.port=5003", "pna.mqtt.client.id=550e8400-e29b-11d4-a716-446655440000"})
 public class LinkServiceUnitTests {
 

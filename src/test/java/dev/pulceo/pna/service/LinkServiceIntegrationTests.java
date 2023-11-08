@@ -117,4 +117,18 @@ public class LinkServiceIntegrationTests {
 
     }
 
+    // TODO: add NpingJob
+    @Test
+    public void testAddNpingJobToExistingLink() {
+
+
+    }
+
+    // TODO: add NpingJob
+    @Test
+    public void testAddIperfJobToExistingLink() {
+
+
+    }
+
 }

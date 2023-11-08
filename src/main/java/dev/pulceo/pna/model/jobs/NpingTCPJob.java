@@ -2,20 +2,14 @@ package dev.pulceo.pna.model.jobs;
 
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class NpingTCPJob {
+public class NpingTCPJob extends Job {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String sourceHost;
     private String destinationHost;
     private int port;

@@ -8,11 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class IperfJob {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class IperfJob extends Job {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "iperfRequest_id", referencedColumnName = "id")

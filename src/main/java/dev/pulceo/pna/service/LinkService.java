@@ -70,7 +70,7 @@ public class LinkService {
             switch (readJob.getClass().getSimpleName()) {
                 // TODO: check if job can be assigned
                 case "PingJob": linkToBeUpdated.setPingJob((PingJob) readJob); break;
-                case "NpingTCPJob":  linkToBeUpdated.setNpingJob((NpingJob) readJob); break;
+                case "NpingJob":  linkToBeUpdated.setNpingJob((NpingJob) readJob); break;
                 case "IperfJob": linkToBeUpdated.setIperfJob((IperfJob) readJob); break;
                 // TODO: add the other job types
                 default:

@@ -78,11 +78,11 @@ public class JobService {
         }
     }
 
-    public long createNpingTCPJob(NpingJob npingJob) {
+    public long createNpingJob(NpingJob npingJob) {
         return this.npingTCPJobRepository.save(npingJob).getId();
     }
 
-    public NpingJob readNpingTCPJob(long id) throws JobServiceException {
+    public NpingJob readNpingJob(long id) throws JobServiceException {
         Optional<NpingJob> retrievedNpingTCPJob = this.npingTCPJobRepository.findById(id);
         if (retrievedNpingTCPJob.isPresent()) {
             return retrievedNpingTCPJob.get();
@@ -91,8 +91,8 @@ public class JobService {
         }
     }
 
-    public NpingJob enableNpingTCPJob(long id) throws JobServiceException {
-        NpingJob retrievedNpingJob = this.readNpingTCPJob(id);
+    public NpingJob enableNpingJob(long id) throws JobServiceException {
+        NpingJob retrievedNpingJob = this.readNpingJob(id);
         if (!retrievedNpingJob.isEnabled()) {
             retrievedNpingJob.setEnabled(true);
             return this.npingTCPJobRepository.save(retrievedNpingJob);
@@ -100,8 +100,8 @@ public class JobService {
         return retrievedNpingJob;
     }
 
-    public NpingJob disableNpingTCPJob(long id) throws JobServiceException {
-        NpingJob retrievedNpingJob = this.readNpingTCPJob(id);
+    public NpingJob disableNpingJob(long id) throws JobServiceException {
+        NpingJob retrievedNpingJob = this.readNpingJob(id);
         if (retrievedNpingJob.isEnabled()) {
             retrievedNpingJob.setEnabled(false);
             return this.npingTCPJobRepository.save(retrievedNpingJob);
@@ -111,8 +111,8 @@ public class JobService {
 
     // TODO: do not forget to set the status flag active
     // TODO: handle situation when the jobs are crashing
-    public long scheduleNpingTCPJob(long id) throws JobServiceException {
-        NpingJob retrievedNpingJob = this.readNpingTCPJob(id);
+    public long scheduleNpingJob(long id) throws JobServiceException {
+        NpingJob retrievedNpingJob = this.readNpingJob(id);
         long retrievedNpingTCPJobId = retrievedNpingJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {

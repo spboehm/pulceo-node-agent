@@ -47,7 +47,7 @@ public class NpingJobServiceTests {
         NpingJob npingJob = new NpingJob(npingRequest, 15);
 
         // when
-        long id  = this.jobService.createNpingTCPJob(npingJob);
+        long id  = this.jobService.createNpingJob(npingJob);
 
         // then
         assertTrue(id > 0);
@@ -60,8 +60,8 @@ public class NpingJobServiceTests {
         NpingJob npingJob = new NpingJob(npingRequest, 15);
 
         // when
-        long savedIperfJob  = this.jobService.createNpingTCPJob(npingJob);
-        NpingJob retrievedNpingUDPJob = this.jobService.readNpingTCPJob(savedIperfJob);
+        long savedIperfJob  = this.jobService.createNpingJob(npingJob);
+        NpingJob retrievedNpingUDPJob = this.jobService.readNpingJob(savedIperfJob);
 
         // then
         assertFalse(retrievedNpingUDPJob.isEnabled());
@@ -74,10 +74,10 @@ public class NpingJobServiceTests {
         NpingJob npingJob = new NpingJob(npingRequest, 15);
 
         // newly created job is disabled by default, means active = false
-        long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingJob);
+        long savedNpingTCPJobId = this.jobService.createNpingJob(npingJob);
 
         // when
-        NpingJob enabledNpingJob = this.jobService.enableNpingTCPJob(savedNpingTCPJobId);
+        NpingJob enabledNpingJob = this.jobService.enableNpingJob(savedNpingTCPJobId);
 
         // then
         assertFalse(npingJob.isEnabled());
@@ -91,10 +91,10 @@ public class NpingJobServiceTests {
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingJob.setEnabled(true);
-        long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingJob);
+        long savedNpingTCPJobId = this.jobService.createNpingJob(npingJob);
 
         // when
-        NpingJob alreadyEnabledNpingJob = this.jobService.enableNpingTCPJob(savedNpingTCPJobId);
+        NpingJob alreadyEnabledNpingJob = this.jobService.enableNpingJob(savedNpingTCPJobId);
 
         // then
         assertTrue(npingJob.isEnabled());
@@ -108,10 +108,10 @@ public class NpingJobServiceTests {
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingJob.setEnabled(true);
-        long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingJob);
+        long savedNpingTCPJobId = this.jobService.createNpingJob(npingJob);
 
         // when
-        NpingJob enabledNpingJob = this.jobService.disableNpingTCPJob(savedNpingTCPJobId);
+        NpingJob enabledNpingJob = this.jobService.disableNpingJob(savedNpingTCPJobId);
 
         // then
         assertTrue(npingJob.isEnabled());
@@ -125,10 +125,10 @@ public class NpingJobServiceTests {
         NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         // newly created job is disabled by default, means active = false
-        long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingJob);
+        long savedNpingTCPJobId = this.jobService.createNpingJob(npingJob);
 
         // when
-        NpingJob alreadyDisabledNpingJob = this.jobService.disableNpingTCPJob(savedNpingTCPJobId);
+        NpingJob alreadyDisabledNpingJob = this.jobService.disableNpingJob(savedNpingTCPJobId);
 
         // then
         assertFalse(npingJob.isEnabled());
@@ -144,10 +144,10 @@ public class NpingJobServiceTests {
         // given
         NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
-        long id = this.jobService.createNpingTCPJob(npingJob);
+        long id = this.jobService.createNpingJob(npingJob);
 
         // when
-        long localJobId = this.jobService.scheduleNpingTCPJob(id);
+        long localJobId = this.jobService.scheduleNpingJob(id);
         BlockingQueue<NpingTCPResult> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
         this.delayServiceMessageChannel.subscribe(message -> {
             npingTCPResultBlockingQueue.add((NpingTCPResult) message.getPayload());

@@ -55,9 +55,9 @@ public class Link extends Resource  {
 
     public void setIperfJob(IperfJob iperfJob) {
         if (iperfJob.getIperfRequest().getIperfClientProtocol() == IperfClientProtocol.TCP) {
-            this.iperfTCPJob = iperfJob;
+            this.setIperfTCPJob(iperfJob);
         } else {
-            this.iperfUDPJob = iperfJob;
+            this.setIperfUDPJob(iperfJob);
         }
 
     }

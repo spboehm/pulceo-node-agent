@@ -10,11 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-@PrimaryKeyJoinColumn(name = "pingJobId")
 public class PingJob extends Job {
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "pingRequest_id", referencedColumnName = "id")
     private PingRequest pingRequest;
     private int recurrence;
     // default false

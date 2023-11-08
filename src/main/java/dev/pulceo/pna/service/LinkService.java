@@ -4,7 +4,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.Job;
-import dev.pulceo.pna.model.jobs.NpingTCPJob;
+import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.repository.JobRepository;
@@ -70,7 +70,7 @@ public class LinkService {
             switch (readJob.getClass().getSimpleName()) {
                 // TODO: check if job can be assigned
                 case "PingJob": linkToBeUpdated.setPingJob((PingJob) readJob); break;
-                case "NpingTCPJob":  linkToBeUpdated.setNpingJob((NpingTCPJob) readJob); break;
+                case "NpingTCPJob":  linkToBeUpdated.setNpingJob((NpingJob) readJob); break;
                 case "IperfJob": linkToBeUpdated.setIperfJob((IperfJob) readJob); break;
                 // TODO: add the other job types
                 default:

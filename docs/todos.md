@@ -78,6 +78,7 @@
 - [ ] Add test cases for UDP
 - [ ] Ensure that the inheritance is correctly chosen
 - [ ] Rework waiting on starting process in `measure...()`
+- [x] Rename `NpingTCPJob` to `NpingJob`
 
 ## PingService
 

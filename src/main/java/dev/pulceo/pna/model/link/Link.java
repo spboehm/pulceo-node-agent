@@ -5,7 +5,7 @@ import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
 import dev.pulceo.pna.model.jobs.IperfJob;
-import dev.pulceo.pna.model.jobs.NpingTCPJob;
+import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import jakarta.persistence.Entity;
@@ -30,9 +30,9 @@ public class Link extends Resource  {
     @OneToOne
     private PingJob pingJob;
     @OneToOne
-    private NpingTCPJob npingTCPJob;
+    private NpingJob npingTCPJob;
     @OneToOne
-    private NpingTCPJob npingUDPJob;
+    private NpingJob npingUDPJob;
     @OneToOne
     private IperfJob iperfTCPJob;
     @OneToOne
@@ -45,11 +45,11 @@ public class Link extends Resource  {
         this.destId = destId;
     }
 
-    public void setNpingJob(NpingTCPJob npingTCPJob) {
-        if (npingTCPJob.getNpingRequest().getNpingClientProtocol() == NpingClientProtocol.TCP) {
-            this.setNpingTCPJob(npingTCPJob);
+    public void setNpingJob(NpingJob npingJob) {
+        if (npingJob.getNpingRequest().getNpingClientProtocol() == NpingClientProtocol.TCP) {
+            this.setNpingTCPJob(npingJob);
         } else {
-            this.setNpingUDPJob(npingTCPJob);
+            this.setNpingUDPJob(npingJob);
         }
     }
 

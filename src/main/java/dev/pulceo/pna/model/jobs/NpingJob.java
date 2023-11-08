@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class NpingTCPJob extends Job {
+public class NpingJob extends Job {
 
     @OneToOne(cascade = CascadeType.ALL)
     private NpingRequest npingRequest;
@@ -18,7 +18,7 @@ public class NpingTCPJob extends Job {
     // default false
     private boolean enabled = false;
 
-    public NpingTCPJob(NpingRequest npingRequest, int recurrence) {
+    public NpingJob(NpingRequest npingRequest, int recurrence) {
         this.npingRequest = npingRequest;
         this.recurrence = recurrence;
     }

@@ -7,7 +7,7 @@ import dev.pulceo.pna.exception.PingServiceException;
 import dev.pulceo.pna.model.iperf3.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.Job;
-import dev.pulceo.pna.model.jobs.NpingTCPJob;
+import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.ping.PingResult;
@@ -78,12 +78,12 @@ public class JobService {
         }
     }
 
-    public long createNpingTCPJob(NpingTCPJob npingTCPJob) {
-        return this.npingTCPJobRepository.save(npingTCPJob).getId();
+    public long createNpingTCPJob(NpingJob npingJob) {
+        return this.npingTCPJobRepository.save(npingJob).getId();
     }
 
-    public NpingTCPJob readNpingTCPJob(long id) throws JobServiceException {
-        Optional<NpingTCPJob> retrievedNpingTCPJob = this.npingTCPJobRepository.findById(id);
+    public NpingJob readNpingTCPJob(long id) throws JobServiceException {
+        Optional<NpingJob> retrievedNpingTCPJob = this.npingTCPJobRepository.findById(id);
         if (retrievedNpingTCPJob.isPresent()) {
             return retrievedNpingTCPJob.get();
         } else {
@@ -91,37 +91,37 @@ public class JobService {
         }
     }
 
-    public NpingTCPJob enableNpingTCPJob(long id) throws JobServiceException {
-        NpingTCPJob retrievedNpingTCPJob = this.readNpingTCPJob(id);
-        if (!retrievedNpingTCPJob.isEnabled()) {
-            retrievedNpingTCPJob.setEnabled(true);
-            return this.npingTCPJobRepository.save(retrievedNpingTCPJob);
+    public NpingJob enableNpingTCPJob(long id) throws JobServiceException {
+        NpingJob retrievedNpingJob = this.readNpingTCPJob(id);
+        if (!retrievedNpingJob.isEnabled()) {
+            retrievedNpingJob.setEnabled(true);
+            return this.npingTCPJobRepository.save(retrievedNpingJob);
         }
-        return retrievedNpingTCPJob;
+        return retrievedNpingJob;
     }
 
-    public NpingTCPJob disableNpingTCPJob(long id) throws JobServiceException {
-        NpingTCPJob retrievedNpingTCPJob = this.readNpingTCPJob(id);
-        if (retrievedNpingTCPJob.isEnabled()) {
-            retrievedNpingTCPJob.setEnabled(false);
-            return this.npingTCPJobRepository.save(retrievedNpingTCPJob);
+    public NpingJob disableNpingTCPJob(long id) throws JobServiceException {
+        NpingJob retrievedNpingJob = this.readNpingTCPJob(id);
+        if (retrievedNpingJob.isEnabled()) {
+            retrievedNpingJob.setEnabled(false);
+            return this.npingTCPJobRepository.save(retrievedNpingJob);
         }
-        return retrievedNpingTCPJob;
+        return retrievedNpingJob;
     }
 
     // TODO: do not forget to set the status flag active
     // TODO: handle situation when the jobs are crashing
     public long scheduleNpingTCPJob(long id) throws JobServiceException {
-        NpingTCPJob retrievedNpingTCPJob = this.readNpingTCPJob(id);
-        long retrievedNpingTCPJobId = retrievedNpingTCPJob.getId();
+        NpingJob retrievedNpingJob = this.readNpingTCPJob(id);
+        long retrievedNpingTCPJobId = retrievedNpingJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingTCPJob.getNpingRequest().getDestinationHost());
+                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost());
                 this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
             } catch (DelayServiceException e) {
                 throw new RuntimeException(e);
             }
-        }, Duration.ofSeconds(retrievedNpingTCPJob.getRecurrence()));
+        }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
 
         this.TCPDelayJobHashMap.put(retrievedNpingTCPJobId, scheduledFuture);
         return retrievedNpingTCPJobId;

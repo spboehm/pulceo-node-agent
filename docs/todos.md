@@ -8,7 +8,8 @@
 - [ ] Add LastModifiedBy
 - [ ] Add UUID
 - [ ] Nodes - ensure that the local node-idea is properly injected
-
+- [ ] Check `JPA mappings` in all `model` classes
+- 
 ## Overall Issues
 
 - [ ] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)
@@ -18,7 +19,7 @@
 - [ ] Consider using `Optional` for all read operations in service classes
 - [ ] `Long` vs. `long`
 - [ ] Consider removing inherit `Repositories` in favor of `JobRepository`
-- [ ] Check `JPA mappings` in all `model` classes
+- [ ] Properly add `@Autowired` bean configuration
 
 ## Package config
 
@@ -40,6 +41,8 @@
 ## LinkService
 
 - [ ] Prevent creating duplicated of Links
+- [ ] Check if there are proper references between `Link`s and `Job`s
+- [ ] Properly cross references between `Job`s and `Link`s 
 
 ## BandwidthService 
 
@@ -94,6 +97,9 @@
 - [ ] Add appropriate logging for 
 - [ ] Consider moving PublishSubscribeChannels for bandwidth and delay to another place
 - [ ] Consider working with `Optional` for all read operations
+- [ ] Check if a (Network) Job can be created even without being attached to a link
+- [ ] Check if there are cross references between Jobs and links
+
 
 ## NpingUtils
 

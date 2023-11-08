@@ -72,7 +72,7 @@
 - [ ] Improve process generation with ProcessBuilder
 - [ ] Set minimum values for recurrence
 - [ ] Remove Job semantics for `NpingJob`
-- [ ] Add `NpingRequest` instead of `NpingJob`
+- [x] Add `NpingRequest` instead of `NpingJob`
 - [ ] Ensure that no duplicate measurements can be created
 - [x] Remove port from all methods
 - [ ] Add test cases for UDP

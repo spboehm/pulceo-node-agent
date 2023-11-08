@@ -1,7 +1,9 @@
 package dev.pulceo.pna.model.jobs;
 
-import dev.pulceo.pna.model.nping.NpingClientProtocol;
+import dev.pulceo.pna.model.nping.NpingRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,18 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NpingTCPJob extends Job {
 
-    private String sourceHost;
-    private String destinationHost;
-    private int port;
-    private NpingClientProtocol npingClientProtocol;
+    @OneToOne(cascade = CascadeType.ALL)
+    private NpingRequest npingRequest;
     private int recurrence;
+    // default false
     private boolean enabled = false;
 
-    public NpingTCPJob(String sourceHost, String destinationHost, int port, NpingClientProtocol npingClientProtocol, int recurrence) {
-        this.sourceHost = sourceHost;
-        this.destinationHost = destinationHost;
-        this.port = port;
-        this.npingClientProtocol = npingClientProtocol;
+    public NpingTCPJob(NpingRequest npingRequest, int recurrence) {
+        this.npingRequest = npingRequest;
         this.recurrence = recurrence;
     }
 }

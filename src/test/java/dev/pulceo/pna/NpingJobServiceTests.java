@@ -3,6 +3,7 @@ package dev.pulceo.pna;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.jobs.NpingTCPJob;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
+import dev.pulceo.pna.model.nping.NpingRequest;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.service.NpingService;
 import dev.pulceo.pna.service.JobService;
@@ -42,7 +43,8 @@ public class NpingJobServiceTests {
     @Test
     public void testCreateNpingTCPJob() {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
 
         // when
         long id  = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -54,7 +56,8 @@ public class NpingJobServiceTests {
     @Test
     public void testCreatedNpingTCPJobIsInactive() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
 
         // when
         long savedIperfJob  = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -67,7 +70,8 @@ public class NpingJobServiceTests {
     @Test
     public void testEnableNpingTCPJobWithDisabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
 
         // newly created job is disabled by default, means active = false
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -83,7 +87,8 @@ public class NpingJobServiceTests {
     @Test
     public void testEnableNpingTCPJobWithEnabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingTCPJob.setEnabled(true);
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -99,7 +104,8 @@ public class NpingJobServiceTests {
     @Test
     public void testDisableNpingTCPJobWithEnabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingTCPJob.setEnabled(true);
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
@@ -116,7 +122,8 @@ public class NpingJobServiceTests {
     @Test
     public void testDisableNpingTCPJobWithDisabledJob() throws JobServiceException {
         // given
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, 15);
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
         // newly created job is disabled by default, means active = false
         long savedNpingTCPJobId = this.jobService.createNpingTCPJob(npingTCPJob);
 
@@ -134,8 +141,9 @@ public class NpingJobServiceTests {
         // given
         // prepare TCP listener on port 4002
         // implicitly done be SpringBootIntegration, see dev.pulceo.pna.config.TcpConfig
-        int recurrence = 15;
-        NpingTCPJob npingTCPJob = new NpingTCPJob("localhost", "localhost", 4002, NpingClientProtocol.TCP, recurrence);
+        // given
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingTCPJob npingTCPJob = new NpingTCPJob(npingRequest, 15);
         long id = this.jobService.createNpingTCPJob(npingTCPJob);
 
         // when

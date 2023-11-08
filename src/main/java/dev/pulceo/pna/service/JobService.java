@@ -116,7 +116,7 @@ public class JobService {
         long retrievedNpingTCPJobId = retrievedNpingTCPJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingTCPJob.getDestinationHost());
+                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingTCPJob.getNpingRequest().getDestinationHost());
                 this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
             } catch (DelayServiceException e) {
                 throw new RuntimeException(e);

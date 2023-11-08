@@ -46,7 +46,7 @@ public class Link extends Resource  {
     }
 
     public void setNpingJob(NpingTCPJob npingTCPJob) {
-        if (npingTCPJob.getNpingClientProtocol() == NpingClientProtocol.TCP) {
+        if (npingTCPJob.getNpingRequest().getNpingClientProtocol() == NpingClientProtocol.TCP) {
             this.setNpingTCPJob(npingTCPJob);
         } else {
             this.setNpingUDPJob(npingTCPJob);

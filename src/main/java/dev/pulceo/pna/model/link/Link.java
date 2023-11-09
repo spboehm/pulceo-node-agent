@@ -16,16 +16,11 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"jobs"})
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @NamedEntityGraph(
         name = "graph.Link.jobs",
         attributeNodes = {
-                @NamedAttributeNode("name"),
-                @NamedAttributeNode("resourceType"),
-                @NamedAttributeNode("linkDirectionType"),
-                @NamedAttributeNode("srcId"),
-                @NamedAttributeNode("destId"),
                 @NamedAttributeNode("jobs")
         }
 )
@@ -35,7 +30,7 @@ public class Link extends Resource  {
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     private long srcId;
     private long destId;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Job> jobs = new ArrayList<>();
 
     public Link(String name, ResourceType resourceType, long srcId, long destId) {
@@ -47,28 +42,6 @@ public class Link extends Resource  {
 
     public void addJob(Job job) {
         this.jobs.add(job);
-        job.setLink(this);
     }
-//
-//    public boolean jobExists(Job job) {
-//        return this.jobs.contains(job);
-//    }
-
-//    public void setNpingJob(NpingJob npingJob) {
-//        if (npingJob.getNpingRequest().getNpingClientProtocol() == NpingClientProtocol.TCP) {
-//            this.setNpingTCPJob(npingJob);
-//        } else {
-//            this.setNpingUDPJob(npingJob);
-//        }
-//    }
-//
-//    public void setIperfJob(IperfJob iperfJob) {
-//        if (iperfJob.getIperfRequest().getIperfClientProtocol() == IperfClientProtocol.TCP) {
-//            this.setIperfTCPJob(iperfJob);
-//        } else {
-//            this.setIperfUDPJob(iperfJob);
-//        }
-//
-//    }
 
 }

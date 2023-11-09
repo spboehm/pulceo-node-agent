@@ -96,7 +96,8 @@ public class LinkServiceIntegrationTests {
     }
 
     @Test
-    public void testAddPingJobJobToExistingLink() throws LinkServiceException, JobServiceException {
+    // only the associated jobs are loaded from the db, PingRequest is not loaded
+    public void testAddPingJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
         long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
         long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
@@ -113,102 +114,13 @@ public class LinkServiceIntegrationTests {
         // then
         Optional<Link> updatedLink = this.linkService.readLink(linkId);
         assertTrue(updatedLink.isPresent());
-        assertNotNull(updatedLink.get().getJobs());
+        Link actualLink = updatedLink.get();
+        assertEquals(testLink1.getName(), actualLink.getName());
+        assertEquals(testLink1.getResourceType(), actualLink.getResourceType());
+        assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
+        assertEquals(testLink1.getSrcId(), actualLink.getSrcId());
+        assertEquals(testLink1.getDestId(), actualLink.getDestId());
         assertFalse(updatedLink.get().getJobs().isEmpty());
-        System.out.println(updatedLink.get().getJobs());
     }
-
-//    @Test
-//    public void testAddNpingJobWithTCPToExistingLink() throws LinkServiceException, JobServiceException {
-//        // given
-//        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-//        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
-//        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
-//        long linkId = this.linkService.createLink(testLink1);
-//
-//        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
-//        NpingJob npingJob = new NpingJob(npingRequest, 15);
-//        long npingJobId = this.jobService.createNpingJob(npingJob);
-//
-//        // when
-//        this.linkService.addJobToLink(linkId, npingJobId);
-//
-//        // then
-//        Optional<Link> updatedLink = this.linkService.readLink(linkId);
-//        assertTrue(updatedLink.isPresent());
-//        NpingJob updatedNpingJob = updatedLink.get().getNpingTCPJob();
-//        assertEquals(npingJobId, updatedNpingJob.getId());
-//        assertEquals(npingJob, updatedNpingJob);
-//    }
-
-//    @Test
-//    public void testAddNpingJobWithUDPToExistingLink() throws LinkServiceException, JobServiceException {
-//        // given
-//        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-//        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
-//        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
-//        long linkId = this.linkService.createLink(testLink1);
-//
-//        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.UDP, 1, "lo");
-//        NpingJob npingJob = new NpingJob(npingRequest, 15);
-//        long npingJobId = this.jobService.createNpingJob(npingJob);
-//
-//        // when
-//        this.linkService.addJobToLink(linkId, npingJobId);
-//
-//        // then
-//        Optional<Link> updatedLink = this.linkService.readLink(linkId);
-//        assertTrue(updatedLink.isPresent());
-//        NpingJob updatedNpingJob = updatedLink.get().getNpingUDPJob();
-//        assertEquals(npingJobId, updatedNpingJob.getId());
-//        assertEquals(npingJob, updatedNpingJob);
-//    }
-
-//    @Test
-//    public void testAddIperfJobWithTCPToExistingLink() throws LinkServiceException, JobServiceException {
-//        // given
-//        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-//        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
-//        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
-//        long linkId = this.linkService.createLink(testLink1);
-//
-//        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, "lo");
-//        IperfJob iperfJob = new IperfJob(iperfRequest, 15);
-//        long iperfJobId = this.jobService.createIperfJob(iperfJob);
-//
-//        // when
-//        this.linkService.addJobToLink(linkId, iperfJobId);
-//
-//        // then
-//        Optional<Link> updatedLink = this.linkService.readLink(linkId);
-//        assertTrue(updatedLink.isPresent());
-//        IperfJob updatedIperfJob = updatedLink.get().getIperfTCPJob();
-//        assertEquals(iperfJobId, updatedIperfJob.getId());
-//        assertEquals(iperfJob, updatedIperfJob);
-//    }
-
-//    @Test
-//    public void testAddIperfJobWithUDPToExistingLink() throws LinkServiceException, JobServiceException {
-//        // given
-//        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-//        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
-//        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
-//        long linkId = this.linkService.createLink(testLink1);
-//
-//        IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.UDP, "lo");
-//        IperfJob iperfJob = new IperfJob(iperfRequest, 15);
-//
-//        long iperfJobId = this.jobService.createIperfJob(iperfJob);
-//
-//        // when
-//        this.linkService.addJobToLink(linkId, iperfJobId);
-//
-//        // then
-//        Optional<Link> updatedLink = this.linkService.readLink(linkId);
-//        assertTrue(updatedLink.isPresent());
-//        IperfJob updatedIperfJob = updatedLink.get().getIperfUDPJob();
-//        assertEquals(iperfJobId, updatedIperfJob.getId());
-//        assertEquals(iperfJob, updatedIperfJob);
-//    }
 
 }

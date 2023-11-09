@@ -2,13 +2,11 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
-import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.Job;
-import dev.pulceo.pna.model.jobs.NpingJob;
-import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.repository.LinkRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +47,7 @@ public class LinkService {
 
     public Optional<Link> readLinkByDestNode(long id) { return this.linkRepository.findLinkByDestId(id); }
 
+    @Transactional
     public void addJobToLink(long linkId, long jobId) throws LinkServiceException, JobServiceException {
         // TODO: check if link exists AND check if job exists AND if job is not already allocated?
         Optional<Link> link = this.readLink(linkId);
@@ -66,16 +65,8 @@ public class LinkService {
         } else {
             Link linkToBeUpdated = link.get();
             Job readJob = job.get();
-
-            switch (readJob.getClass().getSimpleName()) {
-                // TODO: check if job can be assigned
-                case "PingJob": linkToBeUpdated.setPingJob((PingJob) readJob); break;
-                case "NpingJob":  linkToBeUpdated.setNpingJob((NpingJob) readJob); break;
-                case "IperfJob": linkToBeUpdated.setIperfJob((IperfJob) readJob); break;
-                // TODO: add the other job types
-                default:
-                    throw new LinkServiceException("Job with id %d could not be added because the type was not found".formatted(jobId));
-            }
+            // TODO: check if job exists
+            linkToBeUpdated.addJob(readJob);
             this.linkRepository.save(linkToBeUpdated);
         }
     }

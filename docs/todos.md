@@ -149,7 +149,7 @@
 - [ ] add additional error cases of failed Iperf3 Measurements
 - [x] Add missing tests for `PingJobServiceTests`
 - [ ] `LinkServiceUnitTests` misses proper configuration of `properties`. Consider excluding external dependencies completely.
-
+- [ ] Consider renaming `read` to `retrieved`, e.g., in `LinkService`
 ## Package config
 
 - [ ] Adjust naming of variables inside configuration classes

@@ -2,7 +2,7 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.*;
+import dev.pulceo.pna.model.iperf.*;
 import dev.pulceo.pna.service.IperfService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

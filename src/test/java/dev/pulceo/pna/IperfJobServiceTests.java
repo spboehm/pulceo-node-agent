@@ -1,9 +1,9 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.JobServiceException;
-import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import dev.pulceo.pna.model.iperf3.IperfRequest;
-import dev.pulceo.pna.model.iperf3.IperfResult;
+import dev.pulceo.pna.model.iperf.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf.IperfRequest;
+import dev.pulceo.pna.model.iperf.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.service.IperfService;
 import dev.pulceo.pna.service.JobService;

@@ -4,7 +4,7 @@ import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.PingServiceException;
-import dev.pulceo.pna.model.iperf3.IperfResult;
+import dev.pulceo.pna.model.iperf.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.jobs.NpingJob;

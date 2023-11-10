@@ -1,10 +1,10 @@
 package dev.pulceo.pna.iperf3;
 
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.iperf3.IperfBandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import dev.pulceo.pna.model.iperf3.IperfRole;
-import dev.pulceo.pna.model.iperf3.IperfUDPBandwidthMeasurement;
+import dev.pulceo.pna.model.iperf.IperfBandwidthMeasurement;
+import dev.pulceo.pna.model.iperf.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf.IperfRole;
+import dev.pulceo.pna.model.iperf.IperfUDPBandwidthMeasurement;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.junit.jupiter.api.Test;

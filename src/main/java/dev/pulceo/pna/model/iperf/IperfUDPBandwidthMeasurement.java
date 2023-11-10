@@ -1,4 +1,4 @@
-package dev.pulceo.pna.model.iperf3;
+package dev.pulceo.pna.model.iperf;
 
 import jakarta.persistence.Entity;
 import lombok.Data;

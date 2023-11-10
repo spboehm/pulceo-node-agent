@@ -1,9 +1,9 @@
 package dev.pulceo.pna.util;
 
-import dev.pulceo.pna.model.iperf3.IperfBandwidthMeasurement;
-import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import dev.pulceo.pna.model.iperf3.IperfRole;
-import dev.pulceo.pna.model.iperf3.IperfUDPBandwidthMeasurement;
+import dev.pulceo.pna.model.iperf.IperfBandwidthMeasurement;
+import dev.pulceo.pna.model.iperf.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf.IperfRole;
+import dev.pulceo.pna.model.iperf.IperfUDPBandwidthMeasurement;
 
 import java.util.List;
 

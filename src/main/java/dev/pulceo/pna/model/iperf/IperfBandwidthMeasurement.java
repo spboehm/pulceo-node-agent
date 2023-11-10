@@ -1,4 +1,4 @@
-package dev.pulceo.pna.model.iperf3;
+package dev.pulceo.pna.model.iperf;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

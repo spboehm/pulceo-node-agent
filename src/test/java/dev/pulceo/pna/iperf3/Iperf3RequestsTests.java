@@ -1,8 +1,8 @@
 package dev.pulceo.pna.iperf3;
 
-import dev.pulceo.pna.model.iperf3.IperfClientProtocol;
-import dev.pulceo.pna.model.iperf3.IperfRequest;
-import dev.pulceo.pna.model.iperf3.IperfServerCmd;
+import dev.pulceo.pna.model.iperf.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf.IperfRequest;
+import dev.pulceo.pna.model.iperf.IperfServerCmd;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

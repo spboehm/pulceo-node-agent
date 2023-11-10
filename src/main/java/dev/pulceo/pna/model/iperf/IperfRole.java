@@ -1,4 +1,4 @@
-package dev.pulceo.pna.model.iperf3;
+package dev.pulceo.pna.model.iperf;
 
 public enum IperfRole {
     SENDER, RECEIVER;

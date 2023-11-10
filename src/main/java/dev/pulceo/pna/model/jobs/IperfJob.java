@@ -1,6 +1,6 @@
 package dev.pulceo.pna.model.jobs;
 
-import dev.pulceo.pna.model.iperf3.IperfRequest;
+import dev.pulceo.pna.model.iperf.IperfRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

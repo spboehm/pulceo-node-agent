@@ -99,7 +99,7 @@ public class MQTTConfig {
         MqttPahoMessageHandler messageHandler =
                 new MqttPahoMessageHandler(deviceId, mqttClientFactory());
         messageHandler.setAsync(true);
-        messageHandler.setDefaultTopic(deviceId + "/");
+        messageHandler.setDefaultTopic("dt" + "/" + deviceId + "/");
         messageHandler.setConverter(new DefaultPahoMessageConverter());
         return messageHandler;
     }

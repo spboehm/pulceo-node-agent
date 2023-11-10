@@ -16,7 +16,9 @@ import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.repository.NpingTCPJobRepository;
 import dev.pulceo.pna.repository.PingJobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
@@ -68,6 +70,9 @@ public class JobService {
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> pingJobHashMap = new ConcurrentHashMap<>();
+
+    @Value("${pna.metrics.mqtt.topic}")
+    private String metricsMqttTopic;
 
     public Optional<Job> readJob(long id) throws JobServiceException {
         Optional<Job> retrievedJob = this.jobRepository.findById(id);
@@ -232,7 +237,7 @@ public class JobService {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 PingResult pingResult = pingService.measureRoundTripTime(retrievedPingJob.getPingRequest());
-                this.pingServiceMessageChannel.send(new GenericMessage<>(pingResult));
+                this.pingServiceMessageChannel.send(new GenericMessage<>(pingResult, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (PingServiceException e) {
                 throw new RuntimeException(e);
             }

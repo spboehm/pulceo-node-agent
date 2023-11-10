@@ -30,7 +30,7 @@ public class Link extends Resource  {
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     private long srcId;
     private long destId;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Job> jobs = new ArrayList<>();
 
     public Link(String name, ResourceType resourceType, long srcId, long destId) {

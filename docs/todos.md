@@ -9,7 +9,8 @@
 - [ ] Add UUID
 - [ ] Nodes - ensure that the local node-idea is properly injected
 - [ ] Check `JPA mappings` in all `model` classes
-- 
+- [ ] Consider adding name of device to `Node` class
+
 ## Overall Issues
 
 - [ ] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)

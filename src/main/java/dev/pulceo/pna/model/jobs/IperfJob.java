@@ -3,11 +3,13 @@ package dev.pulceo.pna.model.jobs;
 import dev.pulceo.pna.model.iperf3.IperfRequest;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class IperfJob extends Job {
 
     @OneToOne(cascade = CascadeType.ALL)

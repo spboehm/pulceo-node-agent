@@ -42,6 +42,7 @@ public class Link extends Resource  {
 
     public void addJob(Job job) {
         this.jobs.add(job);
+        job.setLink(this);
     }
 
 }

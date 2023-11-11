@@ -55,28 +55,29 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 
 ```json
 {
-    "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
-    "metric": {
-        "jobUUID": "cec4c793-e736-4c38-863f-b7837e7e6ee0",
-        "metricType": "PING_ICMP",
-        "metricResult": {
-            "sourceHost": "localhost",
-            "destinationHost": "localhost",
-            "startTime": "2023-11-11T00:18:13.934144024Z",
-            "endTime": "2023-11-11T00:18:13.937368411Z",
-            "pingDelayMeasurement": {
-                "uuid": "95c19052-776a-4cfd-8a7b-5375fce6c8d3",
-                "packetsTransmitted": 1,
-                "packetsReceived": 1,
-                "packetLoss": 0.0,
-                "time": 0,
-                "rttMin": 0.038,
-                "rttAvg": 0.038,
-                "rttMax": 0.038,
-                "rttMdev": 0.0
-            }
-        }
+  "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
+  "metric": {
+    "metricUUID": "8fd3c6b8-4d4c-438f-8e28-e642d866a5c0",
+    "jobUUID": "d6093440-bf51-4e36-87c0-5c8026f4757f",
+    "metricType": "PING_ICMP",
+    "metricResult": {
+      "sourceHost": "localhost",
+      "destinationHost": "localhost",
+      "startTime": "2023-11-11T01:30:10.087823670Z",
+      "endTime": "2023-11-11T01:30:10.092789044Z",
+      "pingDelayMeasurement": {
+        "uuid": "615091cc-6bef-4949-931d-9ec61bd9a22f",
+        "packetsTransmitted": 1,
+        "packetsReceived": 1,
+        "packetLoss": 0.0,
+        "time": 0,
+        "rttMin": 0.042,
+        "rttAvg": 0.042,
+        "rttMax": 0.042,
+        "rttMdev": 0.0
+      }
     }
+  }
 }
 ```
 
@@ -86,18 +87,19 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 {
   "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
   "metric": {
-    "jobUUID": "f7c67590-1477-4437-aee9-c30678f23756",
+    "metricUUID": "0ad1545b-9058-4fd4-85ac-5dfddb6bc087",
+    "jobUUID": "56159fab-8aae-4e85-908d-58b337f108e2",
     "metricType": "NPING_TCP",
     "metricResult": {
       "sourceHost": "localhost",
       "destinationHost": "localhost",
-      "startTime": "2023-11-11T01:05:34.864834114Z",
-      "endTime": "2023-11-11T01:05:34.871928925Z",
+      "startTime": "2023-11-11T01:34:35.490202817Z",
+      "endTime": "2023-11-11T01:34:35.496742587Z",
       "npingTCPDelayMeasurement": {
-        "uuid": "6fc5d2b6-7644-41bc-b283-66a1cabb3972",
-        "maxRTT": 0.006,
-        "minRTT": 0.006,
-        "avgRTT": 0.006,
+        "uuid": "8bce9dba-1a6f-4f5a-8274-406ae877658b",
+        "maxRTT": 0.007,
+        "minRTT": 0.007,
+        "avgRTT": 0.007,
         "tcpConnectionAttempts": 1,
         "tcpSuccessfulConnections": 1,
         "tcpFailedConnectionsAbsolute": 0,

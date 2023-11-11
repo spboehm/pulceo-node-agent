@@ -129,6 +129,7 @@ public class JobService {
             try {
                 NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost());
                 NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(npingTCPResult.getUuid())
                         .metricType(npingTCPResult.getMetricType())
                         .jobUUID(retrievedNpingJob.getUuid())
                         .metricResult(npingTCPResult)
@@ -251,6 +252,7 @@ public class JobService {
             try {
                 PingResult pingResult = pingService.measureRoundTripTime(retrievedPingJob.getPingRequest());
                 NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(pingResult.getUuid())
                         .metricType(pingResult.getMetricType())
                         .jobUUID(retrievedPingJob.getUuid())
                         .metricResult(pingResult)

@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 public abstract class Metric {
-
+    private UUID metricUUID;
     private UUID jobUUID;
     private MetricType metricType;
 }

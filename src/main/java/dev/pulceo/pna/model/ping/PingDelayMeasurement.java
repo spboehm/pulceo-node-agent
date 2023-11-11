@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class PingDelayMeasurement extends Resource {
 
     private int packetsTransmitted;

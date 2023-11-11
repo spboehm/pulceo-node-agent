@@ -3,11 +3,13 @@ package dev.pulceo.pna.model.ping;
 import dev.pulceo.pna.model.Resource;
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class PingDelayMeasurement extends Resource {
 
     private int packetsTransmitted;

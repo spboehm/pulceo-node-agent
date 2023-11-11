@@ -152,9 +152,7 @@ public class NpingJobServiceTests {
         // when
         long localJobId = this.jobService.scheduleNpingJob(id);
         BlockingQueue<Message> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
-        this.delayServiceMessageChannel.subscribe(message -> {
-            npingTCPResultBlockingQueue.add((Message) message.getPayload());
-        });
+        this.delayServiceMessageChannel.subscribe(message -> npingTCPResultBlockingQueue.add((Message) message.getPayload()));
         this.jobService.cancelNpingTCPJob(localJobId);
         Message message = npingTCPResultBlockingQueue.take();
 

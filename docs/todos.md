@@ -10,6 +10,7 @@
 - [ ] Nodes - ensure that the local node-idea is properly injected
 - [ ] Check `JPA mappings` in all `model` classes
 - [ ] Consider adding name of device to `Node` class
+- [ ] Consider changing the attribute names for the json serialization
 
 ## Overall Issues
 
@@ -21,6 +22,7 @@
 - [ ] `Long` vs. `long`
 - [ ] Consider removing inherit `Repositories` in favor of `JobRepository`
 - [ ] Properly add `@Autowired` bean configuration
+- [ ] source and destination host should be removed from all Results and rather be added to the node.
 
 ## Package config
 
@@ -44,6 +46,7 @@
 - [ ] Prevent creating duplicated of Links
 - [ ] Check if there are proper references between `Link`s and `Job`s
 - [ ] Properly cross references between `Job`s and `Link`s 
+- [ ] Check the dependency of `Jobs` and `Links`
 
 ## BandwidthService 
 
@@ -100,7 +103,6 @@
 - [ ] Consider working with `Optional` for all read operations
 - [ ] Check if a (Network) Job can be created even without being attached to a link
 - [ ] Check if there are cross references between Jobs and links
-
 
 ## NpingUtils
 

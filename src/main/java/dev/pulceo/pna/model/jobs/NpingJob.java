@@ -24,4 +24,5 @@ public class NpingJob extends Job {
         this.npingRequest = npingRequest;
         this.recurrence = recurrence;
     }
+
 }

@@ -48,3 +48,34 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 ### Firewall
 
 * TCP/UDP, port 5000 - 5015 (depending on `pna.iperf3.max.server.instances` in `application.properties`)
+
+### Messages
+
+#### PingResult
+
+```json
+{
+    "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
+    "metric": {
+        "jobUUID": "cec4c793-e736-4c38-863f-b7837e7e6ee0",
+        "metricType": "PING_ICMP",
+        "metricResult": {
+            "sourceHost": "localhost",
+            "destinationHost": "localhost",
+            "startTime": "2023-11-11T00:18:13.934144024Z",
+            "endTime": "2023-11-11T00:18:13.937368411Z",
+            "pingDelayMeasurement": {
+                "uuid": "95c19052-776a-4cfd-8a7b-5375fce6c8d3",
+                "packetsTransmitted": 1,
+                "packetsReceived": 1,
+                "packetLoss": 0.0,
+                "time": 0,
+                "rttMin": 0.038,
+                "rttAvg": 0.038,
+                "rttMax": 0.038,
+                "rttMdev": 0.0
+            }
+        }
+    }
+}
+```

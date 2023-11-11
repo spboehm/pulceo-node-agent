@@ -1,19 +1,15 @@
 package dev.pulceo.pna.model.ping;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import dev.pulceo.pna.model.Resource;
+import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class PingDelayMeasurement {
+public class PingDelayMeasurement extends Resource {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Long id;
     private int packetsTransmitted;
     private int packetsReceived;
     private float packetLoss;

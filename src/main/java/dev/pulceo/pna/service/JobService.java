@@ -9,6 +9,8 @@ import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
+import dev.pulceo.pna.model.message.Message;
+import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
@@ -73,6 +75,9 @@ public class JobService {
 
     @Value("${pna.metrics.mqtt.topic}")
     private String metricsMqttTopic;
+
+    @Value("${pna.id}")
+    private String deviceId;
 
     public Optional<Job> readJob(long id) throws JobServiceException {
         Optional<Job> retrievedJob = this.jobRepository.findById(id);
@@ -237,7 +242,14 @@ public class JobService {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 PingResult pingResult = pingService.measureRoundTripTime(retrievedPingJob.getPingRequest());
-                this.pingServiceMessageChannel.send(new GenericMessage<>(pingResult, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricType(pingResult.getMetricType())
+                        .jobUUID(retrievedPingJob.getUuid())
+                        .metricResult(pingResult)
+                        .build();
+
+                Message message = new Message(deviceId, networkMetric);
+                this.pingServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (PingServiceException e) {
                 throw new RuntimeException(e);
             }

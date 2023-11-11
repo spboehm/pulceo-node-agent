@@ -2,11 +2,13 @@ package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.model.jobs.NpingJob;
+import dev.pulceo.pna.model.message.Message;
+import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingRequest;
-import dev.pulceo.pna.model.nping.NpingTCPResult;
-import dev.pulceo.pna.service.NpingService;
+import dev.pulceo.pna.model.nping.NpingTCPDelayMeasurement;
 import dev.pulceo.pna.service.JobService;
+import dev.pulceo.pna.service.NpingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -148,24 +151,28 @@ public class NpingJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleNpingJob(id);
-        BlockingQueue<NpingTCPResult> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
         this.delayServiceMessageChannel.subscribe(message -> {
-            npingTCPResultBlockingQueue.add((NpingTCPResult) message.getPayload());
+            npingTCPResultBlockingQueue.add((Message) message.getPayload());
         });
         this.jobService.cancelNpingTCPJob(localJobId);
-        NpingTCPResult npingTCPResult = npingTCPResultBlockingQueue.take();
+        Message message = npingTCPResultBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        NpingTCPDelayMeasurement npingTCPDelayMeasurement = (NpingTCPDelayMeasurement) map.get("npingTCPDelayMeasurement");
 
         // then
-        assertNotNull(npingTCPResult);
-        assert("localhost".equals(npingTCPResult.getSourceHost()));
-        assert("localhost".equals(npingTCPResult.getDestinationHost()));
-        assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMaxRTT() > 0);
-        assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMinRTT() > 0);
-        assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getAvgRTT() > 0);
-        assertEquals(1, npingTCPResult.getNpingTCPDelayMeasurement().getTcpConnectionAttempts());
-        assertEquals(1, npingTCPResult.getNpingTCPDelayMeasurement().getTcpSuccessfulConnections());
-        assertEquals(0, npingTCPResult.getNpingTCPDelayMeasurement().getTcpFailedConnectionsAbsolute());
-        assertEquals(0, npingTCPResult.getNpingTCPDelayMeasurement().getTcpFailedConnectionsRelative());
+        assertNotNull(message);
+        assert("localhost".equals(map.get("sourceHost")));
+        assert("localhost".equals(map.get("destinationHost")));
+        assertTrue(npingTCPDelayMeasurement.getMaxRTT() > 0);
+        assertTrue(npingTCPDelayMeasurement.getMinRTT() > 0);
+        assertTrue(npingTCPDelayMeasurement.getAvgRTT() > 0);
+        assertEquals(1, npingTCPDelayMeasurement.getTcpConnectionAttempts());
+        assertEquals(1, npingTCPDelayMeasurement.getTcpSuccessfulConnections());
+        assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsAbsolute());
+        assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsRelative());
     }
 
 }

@@ -58,6 +58,7 @@ public class JobService {
     @Autowired
     private PingService pingService;
 
+    // TODO: resolve that delayService and pingService is ambigious
     // TODO: consider renaming to job-related semantics
     @Autowired
     PublishSubscribeChannel delayServiceMessageChannel;
@@ -127,7 +128,14 @@ public class JobService {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost());
-                this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult));
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricType(npingTCPResult.getMetricType())
+                        .jobUUID(retrievedNpingJob.getUuid())
+                        .metricResult(npingTCPResult)
+                        .build();
+
+                Message message = new Message(deviceId, networkMetric);
+                this.delayServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (DelayServiceException e) {
                 throw new RuntimeException(e);
             }

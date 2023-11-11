@@ -1,19 +1,25 @@
 package dev.pulceo.pna.model.nping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import dev.pulceo.pna.model.Resource;
+import dev.pulceo.pna.model.message.MetricResult;
+import dev.pulceo.pna.model.message.MetricType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
+import java.util.UUID;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class NpingTCPResult {
+@EqualsAndHashCode(callSuper = true, exclude = {"npingTCPDelayMeasurement"})
+public class NpingTCPResult extends Resource implements MetricResult {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Long id;
     private String sourceHost;
     private String destinationHost;
     private String startTime;
@@ -27,5 +33,29 @@ public class NpingTCPResult {
         this.startTime = startTime;
         this.endTime = endTime;
         this.npingTCPDelayMeasurement = npingTCPDelayMeasurement;
+    }
+
+    @Override
+    @JsonIgnore
+    public UUID getUUID() {
+        return super.getUuid();
+    }
+
+    @Override
+    @JsonIgnore
+    public MetricType getMetricType() {
+        return MetricType.NPING_TCP;
+    }
+
+    @Override
+    @JsonIgnore
+    public Map<String, Object> getResultData() {
+        return Map.of(
+                "sourceHost", sourceHost,
+                "destinationHost", destinationHost,
+                "startTime", startTime,
+                "endTime", endTime,
+                "npingTCPDelayMeasurement", npingTCPDelayMeasurement
+        );
     }
 }

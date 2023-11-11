@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = {"pingDelayMeasurement"})
 public class PingResult extends Resource implements MetricResult {
 
     private String sourceHost;

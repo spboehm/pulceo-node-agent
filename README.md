@@ -79,3 +79,31 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
     }
 }
 ```
+
+### NpingTCPResult
+
+```json
+{
+  "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
+  "metric": {
+    "jobUUID": "f7c67590-1477-4437-aee9-c30678f23756",
+    "metricType": "NPING_TCP",
+    "metricResult": {
+      "sourceHost": "localhost",
+      "destinationHost": "localhost",
+      "startTime": "2023-11-11T01:05:34.864834114Z",
+      "endTime": "2023-11-11T01:05:34.871928925Z",
+      "npingTCPDelayMeasurement": {
+        "uuid": "6fc5d2b6-7644-41bc-b283-66a1cabb3972",
+        "maxRTT": 0.006,
+        "minRTT": 0.006,
+        "avgRTT": 0.006,
+        "tcpConnectionAttempts": 1,
+        "tcpSuccessfulConnections": 1,
+        "tcpFailedConnectionsAbsolute": 0,
+        "tcpFailedConnectionsRelative": 0.0
+      }
+    }
+  }
+}
+```

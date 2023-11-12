@@ -16,7 +16,11 @@ public class NodeServiceTests {
     @Test
     public void testCreateNode() {
         // given
-        Node node = new Node("test-node", "Germany", "Bamberg");
+       Node node = Node.builder()
+               .name("test node")
+               .nodeLocationCity("Bamberg")
+               .nodeLocationCountry("Germany")
+               .build();
 
         // when
         long id = this.nodeService.createNode(node);

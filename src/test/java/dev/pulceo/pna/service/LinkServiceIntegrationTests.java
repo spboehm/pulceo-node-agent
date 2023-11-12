@@ -35,11 +35,28 @@ public class LinkServiceIntegrationTests {
     @Autowired
     JobService jobService;
 
+    private static Node createTestSrcNode() {
+        return Node.builder().
+                name("testSrcNode")
+                .nodeLocationCountry("Germany")
+                .nodeLocationCity("Bamberg")
+                .build();
+    }
+
+    private static Node createTestDestNode() {
+        return Node.builder().
+                name("testDestNode")
+                .nodeLocationCountry("Germany")
+                .nodeLocationCity("Bamberg")
+                .build();
+    }
+
     @Test
     public void testCreateLinkWithExistingNodes() throws LinkServiceException {
         // given
-        long srcNodeId = nodeService.createNode(new Node("testSrcNode", "Germany", "Bamberg"));
-        long destNodeId = nodeService.createNode(new Node("testDestNode", "Germany", "Bamberg"));
+        System.out.println(createTestSrcNode());
+        long srcNodeId = nodeService.createNode(createTestSrcNode());
+        long destNodeId = nodeService.createNode(createTestDestNode());
         Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
 
         // when
@@ -52,8 +69,8 @@ public class LinkServiceIntegrationTests {
     @Test
     public void testReadLink() throws LinkServiceException {
         // given
-        long srcNodeId = nodeService.createNode(new Node("testSrcNode", "Germany", "Bamberg"));
-        long destNodeId = nodeService.createNode(new Node("testDestNode", "Germany", "Bamberg"));
+        long srcNodeId = nodeService.createNode(createTestSrcNode());
+        long destNodeId = nodeService.createNode(createTestDestNode());
         Link expectedLink = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
         long createdLinkId = this.linkService.createLink(expectedLink);
 
@@ -67,12 +84,20 @@ public class LinkServiceIntegrationTests {
     @Test
     public void testReadAllLinks() throws LinkServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
+        long firstDestNodeId = nodeService.createNode(createTestDestNode());
         Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
         this.linkService.createLink(testLink1);
-        long secondSrcNodeId = nodeService.createNode(new Node("testSrcNode2", "Germany", "Erlangen"));
-        long secondDestNodeId = nodeService.createNode(new Node("testDestNode2", "Germany", "Erlangen"));
+        long secondSrcNodeId = nodeService.createNode(Node.builder()
+                .name("testSrcNode2")
+                .nodeLocationCountry("Germany")
+                .nodeLocationCity("Erlangen")
+                .build());
+        long secondDestNodeId = nodeService.createNode(Node.builder()
+                .name("testDestNode2")
+                .nodeLocationCountry("Germany")
+                .nodeLocationCity("Erlangen")
+                .build());
         Link testLink2 = new Link("testLink2", ResourceType.NODE, secondSrcNodeId, secondDestNodeId);
         this.linkService.createLink(testLink2);
 
@@ -87,8 +112,8 @@ public class LinkServiceIntegrationTests {
     @Test
     public void testReadLinkByDestNodeWithExistingDestNode() throws LinkServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
+        long firstDestNodeId = nodeService.createNode(createTestDestNode());
         Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
         this.linkService.createLink(testLink1);
 
@@ -105,8 +130,8 @@ public class LinkServiceIntegrationTests {
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddPingJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
+        long firstDestNodeId = nodeService.createNode(createTestDestNode());
         Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
         long linkId = this.linkService.createLink(testLink1);
 
@@ -133,8 +158,8 @@ public class LinkServiceIntegrationTests {
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddNPingJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
+        long firstDestNodeId = nodeService.createNode(createTestDestNode());
         Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
         long linkId = this.linkService.createLink(testLink1);
 
@@ -161,8 +186,8 @@ public class LinkServiceIntegrationTests {
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddIperfJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(new Node("testSrcNode1", "Germany", "Bamberg"));
-        long firstDestNodeId = nodeService.createNode(new Node("testDestNode1", "Germany", "Bamberg"));
+        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
+        long firstDestNodeId = nodeService.createNode(createTestDestNode());
         Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
         long linkId = this.linkService.createLink(testLink1);
 

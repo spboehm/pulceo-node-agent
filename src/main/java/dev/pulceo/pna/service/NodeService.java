@@ -14,6 +14,7 @@ public class NodeService {
     NodeRepository nodeRepository;
 
     public long createNode(Node node) {
+        // TODO: add further validation, throw exception in case a problem arises
         return this.nodeRepository.save(node).getId();
     }
 

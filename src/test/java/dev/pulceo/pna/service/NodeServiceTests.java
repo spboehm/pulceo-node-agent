@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class NodeServiceTests {
@@ -23,10 +23,10 @@ public class NodeServiceTests {
                .build();
 
         // when
-        long id = this.nodeService.createNode(node);
+        Node createdNode = this.nodeService.createNode(node);
 
         // then
-        assertTrue(id > 0);
+        assertEquals(node, createdNode);
     }
 
     // TODO: add read node

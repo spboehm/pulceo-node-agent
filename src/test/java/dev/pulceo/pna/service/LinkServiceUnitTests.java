@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.Util;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.link.Link;
@@ -30,10 +31,10 @@ public class LinkServiceUnitTests {
     @Test
     public void testCreateLinkWithNotExistingSrcNode() throws LinkServiceException {
         // given
-        long srcNodeId = 1;
-        long destNodeId = 2;
-        Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
-        when(nodeService.readNode(srcNodeId)).thenReturn(Optional.empty());
+        Node srcNode = Util.createTestSrcNodeWithId(1L);
+        Node destNode = Util.createTestDestNodeWithId(2L);
+        Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
+        when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.empty());
 
         // when
         LinkServiceException linkServiceException = assertThrows(LinkServiceException.class, () -> {
@@ -47,11 +48,12 @@ public class LinkServiceUnitTests {
     @Test
     public void testCreateLinkWithNotExistingDestNode() throws LinkServiceException {
         // given
-        long srcNodeId = 1;
-        long destNodeId = 2;
-        Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
-        when(nodeService.readNode(srcNodeId)).thenReturn(Optional.of(new Node()));
-        when(nodeService.readNode(destNodeId)).thenReturn(Optional.empty());
+        Node srcNode = Util.createTestSrcNodeWithId(1L);
+        Node destNode = Util.createTestDestNodeWithId(2L);
+        System.out.println(destNode.getId());
+        Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
+        when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.of(srcNode));
+        when(nodeService.readNode(destNode.getId())).thenReturn(Optional.empty());
 
         // when
         LinkServiceException linkServiceException = assertThrows(LinkServiceException.class, () -> {
@@ -65,11 +67,11 @@ public class LinkServiceUnitTests {
     @Test
     public void testReadLinkByDestNodeWithNotExistingNode() {
         // given
-        long destNodeId = 2;
-        when(nodeService.readNode(destNodeId)).thenReturn(Optional.empty());
+        Node destNode = Util.createTestDestNodeWithId(1L);
+        when(nodeService.readNode(destNode.getId())).thenReturn(Optional.empty());
 
         // when
-        Optional<Link> link = this.linkService.readLinkByDestNode(destNodeId);
+        Optional<Link> link = this.linkService.readLinkByDestNode(destNode);
 
         // then
         assertTrue(link.isEmpty());

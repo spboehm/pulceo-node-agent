@@ -19,10 +19,16 @@
 - [ ] Implement support for IPv6 
 - [ ] SourceHost should be removed from `PingRequest`, `IperfRequest`, and `NpingReqeuest` 
 - [ ] Consider using `Optional` for all read operations in service classes
+- [ ] Consider returning the Object in all service classes for create operations
+  - [ ] `NodeService`
+  - 
 - [ ] `Long` vs. `long`
 - [ ] Consider removing inherit `Repositories` in favor of `JobRepository`
 - [ ] Properly add `@Autowired` bean configuration
 - [ ] source and destination host should be removed from all Results and rather be added to the node.
+- [ ] Implement builder pattern for all model classes
+- [ ] Set cascade type for @OneToOne relationships in `Link` class
+- 
 
 ## Package config
 

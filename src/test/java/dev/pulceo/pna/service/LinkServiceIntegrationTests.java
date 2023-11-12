@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.Util;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
@@ -55,9 +56,9 @@ public class LinkServiceIntegrationTests {
     public void testCreateLinkWithExistingNodes() throws LinkServiceException {
         // given
         System.out.println(createTestSrcNode());
-        long srcNodeId = nodeService.createNode(createTestSrcNode());
-        long destNodeId = nodeService.createNode(createTestDestNode());
-        Link link = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
+        Node srcNode = nodeService.createNode(Util.createTestSrcNode());
+        Node destNode = nodeService.createNode(Util.createTestDestNode());
+        Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
 
         // when
         long id = this.linkService.createLink(link);
@@ -69,9 +70,9 @@ public class LinkServiceIntegrationTests {
     @Test
     public void testReadLink() throws LinkServiceException {
         // given
-        long srcNodeId = nodeService.createNode(createTestSrcNode());
-        long destNodeId = nodeService.createNode(createTestDestNode());
-        Link expectedLink = new Link("testLink", ResourceType.NODE, srcNodeId, destNodeId);
+        Node srcNode = nodeService.createNode(createTestSrcNode());
+        Node destNode = nodeService.createNode(createTestDestNode());
+        Link expectedLink = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         long createdLinkId = this.linkService.createLink(expectedLink);
 
         // when
@@ -84,21 +85,21 @@ public class LinkServiceIntegrationTests {
     @Test
     public void testReadAllLinks() throws LinkServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
-        long firstDestNodeId = nodeService.createNode(createTestDestNode());
-        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        Node srcNode = nodeService.createNode(createTestSrcNode());
+        Node destNode = nodeService.createNode(createTestDestNode());
+        Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         this.linkService.createLink(testLink1);
-        long secondSrcNodeId = nodeService.createNode(Node.builder()
+        Node secondSrcNode = nodeService.createNode(Node.builder()
                 .name("testSrcNode2")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Erlangen")
                 .build());
-        long secondDestNodeId = nodeService.createNode(Node.builder()
+        Node secondDestNode = nodeService.createNode(Node.builder()
                 .name("testDestNode2")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Erlangen")
                 .build());
-        Link testLink2 = new Link("testLink2", ResourceType.NODE, secondSrcNodeId, secondDestNodeId);
+        Link testLink2 = new Link("testLink2", ResourceType.NODE, secondSrcNode, secondDestNode);
         this.linkService.createLink(testLink2);
 
         // when
@@ -112,13 +113,13 @@ public class LinkServiceIntegrationTests {
     @Test
     public void testReadLinkByDestNodeWithExistingDestNode() throws LinkServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
-        long firstDestNodeId = nodeService.createNode(createTestDestNode());
-        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        Node srcNode = nodeService.createNode(createTestSrcNode());
+        Node destNode = nodeService.createNode(createTestDestNode());
+        Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         this.linkService.createLink(testLink1);
 
         // when
-        Optional<Link> link = this.linkService.readLinkByDestNode(firstDestNodeId);
+        Optional<Link> link = this.linkService.readLinkByDestNode(destNode);
 
 
         // then
@@ -130,9 +131,9 @@ public class LinkServiceIntegrationTests {
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddPingJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
-        long firstDestNodeId = nodeService.createNode(createTestDestNode());
-        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        Node srcNode = nodeService.createNode(createTestSrcNode());
+        Node destNode = nodeService.createNode(createTestDestNode());
+        Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         long linkId = this.linkService.createLink(testLink1);
 
         PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
@@ -149,8 +150,8 @@ public class LinkServiceIntegrationTests {
         assertEquals(testLink1.getName(), actualLink.getName());
         assertEquals(testLink1.getResourceType(), actualLink.getResourceType());
         assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
-        assertEquals(testLink1.getSrcId(), actualLink.getSrcId());
-        assertEquals(testLink1.getDestId(), actualLink.getDestId());
+        assertEquals(testLink1.getSrcNode(), actualLink.getSrcNode());
+        assertEquals(testLink1.getDestNode(), actualLink.getDestNode());
         assertFalse(updatedLink.get().getJobs().isEmpty());
     }
 
@@ -158,9 +159,9 @@ public class LinkServiceIntegrationTests {
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddNPingJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
-        long firstDestNodeId = nodeService.createNode(createTestDestNode());
-        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        Node srcNode = nodeService.createNode(createTestSrcNode());
+        Node destNode = nodeService.createNode(createTestDestNode());
+        Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         long linkId = this.linkService.createLink(testLink1);
 
         NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
@@ -177,8 +178,8 @@ public class LinkServiceIntegrationTests {
         assertEquals(testLink1.getName(), actualLink.getName());
         assertEquals(testLink1.getResourceType(), actualLink.getResourceType());
         assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
-        assertEquals(testLink1.getSrcId(), actualLink.getSrcId());
-        assertEquals(testLink1.getDestId(), actualLink.getDestId());
+        assertEquals(testLink1.getSrcNode(), actualLink.getSrcNode());
+        assertEquals(testLink1.getDestNode(), actualLink.getDestNode());
         assertFalse(updatedLink.get().getJobs().isEmpty());
     }
 
@@ -186,9 +187,9 @@ public class LinkServiceIntegrationTests {
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddIperfJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given
-        long firstSrcNodeId = nodeService.createNode(createTestSrcNode());
-        long firstDestNodeId = nodeService.createNode(createTestDestNode());
-        Link testLink1 = new Link("testLink", ResourceType.NODE, firstSrcNodeId, firstDestNodeId);
+        Node srcNode = nodeService.createNode(createTestSrcNode());
+        Node destNode = nodeService.createNode(createTestDestNode());
+        Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         long linkId = this.linkService.createLink(testLink1);
 
         IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, "lo");
@@ -205,8 +206,8 @@ public class LinkServiceIntegrationTests {
         assertEquals(testLink1.getName(), actualLink.getName());
         assertEquals(testLink1.getResourceType(), actualLink.getResourceType());
         assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
-        assertEquals(testLink1.getSrcId(), actualLink.getSrcId());
-        assertEquals(testLink1.getDestId(), actualLink.getDestId());
+        assertEquals(testLink1.getSrcNode(), actualLink.getSrcNode());
+        assertEquals(testLink1.getDestNode(), actualLink.getDestNode());
         assertFalse(updatedLink.get().getJobs().isEmpty());
     }
 

@@ -13,9 +13,9 @@ public class NodeService {
     @Autowired
     NodeRepository nodeRepository;
 
-    public long createNode(Node node) {
+    public Node createNode(Node node) {
         // TODO: add further validation, throw exception in case a problem arises
-        return this.nodeRepository.save(node).getId();
+        return this.nodeRepository.save(node);
     }
 
     public Optional<Node> readNode(long id) {

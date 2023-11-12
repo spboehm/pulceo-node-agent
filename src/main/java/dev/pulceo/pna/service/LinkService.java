@@ -4,6 +4,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.link.Link;
+import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.repository.LinkRepository;
 import jakarta.transaction.Transactional;
@@ -29,10 +30,10 @@ public class LinkService {
     NodeService nodeService;
 
     public long createLink(Link link) throws LinkServiceException {
-        if (nodeService.readNode(link.getSrcId()).isEmpty()) {
-            throw new LinkServiceException("Source node with id %d does not exist!".formatted(link.getSrcId()));
-        } else if (nodeService.readNode(link.getDestId()).isEmpty()) {
-            throw new LinkServiceException("Destination node with id %d does not exist!".formatted(link.getDestId()));
+        if (nodeService.readNode(link.getSrcNode().getId()).isEmpty()) {
+            throw new LinkServiceException("Source node with id %d does not exist!".formatted(link.getSrcNode().getId()));
+        } else if (nodeService.readNode(link.getDestNode().getId()).isEmpty()) {
+            throw new LinkServiceException("Destination node with id %d does not exist!".formatted(link.getDestNode().getId()));
         }
         return this.linkRepository.save(link).getId();
     }
@@ -45,7 +46,7 @@ public class LinkService {
         return this.linkRepository.findAll();
     }
 
-    public Optional<Link> readLinkByDestNode(long id) { return this.linkRepository.findLinkByDestId(id); }
+    public Optional<Link> readLinkByDestNode(Node node) { return this.linkRepository.findLinkByDestNode(node); }
 
     @Transactional
     public void addJobToLink(long linkId, long jobId) throws LinkServiceException, JobServiceException {

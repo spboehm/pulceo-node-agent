@@ -1,6 +1,7 @@
 package dev.pulceo.pna.repository;
 
 import dev.pulceo.pna.model.link.Link;
+import dev.pulceo.pna.model.node.Node;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 
@@ -18,6 +19,6 @@ public interface LinkRepository extends CrudRepository<Link, Long> {
     @Override
     List<Link> findAll();
 
-    Optional<Link> findLinkByDestId(long id);
+    Optional<Link> findLinkByDestNode(Node destNode);
 
 }

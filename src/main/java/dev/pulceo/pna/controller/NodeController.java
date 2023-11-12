@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/nodes/")
+@RequestMapping("/api/v1/nodes")
 public class NodeController {
 
     @Autowired
     NodeService nodeService;
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Node> getNodeById(@PathVariable long id) {
         Optional<Node> node = this.nodeService.readNode(id);
         if (node.isPresent()) {
@@ -28,8 +28,7 @@ public class NodeController {
 
     @PostMapping("")
     public ResponseEntity<Node> createNode(Node node) {
-        long id = this.nodeService.createNode(node);
-        return new ResponseEntity<>(this.nodeService.readNode(id).get(), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.nodeService.createNode(node), HttpStatus.CREATED);
     }
 
 }

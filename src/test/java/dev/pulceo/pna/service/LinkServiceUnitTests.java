@@ -1,6 +1,6 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.Util;
+import dev.pulceo.pna.NodeUtil;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.link.Link;
@@ -31,8 +31,8 @@ public class LinkServiceUnitTests {
     @Test
     public void testCreateLinkWithNotExistingSrcNode() throws LinkServiceException {
         // given
-        Node srcNode = Util.createTestSrcNodeWithId(1L);
-        Node destNode = Util.createTestDestNodeWithId(2L);
+        Node srcNode = NodeUtil.createTestSrcNodeWithId(1L);
+        Node destNode = NodeUtil.createTestDestNodeWithId(2L);
         Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.empty());
 
@@ -48,8 +48,8 @@ public class LinkServiceUnitTests {
     @Test
     public void testCreateLinkWithNotExistingDestNode() throws LinkServiceException {
         // given
-        Node srcNode = Util.createTestSrcNodeWithId(1L);
-        Node destNode = Util.createTestDestNodeWithId(2L);
+        Node srcNode = NodeUtil.createTestSrcNodeWithId(1L);
+        Node destNode = NodeUtil.createTestDestNodeWithId(2L);
         System.out.println(destNode.getId());
         Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.of(srcNode));
@@ -67,7 +67,7 @@ public class LinkServiceUnitTests {
     @Test
     public void testReadLinkByDestNodeWithNotExistingNode() {
         // given
-        Node destNode = Util.createTestDestNodeWithId(1L);
+        Node destNode = NodeUtil.createTestDestNodeWithId(1L);
         when(nodeService.readNode(destNode.getId())).thenReturn(Optional.empty());
 
         // when

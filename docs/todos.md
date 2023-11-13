@@ -46,6 +46,9 @@
 ## NodeService
 
 - [ ] Prevent creating duplicates of Nodes
+- [ ] Add different strategies for adding a node
+  - [ ] Just by stating the endpoint (e.g., IP address) and an API-Token
+  - [ ] By using cloud providers with bootstrapping particular nodes
 
 ## LinkService
 

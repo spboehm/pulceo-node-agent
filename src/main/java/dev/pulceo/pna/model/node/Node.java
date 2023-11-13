@@ -47,4 +47,8 @@ public class Node extends Resource {
     @Max(90)
     private double nodeLocationLatitude = 0.000000;
 
+    @NotBlank(message="Node endpoint is required!")
+    // TODO: add validation for endpoint
+    private String endpoint;
+
 }

@@ -20,6 +20,7 @@ public class NodeServiceTests {
                .name("test node")
                .nodeLocationCity("Bamberg")
                .nodeLocationCountry("Germany")
+               .endpoint("http://localhost:7676")
                .build();
 
         // when

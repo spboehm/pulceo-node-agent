@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PulceoController {
 
-    @GetMapping("/delay/health")
+    @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok().build();
     }
-    
+
 }

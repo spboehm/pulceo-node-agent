@@ -6,7 +6,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.PingServiceException;
 import dev.pulceo.pna.model.iperf.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
-import dev.pulceo.pna.model.jobs.Job;
+import dev.pulceo.pna.model.jobs.LinkJob;
 import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.message.Message;
@@ -80,8 +80,8 @@ public class JobService {
     @Value("${pna.id}")
     private String deviceId;
 
-    public Optional<Job> readJob(long id) throws JobServiceException {
-        Optional<Job> retrievedJob = this.jobRepository.findById(id);
+    public Optional<LinkJob> readJob(long id) throws JobServiceException {
+        Optional<LinkJob> retrievedJob = this.jobRepository.findById(id);
         if (retrievedJob.isPresent()) {
             return retrievedJob;
         } else {

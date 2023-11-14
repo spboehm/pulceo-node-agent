@@ -2,7 +2,7 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
-import dev.pulceo.pna.model.jobs.Job;
+import dev.pulceo.pna.model.jobs.LinkJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.LinkRepository;
@@ -56,7 +56,7 @@ public class LinkService {
             throw new LinkServiceException("Link with id %d does not exist!".formatted(linkId));
         }
 
-        Optional<Job> job = this.jobService.readJob(jobId);
+        Optional<LinkJob> job = this.jobService.readJob(jobId);
         if (job.isEmpty()) {
             throw new LinkServiceException("Job with id %d does not exist!".formatted(jobId));
         }
@@ -65,9 +65,9 @@ public class LinkService {
             throw new LinkServiceException("Job with id %d is already allocated!".formatted(jobId));
         } else {
             Link linkToBeUpdated = link.get();
-            Job readJob = job.get();
+            LinkJob readLinkJob = job.get();
             // TODO: check if job exists
-            linkToBeUpdated.addJob(readJob);
+            linkToBeUpdated.addJob(readLinkJob);
             this.linkRepository.save(linkToBeUpdated);
         }
     }

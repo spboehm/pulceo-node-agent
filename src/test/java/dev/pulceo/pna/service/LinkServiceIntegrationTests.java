@@ -1,6 +1,6 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.NodeUtil;
+import dev.pulceo.pna.util.NodeUtil;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
@@ -127,7 +127,7 @@ public class LinkServiceIntegrationTests {
         assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
         assertEquals(testLink1.getSrcNode(), actualLink.getSrcNode());
         assertEquals(testLink1.getDestNode(), actualLink.getDestNode());
-        assertFalse(updatedLink.get().getJobs().isEmpty());
+        assertFalse(updatedLink.get().getLinkJobs().isEmpty());
     }
 
     @Test
@@ -155,7 +155,7 @@ public class LinkServiceIntegrationTests {
         assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
         assertEquals(testLink1.getSrcNode(), actualLink.getSrcNode());
         assertEquals(testLink1.getDestNode(), actualLink.getDestNode());
-        assertFalse(updatedLink.get().getJobs().isEmpty());
+        assertFalse(updatedLink.get().getLinkJobs().isEmpty());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class LinkServiceIntegrationTests {
         assertEquals(testLink1.getLinkDirectionType(), actualLink.getLinkDirectionType());
         assertEquals(testLink1.getSrcNode(), actualLink.getSrcNode());
         assertEquals(testLink1.getDestNode(), actualLink.getDestNode());
-        assertFalse(updatedLink.get().getJobs().isEmpty());
+        assertFalse(updatedLink.get().getLinkJobs().isEmpty());
     }
 
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class IperfJob extends Job {
+public class IperfJob extends LinkJob {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "iperfRequest_id", referencedColumnName = "id")

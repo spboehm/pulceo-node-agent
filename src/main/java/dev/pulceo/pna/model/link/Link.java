@@ -3,7 +3,7 @@ package dev.pulceo.pna.model.link;
 
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.ResourceType;
-import dev.pulceo.pna.model.jobs.Job;
+import dev.pulceo.pna.model.jobs.LinkJob;
 import dev.pulceo.pna.model.node.Node;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,19 +17,21 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"jobs"})
+@EqualsAndHashCode(callSuper = true, exclude = {"linkJobs"})
 @ToString(callSuper = true)
 @NamedEntityGraph(
         name = "graph.Link.jobs",
         attributeNodes = {
                 @NamedAttributeNode("srcNode"),
                 @NamedAttributeNode("destNode"),
-                @NamedAttributeNode("jobs")
+                @NamedAttributeNode("linkJobs")
         }
 )
 public class Link extends Resource  {
     private String name;
     private ResourceType resourceType;
+
+    @Builder.Default
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     // set cascade type
     @OneToOne
@@ -37,8 +39,10 @@ public class Link extends Resource  {
     // set cascade type
     @OneToOne
     private Node destNode;
+
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Job> jobs = new ArrayList<>();
+    private List<LinkJob> linkJobs = new ArrayList<>();
 
     public Link(String name, ResourceType resourceType, Node srcNode, Node destNode) {
         this.name = name;
@@ -47,9 +51,9 @@ public class Link extends Resource  {
         this.destNode = destNode;
     }
 
-    public void addJob(Job job) {
-        this.jobs.add(job);
-        job.setLink(this);
+    public void addJob(LinkJob linkJob) {
+        this.linkJobs.add(linkJob);
+        linkJob.setLink(this);
     }
 
 }

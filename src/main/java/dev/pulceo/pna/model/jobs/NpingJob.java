@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class NpingJob extends Job {
+public class NpingJob extends LinkJob {
 
     @OneToOne(cascade = CascadeType.ALL)
     private NpingRequest npingRequest;

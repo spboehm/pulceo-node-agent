@@ -1,6 +1,6 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.NodeUtil;
+import dev.pulceo.pna.util.NodeUtil;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.link.Link;

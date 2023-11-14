@@ -1,4 +1,4 @@
-package dev.pulceo.pna;
+package dev.pulceo.pna.util;
 
 import dev.pulceo.pna.model.node.Node;
 

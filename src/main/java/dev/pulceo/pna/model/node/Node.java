@@ -19,7 +19,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"jobs"})
+@EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs"})
 public class Node extends Resource {
 
     @NotBlank(message= "Name is required!")
@@ -58,7 +58,8 @@ public class Node extends Resource {
     // TODO: add validation for endpoint
     private String endpoint;
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NodeJob> jobs = new ArrayList<>();
+    private List<NodeJob> nodeJobs = new ArrayList<>();
 
 }

@@ -24,7 +24,7 @@ import java.util.concurrent.BlockingQueue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class NpingJobServiceTests {
+public class NpingLinkJobServiceTests {
 
     @Autowired
     JobService jobService;

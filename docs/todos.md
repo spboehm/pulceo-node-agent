@@ -102,7 +102,7 @@
 
 ## JobService
 
-- [ ] Ensure that status flag of job is set properly in `scheduleIperfJob(...)`
+- [ ] Ensure that status flag of linkJob is set properly in `scheduleIperfJob(...)`
 - [ ] Ensure that all jobs are rescheduled after application crash
 - [ ] Ensure that cancellation of jobs properly sets the active flag
 - [ ] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
@@ -155,8 +155,8 @@
 
 ## Tests
 
-- [ ] `dev.pulceo.pna.IperfJobServiceTests` misses additional tests for job cancellation
-- [ ] `dev.pulceo.pna.NpingJobServiceTests` misses additional tests for job cancellation
+- [ ] `dev.pulceo.pna.IperfLinkJobServiceTests` misses additional tests for linkJob cancellation
+- [ ] `dev.pulceo.pna.NpingLinkJobServiceTests` misses additional tests for linkJob cancellation
 - [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 
 - [ ] add additional error cases of failed Iperf3 Measurements
 - [x] Add missing tests for `PingJobServiceTests`

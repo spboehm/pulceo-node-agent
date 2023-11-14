@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(callSuper = true)
-public class NodeJob extends SuperJob {
+public abstract class NodeJob extends SuperJob {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Node node;

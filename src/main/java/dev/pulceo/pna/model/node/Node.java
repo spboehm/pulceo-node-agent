@@ -20,12 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"jobs"})
-@NamedEntityGraph(
-        name = "graph.Node.jobs",
-        attributeNodes = {
-                @NamedAttributeNode("jobs")
-        }
-)
 public class Node extends Resource {
 
     @NotBlank(message= "Name is required!")

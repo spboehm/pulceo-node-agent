@@ -5,8 +5,8 @@ import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
-import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.repository.LinkRepository;
+import dev.pulceo.pna.repository.SuperJobRespository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class LinkService {
     LinkRepository linkRepository;
 
     @Autowired
-    JobRepository jobRepository;
+    SuperJobRespository jobRepository;
 
     @Autowired
     JobService jobService;

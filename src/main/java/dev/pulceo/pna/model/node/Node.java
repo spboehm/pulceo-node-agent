@@ -1,10 +1,17 @@
 package dev.pulceo.pna.model.node;
 
 import dev.pulceo.pna.model.Resource;
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.*;
+import dev.pulceo.pna.model.jobs.NodeJob;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -12,7 +19,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"jobs"})
+@NamedEntityGraph(
+        name = "graph.Node.jobs",
+        attributeNodes = {
+                @NamedAttributeNode("jobs")
+        }
+)
 public class Node extends Resource {
 
     @NotBlank(message= "Name is required!")
@@ -50,5 +63,8 @@ public class Node extends Resource {
     @NotBlank(message="Node endpoint is required!")
     // TODO: add validation for endpoint
     private String endpoint;
+
+    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NodeJob> jobs = new ArrayList<>();
 
 }

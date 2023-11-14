@@ -1,6 +1,6 @@
 package dev.pulceo.pna.model.jobs;
 
-import dev.pulceo.pna.model.link.Link;
+import dev.pulceo.pna.model.node.Node;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,11 +9,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(callSuper = true)
-public abstract class Job extends SuperJob {
-
-    // This is the LinkJob relationship
+public class NodeJob extends SuperJob {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Link link;
+    private Node node;
 
 }

@@ -147,7 +147,13 @@
 - [ ] Connection probe MQTT
 - [ ] Existence of nping and iperf3 executable
 - [ ] Disable Devtools by setting 'spring.devtools.add-properties' to false
-- [ ] Ensure that device id is properly set
+- [ ] Ensure that device id is properly set (`pna.id`)
+- [ ] Ensure that the device name is properly set (`pna.name`)
+
+## Join Process
+
+- [ ] Via PNA-node-agent: Nodes is booting and showing connection string with `endpoint`, `port`, and `token`. Cloud can then authenticate to the device and register.
+- [ ] Via IaaS: All basic information is filled, endpoint, port, and token are generated and passed to the pna-agent. Cloud can then authenticate to the device because it is registered in the cloud.
 
 ## Miscellaneous
 

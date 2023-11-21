@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,5 +84,26 @@ public class InitPulceoNodeAgentBeanTests {
         // then
         assertEquals(generatedPNAId, Files.readString(Path.of(pnaIdPath), StandardCharsets.UTF_8));
     }
+
+    @Test
+    public void testInitWithNotExistingPnaInitToken() throws IOException {
+        // given
+        deletePnaConfigDirectory();
+        boolean configDirectoryCreated = new File(pnaConfigPath).mkdirs();
+        if(!configDirectoryCreated) {
+            throw new RuntimeException("Could not create config directory!");
+        }
+
+        // when
+        initPulceoNodeAgentBean.init();
+
+        // then
+        String filePath = pnaConfigPath + "/" + "pna_init_token";
+        assertTrue(new File(filePath).isFile());
+        assertTrue(Files.readString(Path.of(filePath), StandardCharsets.UTF_8).matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"));
+        assertTrue(new String(Base64.getDecoder().decode(Files.readString(Path.of(filePath), StandardCharsets.UTF_8))).matches("[a-zA-Z0-9]{24}:[a-zA-Z0-9]{32}"));
+    }
+
+
 
 }

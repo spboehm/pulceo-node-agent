@@ -17,7 +17,7 @@ import java.util.UUID;
 @Component
 public class InitPulceoNodeAgentBean {
 
-    Logger logger = LoggerFactory.getLogger(InitPulceoNodeAgentBean.class);
+    private final Logger logger = LoggerFactory.getLogger(InitPulceoNodeAgentBean.class);
 
     @Value("${pna.config.path}")
     private String pnaConfigPath;
@@ -32,6 +32,7 @@ public class InitPulceoNodeAgentBean {
         // TODO: propagate pna id to other services
 
         /* pna_init_token */
+        createFileIfNotExists(pnaConfigPath, "pna_init_token");
 
 
     }

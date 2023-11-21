@@ -72,7 +72,7 @@ public class InitPulceoNodeAgentBean {
                 logger.warn("PNA id is invalid! Generating new PNA id...");
                 generatePnaId(path);
             }
-            logger.info("Found valid pna id: " + path);
+            logger.info("Found valid pna id: " + readFile(path));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +85,7 @@ public class InitPulceoNodeAgentBean {
                 logger.warn("PNA init token is invalid! Generating new PNA init token...");
                 generatePnaInitToken(path);
             } else {
-                logger.info("Found valid pna init token: " + path + readFile(path));
+                logger.info("Found valid pna init token: " + readFile(path));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

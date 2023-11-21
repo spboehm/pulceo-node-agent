@@ -43,6 +43,10 @@
 
 - [ ] Check order of expected and actual
 
+## InitPulceoNodeAgentBean
+
+- [ ] Check if it is better to return `boolean` instead of `void` in `init()`
+
 ## NodeService
 
 - [ ] Prevent creating duplicates of Nodes

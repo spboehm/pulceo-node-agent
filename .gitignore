@@ -129,3 +129,6 @@ fabric.properties
 
 # sqlite db
 *.db
+
+# pna config directory
+config/

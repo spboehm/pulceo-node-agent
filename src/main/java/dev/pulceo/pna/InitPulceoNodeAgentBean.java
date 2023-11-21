@@ -111,6 +111,7 @@ public class InitPulceoNodeAgentBean {
         String base64EncodedInitToken = Base64.getEncoder().encodeToString(initToken.getBytes());
         Files.write(Path.of(path), base64EncodedInitToken.getBytes());
         logger.info("Generated new PNA init token: " + base64EncodedInitToken);
+        logger.info("Successfully wrote PNA init token to file: " + path);
     }
 
     private String generateSecureRandomString(int length) {

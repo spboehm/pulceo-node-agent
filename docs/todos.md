@@ -46,6 +46,7 @@
 ## InitPulceoNodeAgentBean
 
 - [ ] Check if it is better to return `boolean` instead of `void` in `init()`
+- [ ] Consider moving the registration process with id and token to the database and a service
 
 ## NodeService
 

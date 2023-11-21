@@ -125,5 +125,4 @@ public class InitPulceoNodeAgentBean {
         return pnaId.matches("pna-[a-fA-F0-9]+-[a-fA-F0-9]+-[a-fA-F0-9]+-[a-fA-F0-9]+-[a-fA-F0-9]+");
     }
 
-
 }

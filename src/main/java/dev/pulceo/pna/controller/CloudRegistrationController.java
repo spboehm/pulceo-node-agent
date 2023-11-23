@@ -6,6 +6,9 @@ import dev.pulceo.pna.service.CloudRegistrationService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,12 +27,12 @@ public class CloudRegistrationController {
         this.modelMapper = modelMapper;
     }
 
-
-    public CloudRegistrationResponseDto newCloudRegistration(@RequestBody @Valid CloudRegistrationRequestDto cloudRegistrationRequestDto) {
+    @PostMapping
+    public ResponseEntity<CloudRegistrationResponseDto> newCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) {
         // TODO: Validate CloudRegistrationRequestDto
         // TODO: invoke service cloudRegistrationService
         // TODO: return CloudRegistrationResponseDto
-        return new CloudRegistrationResponseDto();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

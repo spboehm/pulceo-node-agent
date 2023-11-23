@@ -1,3 +1,8 @@
 package dev.pulceo.pna.dto;
 
-public record CloudRegistrationRequestDto(String prmId, String prmEndpoint, String token) { }
+import jakarta.validation.constraints.NotBlank;
+
+public record CloudRegistrationRequestDto(
+        @NotBlank String prmUUID,
+        @NotBlank String prmEndpoint,
+        @NotBlank String token) { }

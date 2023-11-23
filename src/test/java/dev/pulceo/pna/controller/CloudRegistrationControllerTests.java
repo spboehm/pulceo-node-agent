@@ -20,10 +20,11 @@ public class CloudRegistrationControllerTests {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    // TODO: Add similar test cases if one of the attributes is missing
     @Test
     public void testNewCloudRegistration() throws Exception {
         // given
-        String prmUUID = "12345678-1234-1234-1234-123456789012";
+        String prmUUID = "3768f6c8-dd4e-4c12-b76b-54bd0e1cf5fa";
         String prmEndpoint = "http://localhost:7878";
         String token = "b0hRUGwxT0hNYnhGbGoyQ2tlQnBGblAxOmdHUHM3MGtRRWNsZVFMSmdZclFhVUExb0VpNktGZ296";
 
@@ -33,6 +34,7 @@ public class CloudRegistrationControllerTests {
         // when and then
         this.mockMvc.perform(post("/api/v1/cloud-registrations")
                 .contentType("application/json")
+                .accept("application/json")
                 .content(json))
                 .andExpect(status().isOk());
     }

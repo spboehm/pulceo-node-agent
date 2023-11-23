@@ -131,4 +131,4 @@ fabric.properties
 *.db
 
 # pna config directory
-config/
+config/**

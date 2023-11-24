@@ -51,6 +51,10 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 
 ### Messages
 
+#### Cloud
+
+
+
 #### PingResult
 
 ```json

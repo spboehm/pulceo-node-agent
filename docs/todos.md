@@ -30,6 +30,11 @@
 - [ ] Set cascade type for @OneToOne relationships in `Link` class
 - 
 
+## REST API
+
+- [ ] Adjust DefaultHandlerExceptionResolver, e.g., for methods that are not defined. Do not return stack trace.
+- [ ] Also for Bad Request (400), if something is missing
+
 ## Package config
 
 - [ ] Replace UdpEchoServer with traditional Java-based configuration

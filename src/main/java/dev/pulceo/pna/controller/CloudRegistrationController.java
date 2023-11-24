@@ -29,8 +29,11 @@ public class CloudRegistrationController {
 
     @PostMapping
     public ResponseEntity<CloudRegistrationResponseDto> newCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) {
-        // TODO: Validate CloudRegistrationRequestDto
-        // TODO: invoke service cloudRegistrationService
+
+        // TODO: validate
+
+        // TODO: service call
+
         // TODO: return CloudRegistrationResponseDto
         return new ResponseEntity<>(HttpStatus.OK);
     }

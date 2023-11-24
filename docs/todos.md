@@ -34,6 +34,7 @@
 
 - [ ] Adjust DefaultHandlerExceptionResolver, e.g., for methods that are not defined. Do not return stack trace.
 - [ ] Also for Bad Request (400), if something is missing
+- [ ] Consider parsing response body for failed requests in MockMvc 
 
 ## Package config
 

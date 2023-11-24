@@ -7,17 +7,12 @@ import org.hibernate.validator.constraints.UUID;
 
 public record CloudRegistrationRequestDto(
 
-        @NotBlank
-        @UUID
-        String prmUUID,
+        @NotBlank @UUID String prmUUID,
 
-        @NotBlank
-        @URL
-        String prmEndpoint,
+        @NotBlank @URL String prmEndpoint,
 
-        @Length(min = 76, max = 76)
-        @NotBlank
-        String pnaInitToken) { }
+        @NotBlank @Length(min = 76, max = 76) String pnaInitToken) {
+}
 
 
 

@@ -61,7 +61,7 @@ public class CloudRegistrationControllerTests {
     @Test
     public void testNewCloudRegistrationWithWrongPrmEndpoint() throws Exception {
         // given
-        String prmUUID = "prm-3768f6c8-dd4e-4c12-b76b-54bd0e1cf5fa";
+        String prmUUID = "3768f6c8-dd4e-4c12-b76b-54bd0e1cf5fa";
         String prmEndpoint = "httpss://localhasdadasost:7878878997";
         String pnaInitToken = "b0hRUGwxT0hNYnhGbGoyQ2tlQnBGblAxOmdHUHM3MGtRRWNsZVFMSmdZclFhVUExb0VpNktGZ296";
 

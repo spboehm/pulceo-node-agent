@@ -1,7 +1,6 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.PNAException;
-import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ public class InitPulceoNodeAgentBean {
     @Value("${pna.config.path}")
     private String pnaConfigPath;
 
-    @PostConstruct
     public void init() {
         createDirectoryIfNotExists(pnaConfigPath);
 

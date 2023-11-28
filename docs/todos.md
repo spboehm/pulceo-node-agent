@@ -63,13 +63,18 @@
 - [ ] Create different `application.properties` for different ways to create tokens
 - [ ] Consider Hashing the generated token
 - [ ] put initTokenMethod with private access modifier
-- [ ] Consider putting the init token at a different location to avoid pushing it to remote filesystem
+- [ ] Consider putting the init token at a different location in a simple text file to avoid pushing it to remote filesystem
+- [ ] Consider removing the init bean in favor of a service
+- [ ] Consider that generated Values are matched in test classes
+- [ ] Intensify mock verification options
+
 ## NodeService
 
 - [ ] Prevent creating duplicates of Nodes
 - [ ] Add different strategies for adding a node
   - [ ] Just by stating the endpoint (e.g., IP address) and an API-Token
   - [ ] By using cloud providers with bootstrapping particular nodes
+- [ ] Consider adding additional methods for initializing a node
 
 ## LinkService
 

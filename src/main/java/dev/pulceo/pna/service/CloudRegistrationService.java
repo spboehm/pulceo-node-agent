@@ -37,31 +37,44 @@ public class CloudRegistrationService {
             throw new CloudRegistrationException("A valid cloud registration already exists!");
         }
         /* Maybe remove because already covered by bean validation, except token validation */
+        // TODO: redundant bean validation
         // validate prmUUID
         if (!isValidUUID(cloudRegistrationRequest.prmUUID())) {
             throw new CloudRegistrationException("prmUUID is not a valid UUID!");
         };
 
         // validate prmEndpoint
+        // TODO: redundant bean validation
         if (!isValidEndpoint(cloudRegistrationRequest.prmEndpoint())) {
             throw new CloudRegistrationException("prmEndpoint is not a valid endpoint!");
         };
 
         // validate pnaInitToken
+        // TODO: consider leaving this because it is checking further logic
         if (!isValidPnaInitToken(cloudRegistrationRequest.pnaInitToken())) {
             throw new CloudRegistrationException("pnaInitToken is not a valid token!");
         };
 
-        // TODO: compare with pnaInitToken if and only if valid is true
         /* case everything good */
+        if (isPnaInitTokenExistingInDB()) {
+            PnaInitToken pnaInitToken = this.pnaInitTokenRepository.findAll().iterator().next();
 
+            if (!pnaInitToken.isValid()) {
+                throw new CloudRegistrationException("pnaInitToken is not valid!");
+            }
 
+            if (!pnaInitToken.getToken().equals(cloudRegistrationRequest.pnaInitToken())) {
+                throw new CloudRegistrationException("pnaInitToken does not match!");
+            }
 
-        String prmUUID = cloudRegistrationRequest.prmUUID();
-        String prmEndpoint = cloudRegistrationRequest.prmEndpoint();
-        String pnaToken = generatePnaToken();
-        // todo: hash pnaToken
-        return this.cloudRegistrationRepository.save(new CloudRegistration(prmUUID, prmEndpoint, pnaToken));
+            String prmUUID = cloudRegistrationRequest.prmUUID();
+            String prmEndpoint = cloudRegistrationRequest.prmEndpoint();
+            // TODO: hash token
+            String pnaToken = generatePnaToken();
+            return this.cloudRegistrationRepository.save(new CloudRegistration(prmUUID, prmEndpoint, pnaToken));
+        } else {
+            throw new CloudRegistrationException("pnaInitToken does not exist!");
+        }
     }
 
     // TODO: maybe move this to a separate service

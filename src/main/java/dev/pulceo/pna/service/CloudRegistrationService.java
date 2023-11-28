@@ -20,6 +20,7 @@ public class CloudRegistrationService {
         return new CloudRegistration();
     }
 
+    // TODO: maybe move this to a separate service
     // only called during startup and for issuing an initial token
     public PnaInitToken registerPnaInitToken(String pnaUUID, String token) {
         // TODO: validate prmUUID

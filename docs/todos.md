@@ -58,6 +58,12 @@
 
 - [ ] Check if `@Configuration` is required
 
+## Cloud RegistrationService
+
+- [ ] Create different `application.properties` for different ways to create tokens
+- [ ] Consider Hashing the generated token
+- [ ] put initTokenMethod with private access modifier
+- [ ] Consider putting the init token at a different location to avoid pushing it to remote filesystem
 ## NodeService
 
 - [ ] Prevent creating duplicates of Nodes

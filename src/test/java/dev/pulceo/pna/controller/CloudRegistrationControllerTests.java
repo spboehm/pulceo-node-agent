@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,7 +20,7 @@ public class CloudRegistrationControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // TODO: Add similar test cases if one of the attributes is missing
     @Test
@@ -33,11 +34,12 @@ public class CloudRegistrationControllerTests {
         String json = objectMapper.writeValueAsString(cloudRegistrationRequestDto);
 
         // when and then
-        this.mockMvc.perform(post("/api/v1/cloud-registrations")
+        MvcResult result = this.mockMvc.perform(post("/api/v1/cloud-registrations")
                 .contentType("application/json")
                 .accept("application/json")
                 .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andReturn();
+        System.out.println(result.getResponse().getContentAsString());
     }
 
     @Test

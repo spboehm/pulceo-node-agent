@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CloudRequestRegistrationDTOsUnitTest {
+public class CloudRequestRegistrationDTOUnitTest {
 
     private final ModelMapper modelMapper = new ModelMapper();
 

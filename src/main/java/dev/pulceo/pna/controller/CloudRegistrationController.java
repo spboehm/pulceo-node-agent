@@ -3,6 +3,7 @@ package dev.pulceo.pna.controller;
 import dev.pulceo.pna.dto.CloudRegistrationRequestDto;
 import dev.pulceo.pna.dto.CloudRegistrationResponseDto;
 import dev.pulceo.pna.exception.CloudRegistrationException;
+import dev.pulceo.pna.model.registration.CloudRegistration;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import dev.pulceo.pna.service.CloudRegistrationService;
 import jakarta.validation.Valid;
@@ -30,19 +31,16 @@ public class CloudRegistrationController {
     }
 
     @PostMapping
-    public ResponseEntity<CloudRegistrationResponseDto> newInitialCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) {
-        // TODO: validate
-        CloudRegistrationRequest cloudRegistrationRequest = this.modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
-        // TODO: service call
+    public ResponseEntity<Object> newInitialCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) {
         try {
-            this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
+            // TODO: fix here
+            CloudRegistrationRequest cloudRegistrationRequest = this.modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
+            CloudRegistration cloudRegistration = this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
+            System.out.println("was here");
+            return new ResponseEntity<>(this.modelMapper.map(cloudRegistration, CloudRegistrationResponseDto.class), HttpStatus.OK);
         } catch (CloudRegistrationException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-
-        // TODO: return CloudRegistrationResponseDto
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

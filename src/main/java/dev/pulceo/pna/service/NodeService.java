@@ -26,6 +26,7 @@ public class NodeService {
         return this.nodeRepository.findById(id);
     }
 
-    // TODO: PostConstruct node id generation
+    // TODO: PostConstruct node id generation in db and local filesystem
+
 
 }

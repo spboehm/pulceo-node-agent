@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.InitPulceoNodeAgentBean;
 import dev.pulceo.pna.exception.CloudRegistrationException;
 import dev.pulceo.pna.model.registration.CloudRegistration;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
@@ -8,6 +9,8 @@ import dev.pulceo.pna.repository.CloudRegistrationRepository;
 import dev.pulceo.pna.repository.PnaInitTokenRepository;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import java.util.Objects;
 
 @Service
 public class CloudRegistrationService {
+
+    private final Logger logger = LoggerFactory.getLogger(InitPulceoNodeAgentBean.class);
 
     @Autowired
     private PnaInitTokenRepository pnaInitTokenRepository;

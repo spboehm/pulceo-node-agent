@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.UUID;
 
+// TODO: consider to remove this class
+
 @Component
 public class InitPulceoNodeAgentBean {
 

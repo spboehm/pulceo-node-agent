@@ -1,12 +1,17 @@
 package dev.pulceo.pna.model.registration;
 
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
-import org.hibernate.validator.constraints.UUID;
 
-public record CloudRegistrationRequest (
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-        @NotBlank @UUID String prmUUID,
-        @NotBlank @URL String prmEndpoint,
-        @NotBlank @Length(min = 76, max = 76) String pnaInitToken) {}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CloudRegistrationRequest {
+        
+        private String prmUUID;
+        private String prmEndpoint;
+        private String pnaInitToken;
+
+}

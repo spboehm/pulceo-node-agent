@@ -11,6 +11,7 @@
 - [ ] Check `JPA mappings` in all `model` classes
 - [ ] Consider adding name of device to `Node` class
 - [ ] Consider changing the attribute names for the json serialization
+- [ ] Check if validation must 
 
 ## Overall Issues
 

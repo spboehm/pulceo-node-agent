@@ -44,19 +44,19 @@ public class CloudRegistrationService {
         /* Maybe remove because already covered by bean validation, except token validation */
         // TODO: redundant bean validation
         // validate prmUUID
-        if (!isValidUUID(cloudRegistrationRequest.prmUUID())) {
+        if (!isValidUUID(cloudRegistrationRequest.getPrmUUID())) {
             throw new CloudRegistrationException("prmUUID is not a valid UUID!");
         };
 
         // validate prmEndpoint
         // TODO: redundant bean validation
-        if (!isValidEndpoint(cloudRegistrationRequest.prmEndpoint())) {
+        if (!isValidEndpoint(cloudRegistrationRequest.getPrmEndpoint())) {
             throw new CloudRegistrationException("prmEndpoint is not a valid endpoint!");
         };
 
         // validate pnaInitToken
         // TODO: consider leaving this because it is checking further logic
-        if (!isValidPnaInitToken(cloudRegistrationRequest.pnaInitToken())) {
+        if (!isValidPnaInitToken(cloudRegistrationRequest.getPnaInitToken())) {
             throw new CloudRegistrationException("pnaInitToken is not a valid token!");
         };
 
@@ -68,12 +68,12 @@ public class CloudRegistrationService {
                 throw new CloudRegistrationException("pnaInitToken is not valid!");
             }
 
-            if (!pnaInitToken.getToken().equals(cloudRegistrationRequest.pnaInitToken())) {
+            if (!pnaInitToken.getToken().equals(cloudRegistrationRequest.getPnaInitToken())) {
                 throw new CloudRegistrationException("pnaInitToken does not match!");
             }
 
-            String prmUUID = cloudRegistrationRequest.prmUUID();
-            String prmEndpoint = cloudRegistrationRequest.prmEndpoint();
+            String prmUUID = cloudRegistrationRequest.getPrmUUID();
+            String prmEndpoint = cloudRegistrationRequest.getPrmEndpoint();
             // TODO: hash token
             String pnaToken = generatePnaToken();
             return this.cloudRegistrationRepository.save(new CloudRegistration(prmUUID, prmEndpoint, pnaToken));

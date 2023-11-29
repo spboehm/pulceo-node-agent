@@ -1,7 +1,7 @@
 package dev.pulceo.pna.dtos;
 
 import dev.pulceo.pna.dto.CloudRegistrationRequestDto;
-import dev.pulceo.pna.model.registration.CloudRegistration;
+import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -12,12 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CloudRequestRegistrationDtosUnitTest {
 
-    private final static ModelMapper modelMapper = new ModelMapper();
-
-    @BeforeAll
-    static void setup() {
-        modelMapper.registerModule(new RecordModule());
-    }
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Test
     public void testMapCloudRegistrationRequestDto() {
@@ -26,11 +21,11 @@ public class CloudRequestRegistrationDtosUnitTest {
         String token = "b0hRUGwxT0hNYnhGbGoyQ2tlQnBGblAxOmdHUHM3MGtRRWNsZVFMSmdZclFhVUExb0VpNktGZ296";
 
         CloudRegistrationRequestDto cloudRegistrationRequestDto = new CloudRegistrationRequestDto(prmUUID, prmEndpoint, token);
-        CloudRegistration cloudRegistration = modelMapper.map(cloudRegistrationRequestDto, CloudRegistration.class);
+        CloudRegistrationRequest cloudRegistrationRequest = modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
 
-        assertEquals(cloudRegistrationRequestDto.prmUUID(), cloudRegistration.getPrmUUID());
-        assertEquals(cloudRegistrationRequestDto.prmEndpoint(), cloudRegistration.getPrmEndpoint());
-        assertEquals(cloudRegistrationRequestDto.pnaInitToken(), cloudRegistration.getPnaToken());
+        assertEquals(cloudRegistrationRequestDto.getPrmUUID(), cloudRegistrationRequest.getPrmUUID());
+        assertEquals(cloudRegistrationRequestDto.getPrmEndpoint(), cloudRegistrationRequest.getPrmEndpoint());
+        assertEquals(cloudRegistrationRequestDto.getPnaInitToken(), cloudRegistrationRequest.getPnaInitToken());
     }
 
 

@@ -2,15 +2,12 @@ package dev.pulceo.pna.dtos;
 
 import dev.pulceo.pna.dto.CloudRegistrationRequestDto;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.record.RecordModule;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-public class CloudRequestRegistrationDtosUnitTest {
+public class CloudRequestRegistrationDTOsUnitTest {
 
     private final ModelMapper modelMapper = new ModelMapper();
 

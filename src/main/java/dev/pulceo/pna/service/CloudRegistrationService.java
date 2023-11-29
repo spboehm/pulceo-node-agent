@@ -35,7 +35,7 @@ public class CloudRegistrationService {
     @Value("${pna.init.token}")
     private String pnaInitToken;
 
-    // invoked by the cloud service
+    // invoked by prm
     public CloudRegistration newInitialCloudRegistration(CloudRegistrationRequest cloudRegistrationRequest) throws CloudRegistrationException {
 
         if (isCloudRegistrationExisting()) {

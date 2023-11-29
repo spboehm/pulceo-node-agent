@@ -67,7 +67,7 @@
 - [ ] Consider putting the init token at a different location in a simple text file to avoid pushing it to remote filesystem
 - [ ] Consider removing the init bean in favor of a service
 - [ ] Consider that generated Values are matched in test classes
-- [ ] Intensify mock verification options
+- [ ] Intensify mock verification options, verify no more interactions and consider comparing parameters for `PnaInitToken`
 
 ## NodeService
 

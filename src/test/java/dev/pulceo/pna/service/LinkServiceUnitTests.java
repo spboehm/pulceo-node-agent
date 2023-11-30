@@ -1,32 +1,42 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.util.NodeUtil;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.ResourceType;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.repository.LinkRepository;
+import dev.pulceo.pna.util.NodeUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-// Override default application.properties, otherwise port collision might occur
-// TODO: replace with prop configuration or task exclusion
-@SpringBootTest(properties = { "pna.delay.tcp.port=5002", "pna.delay.udp.port=5003", "pna.mqtt.client.id=550e8400-e29b-11d4-a716-446655440000"})
+@ExtendWith(MockitoExtension.class)
 public class LinkServiceUnitTests {
 
-    @MockBean
+    @Mock
     NodeService nodeService;
 
-    @Autowired
+    @Mock
+    LinkRepository linkRepository;
+
     @InjectMocks
     LinkService linkService;
+
+    private final String pnaId = "0247fea1-3ca3-401b-8fa2-b6f83a469680";
+
+    @BeforeEach
+    public void setUp() {
+        ReflectionTestUtils.setField(nodeService, "pnaId", pnaId);
+    }
 
     @Test
     public void testCreateLinkWithNotExistingSrcNode() throws LinkServiceException {
@@ -68,7 +78,6 @@ public class LinkServiceUnitTests {
     public void testReadLinkByDestNodeWithNotExistingNode() {
         // given
         Node destNode = NodeUtil.createTestDestNodeWithId(1L);
-        when(nodeService.readNode(destNode.getId())).thenReturn(Optional.empty());
 
         // when
         Optional<Link> link = this.linkService.readLinkByDestNode(destNode);

@@ -23,11 +23,14 @@ public class CloudRegistrationService {
 
     private final Logger logger = LoggerFactory.getLogger(InitPulceoNodeAgentBean.class);
 
-    @Autowired
-    private PnaInitTokenRepository pnaInitTokenRepository;
+    private final PnaInitTokenRepository pnaInitTokenRepository;
+    private final CloudRegistrationRepository cloudRegistrationRepository;
 
     @Autowired
-    private CloudRegistrationRepository cloudRegistrationRepository;
+    public CloudRegistrationService(PnaInitTokenRepository pnaInitTokenRepository, CloudRegistrationRepository cloudRegistrationRepository) {
+        this.pnaInitTokenRepository = pnaInitTokenRepository;
+        this.cloudRegistrationRepository = cloudRegistrationRepository;
+    }
 
     @Value("${pna.id}")
     private String pnaId;

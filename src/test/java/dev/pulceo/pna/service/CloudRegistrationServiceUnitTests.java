@@ -6,12 +6,14 @@ import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import dev.pulceo.pna.model.registration.PnaInitToken;
 import dev.pulceo.pna.repository.CloudRegistrationRepository;
 import dev.pulceo.pna.repository.PnaInitTokenRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.internal.verification.Times;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -20,21 +22,30 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = { "pna.delay.tcp.port=6002", "pna.delay.udp.port=6003", "pna.mqtt.client.id=551e8400-e29b-11d4-a716-446655440001"})
+//@SpringBootTest(properties = { "pna.delay.tcp.port=6002", "pna.delay.udp.port=6003", "pna.mqtt.client.id=551e8400-e29b-11d4-a716-446655440001"})
+
+/* Note: Explicitly removed the SpringApplicationContext because of @PostConstruct in CloudRegistrationService */
+// Consider doing this for other unit tests as well
+@ExtendWith(MockitoExtension.class)
 public class CloudRegistrationServiceUnitTests {
 
-    @MockBean
+    @Mock
     PnaInitTokenRepository pnaInitTokenRepository;
 
-    @MockBean
+    @Mock
     CloudRegistrationRepository cloudRegistrationRepository;
 
-    @Autowired
     @InjectMocks
     CloudRegistrationService cloudRegistrationService;
 
     private final String pnaId = "0247fea1-3ca3-401b-8fa2-b6f83a469680";
     private final String pnaInitToken = "b0hRUGwxT0hNYnhGbGoyQ2tlQnBGblAxOmdHUHM3MGtRRWNsZVFMSmdZclFhVUExb0VpNktGZ296";
+
+    @BeforeEach
+    public void setUp() {
+        ReflectionTestUtils.setField(cloudRegistrationService, "pnaId", pnaId);
+        ReflectionTestUtils.setField(cloudRegistrationService, "pnaInitToken", pnaInitToken);
+    }
 
     @Test
     public void testNewIntitialCloudRegistrationWithAlreadyExistingCloudRegistrationWithException() {
@@ -82,15 +93,11 @@ public class CloudRegistrationServiceUnitTests {
 
         when(this.cloudRegistrationRepository.count()).thenReturn(0L);
         List<PnaInitToken> pnaInitTokens = List.of(new PnaInitToken(this.pnaId, this.pnaInitToken));
-        when(this.pnaInitTokenRepository.findAll()).thenReturn(pnaInitTokens);
 
         // when
         assertThrows(CloudRegistrationException.class, () -> {
             this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
         });
-
-        // then
-        verify(this.pnaInitTokenRepository, new Times(1)).save(any(PnaInitToken.class));
     }
 
     @Test
@@ -105,6 +112,7 @@ public class CloudRegistrationServiceUnitTests {
         PnaInitToken invalidPnaInitToken = new PnaInitToken(this.pnaId, this.pnaInitToken);
         invalidPnaInitToken.setValid(false);
         List<PnaInitToken> pnaInitTokens = List.of(invalidPnaInitToken);
+        when(this.pnaInitTokenRepository.count()).thenReturn(1L);
         when(this.pnaInitTokenRepository.findAll()).thenReturn(pnaInitTokens);
 
         // when and then
@@ -136,29 +144,32 @@ public class CloudRegistrationServiceUnitTests {
     }
 
     @Test
-    public void testInitPnaTokenWithAlreadyExistingCloudRegistrationWithException() {
+    public void testInitPnaTokenWithAlreadyExistingCloudRegistration() throws CloudRegistrationException {
         // given
         // cloud registration available
         when(this.cloudRegistrationRepository.count()).thenReturn(1L);
 
-        // when + then
-        assertThrows(CloudRegistrationException.class, () -> {
-            this.cloudRegistrationService.initPnaInitToken();
-        });
+        // when
+        this.cloudRegistrationService.initPnaInitToken();
+
+        // then
+        verify(this.cloudRegistrationRepository, new Times(1)).count();
     }
 
     @Test
-    public void testInitPnaTokenWithAlreadyExistingPnaInitTokenInDBWithException() {
+    public void testInitPnaTokenWithAlreadyExistingPnaInitTokenInDBWithException() throws CloudRegistrationException {
         // given
         // no cloud registration available
         when(this.cloudRegistrationRepository.count()).thenReturn(0L);
         // pna init token available in DB
         when(this.pnaInitTokenRepository.count()).thenReturn(1L);
 
+        // when
+        this.cloudRegistrationService.initPnaInitToken();
+
         // when + then
-        assertThrows(CloudRegistrationException.class, () -> {
-            this.cloudRegistrationService.initPnaInitToken();
-        });
+        verify(this.cloudRegistrationRepository, new Times(1)).count();
+        verify(this.pnaInitTokenRepository, new Times(1)).count();
     }
 
     // TODO:

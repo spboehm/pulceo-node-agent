@@ -91,19 +91,23 @@ public class CloudRegistrationService {
         // TODO: check exception handling for @Postconstruct
         // first check if there is already a valid cloud registration, if yes, abort
         if (isCloudRegistrationExisting()) {
-            throw new CloudRegistrationException("A valid cloud registration already exists!");
+            logger.info("A valid cloud registration already exists, skipping generation...");
+            return;
         }
 
         if (isPnaInitTokenExistingInDB()) {
-            throw new CloudRegistrationException("A pna init token already exists!");
+            logger.info("A valid pna init token already exists in DB, skipping generation...");
+            return;
         }
 
         if (isValidPnaInitTokenExistingInAppProperties()) {
            // continue here with registration and write to DB
+            logger.info("Found valid pna init token in application.properties, writing to DB...");
             this.pnaInitTokenRepository.save(new PnaInitToken(this.pnaId, this.pnaInitToken));
             return;
         }
         // otherwise generate a new token and write to DB
+        logger.info("Generating new pna init token and writing to DB...");
         this.pnaInitTokenRepository.save(new PnaInitToken(this.pnaId, generatePnaToken()));
     }
 

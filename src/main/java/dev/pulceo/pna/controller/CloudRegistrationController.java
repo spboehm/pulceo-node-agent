@@ -11,10 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/cloud-registrations")
@@ -31,15 +30,18 @@ public class CloudRegistrationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> newInitialCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) {
-        try {
-            // TODO: fix here
-            CloudRegistrationRequest cloudRegistrationRequest = this.modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
-            CloudRegistration cloudRegistration = this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
-            return new ResponseEntity<>(this.modelMapper.map(cloudRegistration, CloudRegistrationResponseDto.class), HttpStatus.OK);
-        } catch (CloudRegistrationException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<CloudRegistrationResponseDto> newInitialCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) throws CloudRegistrationException {
+        CloudRegistrationRequest cloudRegistrationRequest = this.modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
+        CloudRegistration cloudRegistration = this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
+        return new ResponseEntity<>(this.modelMapper.map(cloudRegistration, CloudRegistrationResponseDto.class), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(value = CloudRegistrationException.class)
+    public ResponseEntity<CustomErrorResponse> handleCloudRegistrationException(CloudRegistrationException cloudRegistrationException) {
+        CustomErrorResponse error = new CustomErrorResponse("BAD_REQUEST", cloudRegistrationException.getMessage());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 }

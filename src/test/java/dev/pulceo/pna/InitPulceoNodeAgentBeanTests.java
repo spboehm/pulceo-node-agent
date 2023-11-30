@@ -106,6 +106,4 @@ public class InitPulceoNodeAgentBeanTests {
         assertTrue(new String(Base64.getDecoder().decode(Files.readString(Path.of(filePath), StandardCharsets.UTF_8))).matches("[a-zA-Z0-9]{24}:[a-zA-Z0-9]{32}"));
     }
 
-
-
 }

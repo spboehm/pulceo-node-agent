@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.hamcrest.text.MatchesPattern.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = { "pna.delay.tcp.port=7002", "pna.delay.udp.port=7003", "pna.mqtt.client.id=551e8400-e29b-11d4-a716-446655440004"})
@@ -22,6 +23,9 @@ public class CloudRegistrationControllerTests {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    String uuidRegex = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+    String base64EncodedRegex = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";
+
     // TODO: Add similar test cases if one of the attributes is missing
     @Test
     public void testNewCloudRegistrationWithSuccess() throws Exception {
@@ -31,15 +35,18 @@ public class CloudRegistrationControllerTests {
         String token = "b0hRUGwxT0hNYnhGbGoyQ2tlQnBGblAxOmdHUHM3MGtRRWNsZVFMSmdZclFhVUExb0VpNktGZ296";
 
         CloudRegistrationRequestDto cloudRegistrationRequestDto = new CloudRegistrationRequestDto(prmUUID, prmEndpoint, token);
-        String json = objectMapper.writeValueAsString(cloudRegistrationRequestDto);
+        String cloudRegistrationRequestDtoAsJson = objectMapper.writeValueAsString(cloudRegistrationRequestDto);
 
         // when and then
-        MvcResult result = this.mockMvc.perform(post("/api/v1/cloud-registrations")
+        this.mockMvc.perform(post("/api/v1/cloud-registrations")
                 .contentType("application/json")
                 .accept("application/json")
-                .content(json))
-                .andExpect(status().isOk()).andReturn();
-        System.out.println(result.getResponse().getContentAsString());
+                .content(cloudRegistrationRequestDtoAsJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid", matchesPattern(uuidRegex)))
+                .andExpect(jsonPath("$.prmUUID").value(prmUUID))
+                .andExpect(jsonPath("$.prmEndpoint").value(prmEndpoint))
+                .andExpect(jsonPath("$.pnaToken", matchesPattern(base64EncodedRegex)));
     }
 
     @Test

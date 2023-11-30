@@ -196,6 +196,11 @@
 - [x] Add missing tests for `PingJobServiceTests`
 - [ ] `LinkServiceUnitTests` misses proper configuration of `properties`. Consider excluding external dependencies completely.
 - [ ] Consider renaming `read` to `retrieved`, e.g., in `LinkService`
+
+## CloudRegistrationControllerTests
+
+- [ ] Revise if `@SpringBootTest` is required, because it creates a new application context (https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework/server-setup-options.html)
+
 ## Package config
 
 - [ ] Adjust naming of variables inside configuration classes

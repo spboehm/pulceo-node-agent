@@ -137,7 +137,6 @@ public class CloudRegistrationControllerTests {
                         .content(json))
                         .andExpect(status().isBadRequest())
                         .andReturn();
-        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
 

@@ -60,7 +60,6 @@ public class LinkServiceUnitTests {
         // given
         Node srcNode = NodeUtil.createTestSrcNodeWithId(1L);
         Node destNode = NodeUtil.createTestDestNodeWithId(2L);
-        System.out.println(destNode.getId());
         Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.of(srcNode));
         when(nodeService.readNode(destNode.getId())).thenReturn(Optional.empty());

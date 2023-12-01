@@ -2,13 +2,17 @@ package dev.pulceo.pna.model.node;
 
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.jobs.NodeJob;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.validator.constraints.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,10 @@ public class Node extends Resource {
 
     @NotBlank(message= "PNA id is required!")
     private String pnaId;
+
+    @Builder.Default
+    @NotNull
+    public boolean isLocalNode = false;
 
     @NotBlank(message="Name is required!")
     private String name;
@@ -42,11 +50,11 @@ public class Node extends Resource {
     private NodeRole role = NodeRole.WORKLOAD;
 
     @Builder.Default
-    @NotBlank(message="Node location country is required!")
+    @NotNull
     private String nodeLocationCountry = "";
 
     @Builder.Default
-    @NotBlank(message="Node location city is required!")
+    @NotNull
     private String nodeLocationCity = "";
 
     @Builder.Default
@@ -60,7 +68,7 @@ public class Node extends Resource {
     private double nodeLocationLatitude = 0.000000;
 
     @NotBlank(message="Node endpoint is required!")
-    // TODO: add validation for endpoint
+    @URL
     private String endpoint;
 
     @Builder.Default

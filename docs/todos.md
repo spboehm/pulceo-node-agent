@@ -76,7 +76,8 @@
 - [ ] Add different strategies for adding a node
   - [ ] Just by stating the endpoint (e.g., IP address) and an API-Token
   - [ ] By using cloud providers with bootstrapping particular nodes
-- [ ] Consider adding additional methods for initializing a node
+- [x] Consider adding additional methods for initializing a node
+- [ ] Consider renaming `pnaId` to `pnaUUID`
 
 ## LinkService
 

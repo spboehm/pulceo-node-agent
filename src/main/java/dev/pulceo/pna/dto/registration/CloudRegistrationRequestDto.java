@@ -1,4 +1,4 @@
-package dev.pulceo.pna.dto;
+package dev.pulceo.pna.dto.registration;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -11,22 +11,20 @@ import org.hibernate.validator.constraints.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CloudRegistrationResponseDto {
+public class CloudRegistrationRequestDto {
+        
+        @NotBlank
+        @UUID
+        String prmUUID;
 
-    @NotBlank
-    @UUID
-    String uuid;
+        @NotBlank
+        @URL
+        String prmEndpoint;
 
-    @NotBlank
-    @UUID
-    String prmUUID;
-
-    @NotBlank
-    @URL
-    String prmEndpoint;
-
-    @NotBlank
-    @Length(min = 76, max = 76)
-    String pnaToken;
-
+        @NotBlank
+        @Length(min = 76, max = 76)
+        String pnaInitToken;
 }
+
+
+

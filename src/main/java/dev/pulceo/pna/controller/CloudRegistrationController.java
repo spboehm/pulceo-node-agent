@@ -1,7 +1,7 @@
 package dev.pulceo.pna.controller;
 
-import dev.pulceo.pna.dto.CloudRegistrationRequestDto;
-import dev.pulceo.pna.dto.CloudRegistrationResponseDto;
+import dev.pulceo.pna.dto.registration.CloudRegistrationRequestDto;
+import dev.pulceo.pna.dto.registration.CloudRegistrationResponseDto;
 import dev.pulceo.pna.exception.CloudRegistrationException;
 import dev.pulceo.pna.model.registration.CloudRegistration;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;

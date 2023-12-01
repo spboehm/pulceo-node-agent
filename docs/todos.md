@@ -12,6 +12,7 @@
 - [ ] Consider adding name of device to `Node` class
 - [ ] Consider changing the attribute names for the json serialization
 - [ ] Check if validation must 
+- [ ] Introduce Version for all entities
 
 ## Overall Issues
 

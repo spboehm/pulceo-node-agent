@@ -1,6 +1,6 @@
 package dev.pulceo.pna.dtos;
 
-import dev.pulceo.pna.dto.CloudRegistrationRequestDto;
+import dev.pulceo.pna.dto.registration.CloudRegistrationRequestDto;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

@@ -30,7 +30,6 @@ public class Node extends Resource {
     private String pnaId;
 
     @Builder.Default
-    @NotNull
     public boolean isLocalNode = false;
 
     @NotBlank(message="Name is required!")

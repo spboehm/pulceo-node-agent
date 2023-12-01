@@ -1,7 +1,7 @@
 package dev.pulceo.pna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.pulceo.pna.dto.CloudRegistrationRequestDto;
+import dev.pulceo.pna.dto.registration.CloudRegistrationRequestDto;
 import dev.pulceo.pna.repository.CloudRegistrationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

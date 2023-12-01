@@ -7,5 +7,8 @@ import jakarta.persistence.Entity;
 @Entity
 public class NodeRegistration extends Resource {
 
+    private String pnaUUID;
+    private String pnaEndpoint;
+    private String pnaToken;
 
 }

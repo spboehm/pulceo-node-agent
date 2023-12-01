@@ -3,6 +3,7 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.model.node.Node;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,10 +14,14 @@ public class NodeServiceIntegrationTests {
     @Autowired
     NodeService nodeService;
 
+    @Value("${pna.id}")
+    private String pnaId;
+
     @Test
     public void testCreateNode() {
         // given
        Node node = Node.builder()
+               .pnaId(pnaId)
                .name("test node")
                .nodeLocationCity("Bamberg")
                .nodeLocationCountry("Germany")

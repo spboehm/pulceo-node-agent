@@ -73,7 +73,7 @@ public class LinkServiceIntegrationTests {
         Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
         this.linkService.createLink(testLink1);
         Node secondSrcNode = nodeService.createNode(NodeUtil.createTestSrcNode2());
-        Node secondDestNode = nodeService.createNode(NodeUtil.createTestDestNod2());
+        Node secondDestNode = nodeService.createNode(NodeUtil.createTestDestNode2());
         Link testLink2 = new Link("testLink2", ResourceType.NODE, secondSrcNode, secondDestNode);
         this.linkService.createLink(testLink2);
 

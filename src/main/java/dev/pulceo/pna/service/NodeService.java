@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class NodeService {
 
+    private final NodeRepository nodeRepository;
+
     @Autowired
-    NodeRepository nodeRepository;
+    public NodeService(NodeRepository nodeRepository) {
+        this.nodeRepository = nodeRepository;
+    }
 
     @Value("${pna.id}")
     private String pnaId;

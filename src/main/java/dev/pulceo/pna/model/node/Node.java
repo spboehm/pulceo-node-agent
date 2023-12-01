@@ -22,7 +22,10 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs"})
 public class Node extends Resource {
 
-    @NotBlank(message= "Name is required!")
+    @NotBlank(message= "PNA id is required!")
+    private String pnaId;
+
+    @NotBlank(message="Name is required!")
     private String name;
 
     @Builder.Default
@@ -38,11 +41,13 @@ public class Node extends Resource {
     @NotNull(message="Node role is required!")
     private NodeRole role = NodeRole.WORKLOAD;
 
+    @Builder.Default
     @NotBlank(message="Node location country is required!")
-    private String nodeLocationCountry;
+    private String nodeLocationCountry = "";
 
+    @Builder.Default
     @NotBlank(message="Node location city is required!")
-    private String nodeLocationCity;
+    private String nodeLocationCity = "";
 
     @Builder.Default
     @Min(-180)

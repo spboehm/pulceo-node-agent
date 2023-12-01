@@ -126,7 +126,7 @@ public class CloudRegistrationService {
 
     private boolean isValidUUID(String pnaUUID) {
         Objects.requireNonNull(pnaUUID, "pnaUUID must not be null!");
-        return pnaUUID.matches("[a-fA-F0-9]+-[a-fA-F0-9]+-[a-fA-F0-9]+-[a-fA-F0-9]+-[a-fA-F0-9]+");
+        return pnaUUID.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     }
 
     private boolean isValidEndpoint(String endpoint) {

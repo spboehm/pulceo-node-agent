@@ -13,6 +13,7 @@
 - [ ] Consider changing the attribute names for the json serialization
 - [ ] Check if validation must 
 - [ ] Introduce Version for all entities
+- [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
 
 ## Overall Issues
 

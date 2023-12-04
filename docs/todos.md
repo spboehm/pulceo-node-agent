@@ -16,6 +16,7 @@
 - [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
 - [ ] Consider adding `@Builder` for all 
 - [ ] Check all set UUIDs in the project
+- 
 
 ## Overall Issues
 
@@ -202,6 +203,7 @@
 - [x] Add missing tests for `PingJobServiceTests`
 - [ ] `LinkServiceUnitTests` misses proper configuration of `properties`. Consider excluding external dependencies completely.
 - [ ] Consider renaming `read` to `retrieved`, e.g., in `LinkService`
+- [ ] Fix port collision for alle `@AutoConfigureMockMvc` tests
 
 ## CloudRegistrationControllerTests
 

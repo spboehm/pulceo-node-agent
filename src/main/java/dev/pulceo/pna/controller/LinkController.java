@@ -1,5 +1,6 @@
 package dev.pulceo.pna.controller;
 
+import dev.pulceo.pna.dto.link.LinkDTO;
 import dev.pulceo.pna.dto.metricrequests.MetricRequestDTO;
 import dev.pulceo.pna.dto.metricrequests.MetricResponseDTO;
 import dev.pulceo.pna.exception.JobServiceException;
@@ -32,6 +33,12 @@ public class LinkController {
         this.linkService = linkService;
         this.jobService = jobService;
     }
+
+    @PostMapping("/links")
+    public ResponseEntity<LinkDTO> newLink(@Valid @NotNull @RequestBody LinkDTO linkDTO) throws JobServiceException {
+        return null;
+    }
+
 
     @PostMapping("/links/{linkId}/metric-requests")
     public ResponseEntity<MetricResponseDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody MetricRequestDTO metricRequestDTO) throws JobServiceException {

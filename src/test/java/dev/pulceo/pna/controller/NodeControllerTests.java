@@ -25,7 +25,7 @@ public class NodeControllerTests {
     @Test
     public void testCreateNode() throws Exception {
         // given
-        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestSrcNode();
+        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestDestNode();
         String testDestNodeAsJson = objectMapper.writeValueAsString(testDestNode);
 
         // when and then
@@ -34,7 +34,7 @@ public class NodeControllerTests {
                 .accept("application/json")
                 .content(testDestNodeAsJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.pnaUUID").value("0247fea1-3ca3-401b-8fa2-b6f83a469680"));
+                .andExpect(jsonPath("$.pnaUUID").value("4c961268-df2a-49c1-965a-2e5036158ac0"));
         // TODO: add proper verification of the return entity
     }
 

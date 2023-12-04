@@ -77,7 +77,7 @@ public class JobService {
     @Value("${pna.metrics.mqtt.topic}")
     private String metricsMqttTopic;
 
-    @Value("${pna.id}")
+    @Value("${pna.uuid}")
     private String deviceId;
 
     public Optional<LinkJob> readJob(long id) throws JobServiceException {

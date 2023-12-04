@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface NodeRepository extends CrudRepository<Node, Long> {
 
-    Optional<Node> findByPnaId(String pnaId);
+    Optional<Node> findByPnaUUID(String pnaUUID);
 
     Optional<Node> findByIsLocalNode(boolean isLocalNode);
 

@@ -31,11 +31,11 @@ public class LinkServiceUnitTests {
     @InjectMocks
     LinkService linkService;
 
-    private final String pnaId = "0247fea1-3ca3-401b-8fa2-b6f83a469680";
+    private final String pnaUUID = "0247fea1-3ca3-401b-8fa2-b6f83a469680";
 
     @BeforeEach
     public void setUp() {
-        ReflectionTestUtils.setField(nodeService, "pnaId", pnaId);
+        ReflectionTestUtils.setField(nodeService, "pnaUUID", pnaUUID);
     }
 
     @Test

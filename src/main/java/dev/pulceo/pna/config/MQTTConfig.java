@@ -20,7 +20,7 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 public class MQTTConfig {
 
-    @Value("${pna.id}")
+    @Value("${pna.uuid}")
     private String deviceId;
 
     @Value("${pna.mqtt.client.id}")

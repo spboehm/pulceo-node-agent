@@ -19,7 +19,7 @@ public class NodeServiceIntegrationTests {
     public void testCreateNode() {
         // given
        Node node = Node.builder()
-               .pnaId("2f0b7383-4e5c-4392-b74c-6e85a7cfed7a")
+               .pnaUUID("2f0b7383-4e5c-4392-b74c-6e85a7cfed7a")
                .name("test node")
                .nodeLocationCity("Bamberg")
                .nodeLocationCountry("Germany")

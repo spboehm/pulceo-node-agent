@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.URL;
 public class CreateNewNodeDTO {
 
     @NotBlank(message= "PNA id is required!")
-    private String pnaId;
+    private String pnaUUID;
 
     @Builder.Default
     private boolean isLocalNode = false;

@@ -25,7 +25,7 @@ public class NodeControllerTests {
     public void testCreateNode() throws Exception {
         // given
         CreateNewNodeDTO testDestNode = CreateNewNodeDTO.builder()
-                .pnaId("551e8400-e29b-11d4-a716-446655440004")
+                .pnaUUID("551e8400-e29b-11d4-a716-446655440004")
                 .name("testDestNode")
                 .nodeLocationCity("Bamberg")
                 .nodeLocationCountry("Germany")

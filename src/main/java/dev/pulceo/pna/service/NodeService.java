@@ -19,8 +19,8 @@ public class NodeService {
         this.nodeRepository = nodeRepository;
     }
 
-    @Value("${pna.id}")
-    private String pnaId;
+    @Value("${pna.uuid}")
+    private String pnaUUID;
 
     @Value("${pna.node.name}")
     private String nodeName;
@@ -48,14 +48,14 @@ public class NodeService {
     public void initLocalNode() {
 
         // check if local node already exists
-        Optional<Node> localNode = this.nodeRepository.findByPnaId(pnaId);
+        Optional<Node> localNode = this.nodeRepository.findByPnaUUID(pnaUUID);
 
         if (localNode.isPresent()) {
             return;
         }
 
         this.createNode(Node.builder()
-                .pnaId(pnaId)
+                .pnaUUID(pnaUUID)
                 .isLocalNode(true)
                 .name(nodeName)
                 .pnaEndpoint(nodeEndpoint)

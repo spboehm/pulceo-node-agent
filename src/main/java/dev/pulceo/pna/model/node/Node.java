@@ -27,7 +27,7 @@ import java.util.List;
 public class Node extends Resource {
 
     @NotBlank(message= "PNA id is required!")
-    private String pnaId;
+    private String pnaUUID;
 
     @Builder.Default
     private boolean isLocalNode = false;

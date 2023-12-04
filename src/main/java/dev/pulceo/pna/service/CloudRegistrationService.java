@@ -31,7 +31,7 @@ public class CloudRegistrationService {
         this.cloudRegistrationRepository = cloudRegistrationRepository;
     }
 
-    @Value("${pna.id}")
+    @Value("${pna.uuid}")
     private String pnaId;
 
     @Value("${pna.init.token}")

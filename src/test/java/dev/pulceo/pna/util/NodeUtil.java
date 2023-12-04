@@ -10,7 +10,8 @@ public class NodeUtil {
                 .name("testSrcNode")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Bamberg")
-                .endpoint("http://localhost:7676")
+                .pnaEndpoint("http://localhost:7676")
+                .host("localhost")
                 .build();
     }
 
@@ -20,7 +21,8 @@ public class NodeUtil {
                 .name("testDestNode")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Bamberg")
-                .endpoint("http://localhost:7676")
+                .pnaEndpoint("http://localhost:7676")
+                .host("localhost")
                 .build();
     }
 
@@ -30,7 +32,8 @@ public class NodeUtil {
                 .name("testSrcNode2")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Erlangen")
-                .endpoint("http://localhost:7676")
+                .pnaEndpoint("http://localhost:7676")
+                .host("localhost")
                 .build();
     }
 
@@ -40,7 +43,8 @@ public class NodeUtil {
                 .name("testDestNode2")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Erlangen")
-                .endpoint("http://localhost:7676")
+                .pnaEndpoint("http://localhost:7676")
+                .host("localhost")
                 .build();
     }
 
@@ -52,7 +56,8 @@ public class NodeUtil {
                 .name("testSrcNode")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Bamberg")
-                .endpoint("http://localhost:7676")
+                .pnaEndpoint("http://localhost:7676")
+                .host("localhost")
                 .build();
     }
 
@@ -64,7 +69,8 @@ public class NodeUtil {
                 .name("testDestNode")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Bamberg")
-                .endpoint("http://localhost:7676")
+                .pnaEndpoint("http://localhost:7676")
+                .host("localhost")
                 .build();
     }
 

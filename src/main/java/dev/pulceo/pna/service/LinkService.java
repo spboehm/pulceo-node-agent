@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class LinkService {
@@ -40,6 +41,10 @@ public class LinkService {
 
     public Optional<Link> readLink(long id) {
         return this.linkRepository.findById(id);
+    }
+
+    public Optional<Link> readLinkByUUID(UUID uuid) {
+        return this.linkRepository.findByUuid(uuid);
     }
 
     public List<Link> readAllLinks() {

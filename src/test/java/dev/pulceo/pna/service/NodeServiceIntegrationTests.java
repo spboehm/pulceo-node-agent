@@ -23,7 +23,8 @@ public class NodeServiceIntegrationTests {
                .name("test node")
                .nodeLocationCity("Bamberg")
                .nodeLocationCountry("Germany")
-               .endpoint("http://localhost:7676")
+               .pnaEndpoint("http://localhost:7676")
+               .host("localhost")
                .build();
 
         // when

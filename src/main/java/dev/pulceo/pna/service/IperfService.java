@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class IperfService {
 
-    @Value("${pna.hostname}")
+    @Value("${pna.host}")
     private String hostname;
 
     @Value("${pna.iperf3.max.server.instances:16}")

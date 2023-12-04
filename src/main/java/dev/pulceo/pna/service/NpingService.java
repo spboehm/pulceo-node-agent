@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class NpingService {
 
-    @Value("${pna.hostname:localhost}")
+    @Value("${pna.host:localhost}")
     private String sourceHost;
 
     @Value("${pna.delay.udp.port:4001}")

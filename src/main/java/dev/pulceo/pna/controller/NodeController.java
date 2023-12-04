@@ -1,7 +1,11 @@
 package dev.pulceo.pna.controller;
 
+import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
+import dev.pulceo.pna.dto.node.NodeDTO;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.service.NodeService;
+import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +17,14 @@ import java.util.Optional;
 @RequestMapping("/api/v1/nodes")
 public class NodeController {
 
+    private final NodeService nodeService;
+    private final ModelMapper modelMapper;
+
     @Autowired
-    NodeService nodeService;
+    public NodeController(NodeService nodeService, ModelMapper modelMapper) {
+        this.nodeService = nodeService;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Node> getNodeById(@PathVariable long id) {
@@ -27,8 +37,10 @@ public class NodeController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Node> createNode(Node node) {
-        return new ResponseEntity<>(this.nodeService.createNode(node), HttpStatus.CREATED);
+    public ResponseEntity<NodeDTO> createNode(@Valid @RequestBody CreateNewNodeDTO createNewNodeDTO) {
+        Node node = this.modelMapper.map(createNewNodeDTO, Node.class);
+        Node createdNode = this.nodeService.createNode(node);
+        return new ResponseEntity<>(this.modelMapper.map(createdNode, NodeDTO.class), HttpStatus.CREATED);
     }
 
 }

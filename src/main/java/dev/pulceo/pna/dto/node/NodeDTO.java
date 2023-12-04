@@ -1,30 +1,26 @@
-package dev.pulceo.pna.model.node;
+package dev.pulceo.pna.dto.node;
 
-import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.jobs.NodeJob;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import dev.pulceo.pna.model.node.NodeRole;
+import dev.pulceo.pna.model.node.NodeType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-@Entity
 @Data
-@SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs"})
-public class Node extends Resource {
+@NoArgsConstructor
+@Builder
+public class NodeDTO {
 
     @NotBlank(message= "PNA id is required!")
     private String pnaId;
@@ -74,7 +70,5 @@ public class Node extends Resource {
     private String host;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NodeJob> nodeJobs = new ArrayList<>();
-
 }

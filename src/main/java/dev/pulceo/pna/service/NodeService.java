@@ -28,6 +28,9 @@ public class NodeService {
     @Value("${pna.node.endpoint}")
     private String nodeEndpoint;
 
+    @Value("${pna.host}")
+    private String host;
+
     public Node createNode(Node node) {
         // TODO: add further validation, throw exception in case a problem arises
         return this.nodeRepository.save(node);
@@ -55,7 +58,8 @@ public class NodeService {
                 .pnaId(pnaId)
                 .isLocalNode(true)
                 .name(nodeName)
-                .endpoint(nodeEndpoint)
+                .pnaEndpoint(nodeEndpoint)
+                .host(host)
                 .build());
     }
 

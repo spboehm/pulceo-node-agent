@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface LinkRepository extends CrudRepository<Link, Long> {
 
@@ -20,5 +21,7 @@ public interface LinkRepository extends CrudRepository<Link, Long> {
     List<Link> findAll();
 
     Optional<Link> findLinkByDestNode(Node destNode);
+
+    Optional<Link> findByUuid(UUID uuid);
 
 }

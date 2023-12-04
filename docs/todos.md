@@ -14,6 +14,7 @@
 - [ ] Check if validation must 
 - [ ] Introduce Version for all entities
 - [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
+- [ ] Consider adding `@Builder` for all 
 
 ## Overall Issues
 
@@ -97,6 +98,7 @@
 - [x] Ensure that particular interfaces can be used for measuring bandwidth
 - [x] Improve process generation with ProcessBuilder
 - [ ] Set minimum values for recurrence
+- [ ] IMPORTANT: Set value for recurrence appropriately, e.g., 5M, 5S
 - [x] Remove Job semantics for `BandwidthJob`
 - [x] Add `IperfRequest` instead of `IperfJob`
 - [x] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`

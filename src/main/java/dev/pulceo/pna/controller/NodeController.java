@@ -26,6 +26,7 @@ public class NodeController {
         this.modelMapper = modelMapper;
     }
 
+    // TODO: get by UUID
     @GetMapping("/{id}")
     public ResponseEntity<Node> getNodeById(@PathVariable long id) {
         Optional<Node> node = this.nodeService.readNode(id);
@@ -42,5 +43,8 @@ public class NodeController {
         Node createdNode = this.nodeService.createNode(node);
         return new ResponseEntity<>(this.modelMapper.map(createdNode, NodeDTO.class), HttpStatus.CREATED);
     }
+
+
+    // TODO: add exceptionHandler
 
 }

@@ -2,6 +2,7 @@ package dev.pulceo.pna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
+import dev.pulceo.pna.dtos.NodeDTOUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,14 +25,7 @@ public class NodeControllerTests {
     @Test
     public void testCreateNode() throws Exception {
         // given
-        CreateNewNodeDTO testDestNode = CreateNewNodeDTO.builder()
-                .pnaUUID("551e8400-e29b-11d4-a716-446655440004")
-                .name("testDestNode")
-                .nodeLocationCity("Bamberg")
-                .nodeLocationCountry("Germany")
-                .pnaEndpoint("http://localhost:7676")
-                .host("localhost")
-                .build();
+        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestSrcNode();
         String testDestNodeAsJson = objectMapper.writeValueAsString(testDestNode);
 
         // when and then
@@ -40,7 +34,7 @@ public class NodeControllerTests {
                 .accept("application/json")
                 .content(testDestNodeAsJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.pnaUUID").value("551e8400-e29b-11d4-a716-446655440004"));
+                .andExpect(jsonPath("$.pnaUUID").value("0247fea1-3ca3-401b-8fa2-b6f83a469680"));
         // TODO: add proper verification of the return entity
     }
 

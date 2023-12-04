@@ -15,6 +15,7 @@
 - [ ] Introduce Version for all entities
 - [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
 - [ ] Consider adding `@Builder` for all 
+- [ ] Check all set UUIDs in the project
 
 ## Overall Issues
 

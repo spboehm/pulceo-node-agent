@@ -40,6 +40,10 @@ public class NodeService {
         return this.nodeRepository.findById(id);
     }
 
+    public Optional<Node> readNode(String uuid) {
+        return this.nodeRepository.findByPnaUUID(uuid);
+    }
+
     public Optional<Node> readLocalNode() {
         return this.nodeRepository.findByIsLocalNode(true);
     }

@@ -26,12 +26,11 @@ public class NodeController {
         this.modelMapper = modelMapper;
     }
 
-    // TODO: get by UUID
-    @GetMapping("/{id}")
-    public ResponseEntity<Node> getNodeById(@PathVariable long id) {
-        Optional<Node> node = this.nodeService.readNode(id);
+    @GetMapping("/{uuid}")
+    public ResponseEntity<NodeDTO> getNodeByUUID(@PathVariable String uuid) {
+        Optional<Node> node = this.nodeService.readNode(uuid);
         if (node.isPresent()) {
-            return new ResponseEntity<>(node.get(), HttpStatus.OK);
+            return new ResponseEntity<>(this.modelMapper.map(node.get(), NodeDTO.class), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

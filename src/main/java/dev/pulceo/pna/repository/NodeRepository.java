@@ -13,6 +13,4 @@ public interface NodeRepository extends CrudRepository<Node, Long> {
 
     Optional<Node> findByIsLocalNode(boolean isLocalNode);
 
-
-
 }

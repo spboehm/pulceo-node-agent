@@ -16,7 +16,7 @@
 - [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
 - [ ] Consider adding `@Builder` for all 
 - [ ] Check all set UUIDs in the project
-- 
+- [ ] Consider using Spring HATEOS for all Outgoing DTOs
 
 ## Overall Issues
 

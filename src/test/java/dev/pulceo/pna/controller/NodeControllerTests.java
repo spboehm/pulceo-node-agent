@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,12 +54,14 @@ public class NodeControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.pnaUUID").value("4c961268-df2a-49c1-965a-2e5036158ac0"));
 
-        this.mockMvc.perform(get("/api/v1/nodes/" + testDestNode.getPnaUUID())
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/v1/nodes/" + testDestNode.getPnaUUID())
                         .contentType("application/json")
                         .accept("application/json")
                         .content(testDestNodeAsJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pnaUUID").value("4c961268-df2a-49c1-965a-2e5036158ac0"));
+                .andExpect(jsonPath("$.pnaUUID").value("4c961268-df2a-49c1-965a-2e5036158ac0"))
+                .andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
 }

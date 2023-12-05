@@ -2,10 +2,7 @@ package dev.pulceo.pna.model.node;
 
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.jobs.NodeJob;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +21,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs"})
+@NamedEntityGraph(
+        name = "graph.Node.jobs",
+        attributeNodes = {
+                @NamedAttributeNode("nodeJobs")
+        }
+)
 public class Node extends Resource {
 
     @NotBlank(message= "PNA id is required!")

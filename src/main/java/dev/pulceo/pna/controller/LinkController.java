@@ -1,17 +1,21 @@
 package dev.pulceo.pna.controller;
 
+import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
 import dev.pulceo.pna.dto.metricrequests.MetricRequestDTO;
 import dev.pulceo.pna.dto.metricrequests.MetricResponseDTO;
 import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.ping.IPVersion;
 import dev.pulceo.pna.model.ping.PingRequest;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.LinkService;
+import dev.pulceo.pna.service.NodeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +26,31 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/nodes")
+@RequestMapping("/api/v1/links")
 public class LinkController {
 
+    private final NodeService nodeService;
     private final LinkService linkService;
     private final JobService jobService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public LinkController(LinkService linkService, JobService jobService) {
+    public LinkController(NodeService nodeService, LinkService linkService, JobService jobService, ModelMapper modelMapper) {
+        this.nodeService = nodeService;
         this.linkService = linkService;
         this.jobService = jobService;
+        this.modelMapper = modelMapper;
     }
 
-    @PostMapping("/links")
-    public ResponseEntity<LinkDTO> newLink(@Valid @NotNull @RequestBody LinkDTO linkDTO) throws JobServiceException {
-        return null;
+    @PostMapping("")
+    public ResponseEntity<LinkDTO> createLink(@Valid @NotNull @RequestBody CreateNewLinkDTO createNewLinkDTO) throws JobServiceException, LinkServiceException {
+        Link link = this.modelMapper.map(createNewLinkDTO, Link.class);
+        link.setSrcNode(this.nodeService.readLocalNode().orElseThrow());
+        link.setDestNode(this.nodeService.readNode(String.valueOf(createNewLinkDTO.getDestNodeUUID())).orElseThrow());
+        // TODO: duplicate check
+        Long linkId = this.linkService.createLink(link);
+        System.out.println(this.linkService.readLink(linkId));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

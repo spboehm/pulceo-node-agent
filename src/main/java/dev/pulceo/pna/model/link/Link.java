@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"linkJobs"})
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"linkJobs"})
 @NamedEntityGraph(
         name = "graph.Link.jobs",
         attributeNodes = {

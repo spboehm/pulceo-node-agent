@@ -104,7 +104,6 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
-        Thread.sleep(30000);
     }
 
 

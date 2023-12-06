@@ -3,6 +3,8 @@ package dev.pulceo.pna.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
+import dev.pulceo.pna.repository.NodeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +24,15 @@ public class NodeControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private NodeRepository nodeRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @BeforeEach
+    public void setup() {
+        this.nodeRepository.deleteAll();
+    }
 
     @Test
     public void testCreateNode() throws Exception {

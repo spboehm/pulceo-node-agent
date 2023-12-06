@@ -28,7 +28,7 @@ public class NodeController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<NodeDTO> getNodeByUUID(@PathVariable String uuid) {
-        Optional<Node> node = this.nodeService.readNode(uuid);
+        Optional<Node> node = this.nodeService.readNodeByPnaUUID(uuid);
         if (node.isPresent()) {
             return new ResponseEntity<>(this.modelMapper.map(node.get(), NodeDTO.class), HttpStatus.OK);
         } else {

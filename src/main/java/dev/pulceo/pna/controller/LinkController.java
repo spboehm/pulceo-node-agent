@@ -2,8 +2,8 @@ package dev.pulceo.pna.controller;
 
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
-import dev.pulceo.pna.dto.metricrequests.MetricRequestDTO;
-import dev.pulceo.pna.dto.metricrequests.MetricResponseDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestDTO;
+import dev.pulceo.pna.dto.metricrequests.MetricDTO;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
@@ -44,18 +44,19 @@ public class LinkController {
 
     @PostMapping("")
     public ResponseEntity<LinkDTO> createLink(@Valid @NotNull @RequestBody CreateNewLinkDTO createNewLinkDTO) throws JobServiceException, LinkServiceException {
-        Link link = this.modelMapper.map(createNewLinkDTO, Link.class);
-        link.setSrcNode(this.nodeService.readLocalNode().orElseThrow());
-        link.setDestNode(this.nodeService.readNode(String.valueOf(createNewLinkDTO.getDestNodeUUID())).orElseThrow());
-        // TODO: duplicate check
-        Long linkId = this.linkService.createLink(link);
-        System.out.println(this.linkService.readLink(linkId));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+            Link link = this.modelMapper.map(createNewLinkDTO, Link.class);
+            link.setSrcNode(this.nodeService.readLocalNode().orElseThrow());
+            link.setDestNode(this.nodeService.readNodeByPnaUUID(String.valueOf(createNewLinkDTO.getDestNodeUUID())).orElseThrow());
+            // TODO: duplicate check
+            Long linkId = this.linkService.createLink(link);
+            Link createdLink = this.linkService.readLink(linkId).orElseThrow();
+            LinkDTO linkDTO = this.modelMapper.map(createdLink, LinkDTO.class);
+            return new ResponseEntity<>(linkDTO, HttpStatus.CREATED);
     }
 
 
     @PostMapping("/links/{linkId}/metric-requests")
-    public ResponseEntity<MetricResponseDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody MetricRequestDTO metricRequestDTO) throws JobServiceException {
+    public ResponseEntity<MetricDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
         // first, get the link
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
         if (retrievedLink.isEmpty()) {
@@ -71,7 +72,7 @@ public class LinkController {
         PingJob pingJob = new PingJob(pingRequest, 15);
         this.jobService.createPingJob(pingJob);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        MetricResponseDTO createdMetricRequestDTO = new MetricResponseDTO(createdPingJob.getUuid(), "icmp-rtt", "15s", true, new HashMap<>(), new HashMap<>());
+        MetricDTO createdMetricRequestDTO = new MetricDTO(createdPingJob.getUuid(), "icmp-rtt", "15s", true, new HashMap<>(), new HashMap<>());
         return new ResponseEntity<>(createdMetricRequestDTO, HttpStatus.OK);
     }
 

@@ -2,9 +2,13 @@ package dev.pulceo.pna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestDTO;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
+import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
+import dev.pulceo.pna.repository.LinkRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,30 +27,47 @@ public class LinkControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private LinkRepository linkRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${pna.uuid}")
     private String pnaUuid;
 
+    @BeforeEach
+    public void setUp() {
+        linkRepository.deleteAll();
+    }
 
     @Test
     public void testCreateLink() throws Exception {
         // given
-        CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, pnaUuid);
+        CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode();
+        String nodeAsJson = objectMapper.writeValueAsString(createNewNodeDTO);
+        MvcResult nodeResult = this.mockMvc.perform(post("/api/v1/nodes")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(nodeAsJson))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("pnaUUID").asText();
+
+        CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, nodeUuid);
         String createNewLinkDTOAsJson = this.objectMapper.writeValueAsString(createNewLinkDTO);
 
+        // when and then
         this.mockMvc.perform(post("/api/v1/links")
                         .contentType("application/json")
                         .accept("application/json")
                         .content(createNewLinkDTOAsJson))
                 .andExpect(status().isCreated());
-
     }
 
     @Test
     public void testNewICMPRTTRequest() throws Exception {
         // given
-        // TODO: create an additional node, because the node itself does already exist
+        // new node
         CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode();
         String nodeAsJson = objectMapper.writeValueAsString(createNewNodeDTO);
         MvcResult nodeResult = this.mockMvc.perform(post("/api/v1/nodes")
@@ -57,7 +78,7 @@ public class LinkControllerTests {
                 .andReturn();
         String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("pnaUUID").asText();
 
-        // TODO: create a Link between the two nodes
+        // link between local node and new node
         CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, nodeUuid);
         String linkAsJson = objectMapper.writeValueAsString(createNewLinkDTO);
         MvcResult linkResult = this.mockMvc.perform(post("/api/v1/links")
@@ -66,14 +87,18 @@ public class LinkControllerTests {
                         .content(linkAsJson))
                         .andExpect(status().isCreated())
                         .andReturn();
-        System.out.println(linkResult.getResponse().getContentAsString());
+        String linkUuid = objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("uuid").asText();
 
-
-        // TOOD: create a MetricRequestDTO for IMCP-RTT
-
-        // when
-
-        // then
+        // when and then
+        CreateNewMetricRequestDTO createNewMetricRequestDTO = MetricRequestDTOUtil.createTestMetricRequest("icmp-rtt");
+        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestDTO);
+        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(metricRequestAsJson))
+                        .andExpect(status().isOk())
+                        .andReturn();
+        System.out.println(metricRequestResult.getResponse().getContentAsString());
     }
 
 

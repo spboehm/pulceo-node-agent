@@ -36,11 +36,11 @@ public class NodeService {
         return this.nodeRepository.save(node);
     }
 
-    public Optional<Node> readNode(long id) {
+    public Optional<Node> readNodeByPnaUUID(long id) {
         return this.nodeRepository.findById(id);
     }
 
-    public Optional<Node> readNode(String uuid) {
+    public Optional<Node> readNodeByPnaUUID(String uuid) {
         return this.nodeRepository.findByPnaUUID(uuid);
     }
 

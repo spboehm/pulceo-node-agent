@@ -87,7 +87,7 @@ public class LinkControllerTests {
                         .content(linkAsJson))
                         .andExpect(status().isCreated())
                         .andReturn();
-        String linkUuid = objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("uuid").asText();
+        String linkUuid = objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("linkUUID").asText();
 
         // when and then
         CreateNewMetricRequestDTO createNewMetricRequestDTO = MetricRequestDTOUtil.createTestMetricRequest("icmp-rtt");

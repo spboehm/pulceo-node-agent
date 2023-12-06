@@ -50,7 +50,16 @@ public class LinkController {
             // TODO: duplicate check
             Long linkId = this.linkService.createLink(link);
             Link createdLink = this.linkService.readLink(linkId).orElseThrow();
-            LinkDTO linkDTO = this.modelMapper.map(createdLink, LinkDTO.class);
+            // TODO: revise link DTO creation and replace with RestFullDTO
+            LinkDTO linkDTO = LinkDTO.builder()
+                    .linkUUID(createdLink.getUuid())
+                    .name(createdLink.getName())
+                    .resourceType(createdLink.getResourceType())
+                    .linkDirectionType(createdLink.getLinkDirectionType())
+                    .srcNode(createdLink.getSrcNode().getUuid())
+                    .destNode(createdLink.getDestNode().getUuid())
+                    .linkJobs(createdLink.getLinkJobs())
+                    .build();
             return new ResponseEntity<>(linkDTO, HttpStatus.CREATED);
     }
 

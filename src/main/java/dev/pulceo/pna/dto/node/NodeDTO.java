@@ -15,12 +15,16 @@ import org.hibernate.validator.constraints.URL;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class NodeDTO {
+
+    @NotBlank(message="UUID is required!")
+    private UUID nodeUUID;
 
     @NotBlank(message= "PNA id is required!")
     private String pnaUUID;

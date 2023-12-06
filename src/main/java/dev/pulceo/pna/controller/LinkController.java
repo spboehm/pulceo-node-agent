@@ -8,6 +8,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
+import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.model.ping.IPVersion;
 import dev.pulceo.pna.model.ping.PingRequest;
 import dev.pulceo.pna.service.JobService;
@@ -46,7 +47,13 @@ public class LinkController {
     public ResponseEntity<LinkDTO> createLink(@Valid @NotNull @RequestBody CreateNewLinkDTO createNewLinkDTO) throws JobServiceException, LinkServiceException {
             Link link = this.modelMapper.map(createNewLinkDTO, Link.class);
             link.setSrcNode(this.nodeService.readLocalNode().orElseThrow());
-            link.setDestNode(this.nodeService.readNodeByPnaUUID(String.valueOf(createNewLinkDTO.getDestNodeUUID())).orElseThrow());
+            // get dest node
+            Optional<Node> destNode = this.nodeService.readNodeByUUID(createNewLinkDTO.getDestNodeUUID());
+            // TODO: do by request not found
+            if (destNode.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            link.setDestNode(this.nodeService.readNodeByUUID(destNode.get().getUuid()).orElseThrow());
             // TODO: duplicate check
             Long linkId = this.linkService.createLink(link);
             Link createdLink = this.linkService.readLink(linkId).orElseThrow();
@@ -64,7 +71,7 @@ public class LinkController {
     }
 
 
-    @PostMapping("/links/{linkId}/metric-requests")
+    @PostMapping("{linkId}/metric-requests")
     public ResponseEntity<MetricDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
         // first, get the link
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
@@ -76,10 +83,12 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create PingRequest
-        PingRequest pingRequest = new PingRequest(link.getSrcNode().getPnaEndpoint(),link.getSrcNode().getPnaEndpoint(), IPVersion.IPv4, 5, 66, "lo");
+        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(),link.getSrcNode().getHost(), IPVersion.IPv4, 5, 66, "lo");
         // Encapsulate PingRequest in PingJob
         PingJob pingJob = new PingJob(pingRequest, 15);
-        this.jobService.createPingJob(pingJob);
+        long id = this.jobService.createPingJob(pingJob);
+        this.jobService.enablePingJob(id);
+        this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
         MetricDTO createdMetricRequestDTO = new MetricDTO(createdPingJob.getUuid(), "icmp-rtt", "15s", true, new HashMap<>(), new HashMap<>());
         return new ResponseEntity<>(createdMetricRequestDTO, HttpStatus.OK);

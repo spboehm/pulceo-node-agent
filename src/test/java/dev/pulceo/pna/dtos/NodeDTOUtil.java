@@ -7,7 +7,7 @@ public class NodeDTOUtil {
     public static CreateNewNodeDTO createTestDestNode() {
         return CreateNewNodeDTO.builder()
                 .pnaUUID("4c961268-df2a-49c1-965a-2e5036158ac0")
-                .name("testSrcNode")
+                .name("testDestNode")
                 .nodeLocationCountry("Germany")
                 .nodeLocationCity("Bamberg")
                 .pnaEndpoint("http://localhost:7676")

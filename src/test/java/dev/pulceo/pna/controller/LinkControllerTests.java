@@ -7,7 +7,9 @@ import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
 import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
+import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.LinkRepository;
+import dev.pulceo.pna.repository.NodeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +33,8 @@ public class LinkControllerTests {
 
     @Autowired
     private LinkRepository linkRepository;
+    @Autowired
+    private NodeRepository nodeRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,9 +57,9 @@ public class LinkControllerTests {
                         .content(nodeAsJson))
                 .andExpect(status().isCreated())
                 .andReturn();
-        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("pnaUUID").asText();
-
-        CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, nodeUuid);
+        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("nodeUUID").asText();
+        Optional<Node> localNode = this.nodeRepository.findByPnaUUID(pnaUuid);
+        CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(String.valueOf(localNode.get().getUuid()), nodeUuid);
         String createNewLinkDTOAsJson = this.objectMapper.writeValueAsString(createNewLinkDTO);
 
         // when and then
@@ -76,7 +82,7 @@ public class LinkControllerTests {
                 .content(nodeAsJson))
                 .andExpect(status().isCreated())
                 .andReturn();
-        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("pnaUUID").asText();
+        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("nodeUUID").asText();
 
         // link between local node and new node
         CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, nodeUuid);
@@ -98,7 +104,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
-        System.out.println(metricRequestResult.getResponse().getContentAsString());
+        Thread.sleep(30000);
     }
 
 

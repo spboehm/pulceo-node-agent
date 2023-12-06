@@ -257,7 +257,6 @@ public class JobService {
                         .jobUUID(retrievedPingJob.getUuid())
                         .metricResult(pingResult)
                         .build();
-
                 Message message = new Message(deviceId, networkMetric);
                 this.pingServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (PingServiceException e) {

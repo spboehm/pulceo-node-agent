@@ -17,6 +17,7 @@
 - [ ] Consider adding `@Builder` for all 
 - [ ] Check all set UUIDs in the project
 - [ ] Consider using Spring HATEOS for all Outgoing DTOs
+- [ ] Repository classes in tests should manage the lifecycle of the entities
 
 ## Overall Issues
 

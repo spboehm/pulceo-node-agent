@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class NodeService {
@@ -42,6 +43,10 @@ public class NodeService {
 
     public Optional<Node> readNodeByPnaUUID(String uuid) {
         return this.nodeRepository.findByPnaUUID(uuid);
+    }
+
+    public Optional<Node> readNodeByUUID(UUID uuid) {
+        return this.nodeRepository.findByUuid(uuid);
     }
 
     public Optional<Node> readLocalNode() {

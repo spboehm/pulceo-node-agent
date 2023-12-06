@@ -27,6 +27,7 @@ import java.util.List;
                 @NamedAttributeNode("nodeJobs")
         }
 )
+@ToString(callSuper = true, exclude = {"nodeJobs"})
 public class Node extends Resource {
 
     @NotBlank(message= "PNA id is required!")

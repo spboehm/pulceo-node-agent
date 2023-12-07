@@ -131,6 +131,8 @@
 - [ ] Ensure that the inheritance is correctly chosen
 - [ ] Rework waiting on starting process in `measure...()`
 - [x] Rename `NpingTCPJob` to `NpingJob`
+- [ ] Recurrence only in seconds, allow for modification in minutes or hours
+- [ ] Maybe add a sequence number for the delay measurement
 
 ## PingService
 
@@ -213,3 +215,8 @@
 ## Package config
 
 - [ ] Adjust naming of variables inside configuration classes
+
+## LinkController
+
+- [ ] Add own controller for `metric-requests`
+- [ ] Refactor properties mapping to own method

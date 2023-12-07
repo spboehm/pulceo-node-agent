@@ -96,7 +96,7 @@ public class LinkControllerTests {
         String linkUuid = objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("linkUUID").asText();
 
         // when and then
-        CreateNewMetricRequestDTO createNewMetricRequestDTO = MetricRequestDTOUtil.createTestMetricRequest("icmp-rtt");
+        CreateNewMetricRequestDTO createNewMetricRequestDTO = MetricRequestDTOUtil.createIcmpRttMetricRequestDTO("icmp-rtt");
         String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestDTO);
         MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests")
                         .contentType("application/json")
@@ -104,6 +104,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
+
     }
 
 

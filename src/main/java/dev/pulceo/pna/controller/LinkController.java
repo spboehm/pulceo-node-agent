@@ -55,7 +55,7 @@ public class LinkController {
             }
             link.setDestNode(this.nodeService.readNodeByUUID(destNode.get().getUuid()).orElseThrow());
             // TODO: duplicate check
-            Long linkId = this.linkService.createLink(link);
+            long linkId = this.linkService.createLink(link);
             Link createdLink = this.linkService.readLink(linkId).orElseThrow();
             // TODO: revise link DTO creation and replace with RestFullDTO
             LinkDTO linkDTO = LinkDTO.builder()
@@ -82,12 +82,24 @@ public class LinkController {
         // retrieve link
         Link link = retrievedLink.get();
 
+        // Read key-values form hashmap
+        // TODO: set default values globally
+        IPVersion ipVersion = IPVersion.valueOf(createNewMetricRequestDTO.getProperties().getOrDefault("ip-version", IPVersion.IPv4.toString()));
+        int count = Integer.parseInt(createNewMetricRequestDTO.getProperties().getOrDefault("count", "10"));
+        int dataLength = Integer.parseInt(createNewMetricRequestDTO.getProperties().getOrDefault("data-length", "66"));
+        String iface = createNewMetricRequestDTO.getProperties().getOrDefault("iface", "lo");
+
         // create PingRequest
-        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(),link.getSrcNode().getHost(), IPVersion.IPv4, 5, 66, "lo");
+        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(),link.getSrcNode().getHost(), ipVersion, count, dataLength, iface);
         // Encapsulate PingRequest in PingJob
         PingJob pingJob = new PingJob(pingRequest, 15);
         long id = this.jobService.createPingJob(pingJob);
-        this.jobService.enablePingJob(id);
+
+        // if enabled
+        if (createNewMetricRequestDTO.isEnabled()) {
+            this.jobService.enablePingJob(id);
+        }
+
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
         MetricDTO createdMetricRequestDTO = new MetricDTO(createdPingJob.getUuid(), "icmp-rtt", "15s", true, new HashMap<>(), new HashMap<>());

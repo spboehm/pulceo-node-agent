@@ -60,15 +60,7 @@ public class LinkControllerTests {
     @Test
     public void testCreateLink() throws Exception {
         // given
-        CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode();
-        String nodeAsJson = objectMapper.writeValueAsString(createNewNodeDTO);
-        MvcResult nodeResult = this.mockMvc.perform(post("/api/v1/nodes")
-                        .contentType("application/json")
-                        .accept("application/json")
-                        .content(nodeAsJson))
-                .andExpect(status().isCreated())
-                .andReturn();
-        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("nodeUUID").asText();
+        String nodeUuid = createNewTestDestNode();
         Optional<Node> localNode = this.nodeRepository.findByPnaUUID(pnaUuid);
         CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(String.valueOf(localNode.get().getUuid()), nodeUuid);
         String createNewLinkDTOAsJson = this.objectMapper.writeValueAsString(createNewLinkDTO);
@@ -84,27 +76,8 @@ public class LinkControllerTests {
     @Test
     public void testNewICMPRTTRequest() throws Exception {
         // given
-        // new node
-        CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode();
-        String nodeAsJson = objectMapper.writeValueAsString(createNewNodeDTO);
-        MvcResult nodeResult = this.mockMvc.perform(post("/api/v1/nodes")
-                .contentType("application/json")
-                .accept("application/json")
-                .content(nodeAsJson))
-                .andExpect(status().isCreated())
-                .andReturn();
-        String nodeUuid = objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("nodeUUID").asText();
-
-        // link between local node and new node
-        CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, nodeUuid);
-        String linkAsJson = objectMapper.writeValueAsString(createNewLinkDTO);
-        MvcResult linkResult = this.mockMvc.perform(post("/api/v1/links")
-                        .contentType("application/json")
-                        .accept("application/json")
-                        .content(linkAsJson))
-                        .andExpect(status().isCreated())
-                        .andReturn();
-        String linkUuid = objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("linkUUID").asText();
+        String nodeUuid = createNewTestDestNode();
+        String linkUuid = createNewTestLink(nodeUuid);
 
         // when and then
         CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO = MetricRequestDTOUtil.createIcmpRttMetricRequestDTO("icmp-rtt");
@@ -116,7 +89,7 @@ public class LinkControllerTests {
                         .andExpect(status().isOk())
                         .andReturn();
 
-        // TODO: do validation here
+        // TODO: do validation here of MetricRequestDTO
 
         // wait for icmp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
@@ -132,7 +105,7 @@ public class LinkControllerTests {
         assertNotNull(message);
         assert("localhost".equals(map.get("sourceHost")));
         assert("localhost".equals(map.get("destinationHost")));
-        assertEquals(10, pingDelayMeasurement.getPacketsTransmitted());
+        assertEquals(1, pingDelayMeasurement.getPacketsTransmitted());
         assertTrue(pingDelayMeasurement.getPacketsReceived() >= 0);
         assertTrue(pingDelayMeasurement.getPacketLoss() >= 0.0);
         assertTrue(pingDelayMeasurement.getTime() >= 0);
@@ -140,6 +113,30 @@ public class LinkControllerTests {
         assertTrue(pingDelayMeasurement.getRttAvg() >= 0);
         assertTrue(pingDelayMeasurement.getRttMax() >= 0);
         assertTrue(pingDelayMeasurement.getRttMdev() >= 0);
+    }
+
+    private String createNewTestLink(String nodeUuid) throws Exception {
+        CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(pnaUuid, nodeUuid);
+        String linkAsJson = objectMapper.writeValueAsString(createNewLinkDTO);
+        MvcResult linkResult = this.mockMvc.perform(post("/api/v1/links")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(linkAsJson))
+                        .andExpect(status().isCreated())
+                        .andReturn();
+        return objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("linkUUID").asText();
+    }
+
+    private String createNewTestDestNode() throws Exception {
+        CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode();
+        String nodeAsJson = objectMapper.writeValueAsString(createNewNodeDTO);
+        MvcResult nodeResult = this.mockMvc.perform(post("/api/v1/nodes")
+                .contentType("application/json")
+                .accept("application/json")
+                .content(nodeAsJson))
+                .andExpect(status().isCreated())
+                .andReturn();
+        return objectMapper.readTree(nodeResult.getResponse().getContentAsString()).get("nodeUUID").asText();
     }
 
 

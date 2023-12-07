@@ -1,5 +1,5 @@
 package dev.pulceo.pna.model.message;
 
 public enum MetricType {
-    PING_ICMP, NPING_TCP, NPING_UDP, IPERF_TCP, IPERF_UDP
+    ICMP_RTT, TCP_RTT, UDP_RTT, ICMP_E2E, UDP_E2E, TCP_E2E, TCP_BW, UDP_BW
 }

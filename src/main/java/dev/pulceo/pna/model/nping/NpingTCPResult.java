@@ -44,7 +44,7 @@ public class NpingTCPResult extends Resource implements MetricResult {
     @Override
     @JsonIgnore
     public MetricType getMetricType() {
-        return MetricType.NPING_TCP;
+        return MetricType.TCP_RTT;
     }
 
     @Override

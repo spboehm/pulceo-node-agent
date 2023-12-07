@@ -76,6 +76,11 @@ public class LinkController {
 
 
 
+        // decide if icmp-rtt, udp-rtt, tcp-rtt
+
+        // decide if icmp-e2e, udp-e2e, tcp-e2e
+
+        // decide if udp-bw, tcp-bw
 
 
         // first, get the link

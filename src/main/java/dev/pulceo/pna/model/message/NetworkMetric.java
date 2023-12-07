@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 public class NetworkMetric extends Metric {
 
-//    private UUID linkUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
     private MetricResult metricResult;
 
 }

@@ -44,7 +44,7 @@ public class PingResult extends Resource implements MetricResult {
     @Override
     @JsonIgnore
     public MetricType getMetricType() {
-        return MetricType.PING_ICMP;
+        return MetricType.ICMP_RTT;
     }
 
     @Override

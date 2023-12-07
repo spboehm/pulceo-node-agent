@@ -14,6 +14,7 @@ import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = { "pna.delay.tcp.port=8002", "pna.delay.udp.port=8003", "pna.mqtt.client.id=551e8400-e29b-11d4-a716-446655440005"})
 @AutoConfigureMockMvc
 public class LinkControllerTests {
 

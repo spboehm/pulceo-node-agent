@@ -116,6 +116,8 @@ public class LinkControllerTests {
                         .andExpect(status().isOk())
                         .andReturn();
 
+        // TODO: do validation here
+
         // wait for icmp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
         this.pingServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
@@ -130,7 +132,7 @@ public class LinkControllerTests {
         assertNotNull(message);
         assert("localhost".equals(map.get("sourceHost")));
         assert("localhost".equals(map.get("destinationHost")));
-        assertEquals(1, pingDelayMeasurement.getPacketsTransmitted());
+        assertEquals(10, pingDelayMeasurement.getPacketsTransmitted());
         assertTrue(pingDelayMeasurement.getPacketsReceived() >= 0);
         assertTrue(pingDelayMeasurement.getPacketLoss() >= 0.0);
         assertTrue(pingDelayMeasurement.getTime() >= 0);

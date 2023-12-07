@@ -9,7 +9,6 @@ import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
-import dev.pulceo.pna.model.ping.IPVersion;
 import dev.pulceo.pna.model.ping.PingRequest;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.LinkService;
@@ -22,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,24 +71,14 @@ public class LinkController {
 
     @PostMapping("{linkId}/metric-requests/icmp-rtt-requests")
     public ResponseEntity<ShortMetricRequestDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {
-        // first, get the link
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        // retrieve link
         Link link = retrievedLink.get();
-
-        // Read key-values form hashmap
-        // TODO: set default values globally
-        IPVersion ipVersion = IPVersion.valueOf(createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("ip-version", IPVersion.IPv4.toString()));
-        int count = Integer.parseInt(createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("count", "10"));
-        int dataLength = Integer.parseInt(createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("data-length", "66"));
-        String iface = createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("iface", "lo");
-
         // create PingRequest
-        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(),link.getSrcNode().getHost(), ipVersion, count, dataLength, iface);
+        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), createNewMetricRequestIcmpRttDTO.getIpVersion(), createNewMetricRequestIcmpRttDTO.getCount(), createNewMetricRequestIcmpRttDTO.getDataLength(), createNewMetricRequestIcmpRttDTO.getIface());
         // Encapsulate PingRequest in PingJob
         PingJob pingJob = new PingJob(pingRequest, Integer.parseInt(createNewMetricRequestIcmpRttDTO.getRecurrence()));
         long id = this.jobService.createPingJob(pingJob);
@@ -102,7 +90,7 @@ public class LinkController {
 
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled(), createNewMetricRequestIcmpRttDTO.getProperties(), new HashMap<>());
+        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled());
         return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
     }
 

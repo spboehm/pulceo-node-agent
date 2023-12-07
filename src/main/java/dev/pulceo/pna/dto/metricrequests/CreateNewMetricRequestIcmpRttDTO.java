@@ -1,11 +1,10 @@
 package dev.pulceo.pna.dto.metricrequests;
 
+import dev.pulceo.pna.model.ping.IPVersion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +14,12 @@ public class CreateNewMetricRequestIcmpRttDTO {
     private String type;
     private String recurrence;
     private boolean enabled;
-    private Map<String, String> properties;
-    private Map<String, String> transformer;
+    @Builder.Default
+    private IPVersion ipVersion = IPVersion.IPv4;
+    @Builder.Default
+    private int count = 10;
+    @Builder.Default
+    private int dataLength = 66;
+    @Builder.Default
+    private String iface = "lo";
 }

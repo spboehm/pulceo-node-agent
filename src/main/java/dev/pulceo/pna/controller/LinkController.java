@@ -3,7 +3,7 @@ package dev.pulceo.pna.controller;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestDTO;
-import dev.pulceo.pna.dto.metricrequests.MetricDTO;
+import dev.pulceo.pna.dto.metricrequests.MetricRequestDTO;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
@@ -72,7 +72,7 @@ public class LinkController {
 
 
     @PostMapping("{linkId}/metric-requests")
-    public ResponseEntity<MetricDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
+    public ResponseEntity<MetricRequestDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
 
 
 
@@ -112,7 +112,7 @@ public class LinkController {
 
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        MetricDTO createdMetricRequestDTO = new MetricDTO(createdPingJob.getUuid(), createNewMetricRequestDTO.getType(), createNewMetricRequestDTO.getRecurrence(), createNewMetricRequestDTO.isEnabled(), createNewMetricRequestDTO.getProperties(), new HashMap<>());
+        MetricRequestDTO createdMetricRequestDTO = new MetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestDTO.getType(), createNewMetricRequestDTO.getRecurrence(), createNewMetricRequestDTO.isEnabled(), createNewMetricRequestDTO.getProperties(), new HashMap<>());
         return new ResponseEntity<>(createdMetricRequestDTO, HttpStatus.OK);
     }
 

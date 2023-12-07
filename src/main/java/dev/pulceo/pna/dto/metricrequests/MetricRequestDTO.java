@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MetricDTO {
+public class MetricRequestDTO {
     private UUID uuid;
     private String type;
     private String recurrence;

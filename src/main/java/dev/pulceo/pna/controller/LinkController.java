@@ -71,9 +71,8 @@ public class LinkController {
     }
 
 
-    @PostMapping("{linkId}/metric-requests")
+    @PostMapping("{linkId}/metric-requests/icmp-rtt-requests")
     public ResponseEntity<MetricRequestDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
-
 
 
         // decide if icmp-rtt, udp-rtt, tcp-rtt
@@ -81,7 +80,6 @@ public class LinkController {
         // decide if icmp-e2e, udp-e2e, tcp-e2e
 
         // decide if udp-bw, tcp-bw
-
 
         // first, get the link
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
@@ -115,9 +113,5 @@ public class LinkController {
         MetricRequestDTO createdMetricRequestDTO = new MetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestDTO.getType(), createNewMetricRequestDTO.getRecurrence(), createNewMetricRequestDTO.isEnabled(), createNewMetricRequestDTO.getProperties(), new HashMap<>());
         return new ResponseEntity<>(createdMetricRequestDTO, HttpStatus.OK);
     }
-
-
-
-
 
 }

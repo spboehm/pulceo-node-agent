@@ -14,7 +14,6 @@ import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +29,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -111,7 +109,7 @@ public class LinkControllerTests {
         // when and then
         CreateNewMetricRequestDTO createNewMetricRequestDTO = MetricRequestDTOUtil.createIcmpRttMetricRequestDTO("icmp-rtt");
         String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestDTO);
-        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests")
+        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests/icmp-rtt-requests")
                         .contentType("application/json")
                         .accept("application/json")
                         .content(metricRequestAsJson))

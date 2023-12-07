@@ -7,7 +7,10 @@ import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
 import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
+import dev.pulceo.pna.model.message.Message;
+import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,6 +44,9 @@ public class LinkControllerTests {
     private LinkRepository linkRepository;
     @Autowired
     private NodeRepository nodeRepository;
+
+    @Autowired
+    PublishSubscribeChannel pingServiceMessageChannel;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -105,6 +117,28 @@ public class LinkControllerTests {
                         .andExpect(status().isOk())
                         .andReturn();
 
+        // wait for icmp-rtt value
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.pingServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
+        Message message = messageBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        PingDelayMeasurement pingDelayMeasurement = (PingDelayMeasurement) map.get("pingDelayMeasurement");
+
+        // then
+        // TODO: refactor and expand the test to other metric values
+        assertNotNull(message);
+        assert("localhost".equals(map.get("sourceHost")));
+        assert("localhost".equals(map.get("destinationHost")));
+        assertEquals(1, pingDelayMeasurement.getPacketsTransmitted());
+        assertTrue(pingDelayMeasurement.getPacketsReceived() >= 0);
+        assertTrue(pingDelayMeasurement.getPacketLoss() >= 0.0);
+        assertTrue(pingDelayMeasurement.getTime() >= 0);
+        assertTrue(pingDelayMeasurement.getRttMin() >= 0);
+        assertTrue(pingDelayMeasurement.getRttAvg() >= 0);
+        assertTrue(pingDelayMeasurement.getRttMax() >= 0);
+        assertTrue(pingDelayMeasurement.getRttMdev() >= 0);
     }
 
 

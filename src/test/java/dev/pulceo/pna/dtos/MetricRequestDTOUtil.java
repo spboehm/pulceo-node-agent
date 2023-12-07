@@ -15,7 +15,7 @@ public class MetricRequestDTOUtil {
 
             return CreateNewMetricRequestDTO.builder()
                     .type(type)
-                    .recurrence("5")
+                    .recurrence("15")
                     .enabled(true)
                     .properties(properties)
                     .transformer(new HashMap<>()) // will be ignored for pna

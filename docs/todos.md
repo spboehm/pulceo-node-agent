@@ -35,7 +35,10 @@
 - [ ] source and destination host should be removed from all Results and rather be added to the node.
 - [ ] Implement builder pattern for all model classes
 - [ ] Set cascade type for @OneToOne relationships in `Link` class
-- 
+
+## MQTT Endpoint
+
+- [ ] Shorten messages for "icmp-rtt", "tcp-bw", and "udp-bw" and so on
 
 ## REST API
 

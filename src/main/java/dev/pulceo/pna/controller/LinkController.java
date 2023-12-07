@@ -73,6 +73,11 @@ public class LinkController {
 
     @PostMapping("{linkId}/metric-requests")
     public ResponseEntity<MetricDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
+
+
+
+
+
         // first, get the link
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
         if (retrievedLink.isEmpty()) {
@@ -92,7 +97,7 @@ public class LinkController {
         // create PingRequest
         PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(),link.getSrcNode().getHost(), ipVersion, count, dataLength, iface);
         // Encapsulate PingRequest in PingJob
-        PingJob pingJob = new PingJob(pingRequest, 15);
+        PingJob pingJob = new PingJob(pingRequest, Integer.parseInt(createNewMetricRequestDTO.getRecurrence()));
         long id = this.jobService.createPingJob(pingJob);
 
         // if enabled
@@ -102,7 +107,7 @@ public class LinkController {
 
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        MetricDTO createdMetricRequestDTO = new MetricDTO(createdPingJob.getUuid(), "icmp-rtt", "15s", true, new HashMap<>(), new HashMap<>());
+        MetricDTO createdMetricRequestDTO = new MetricDTO(createdPingJob.getUuid(), createNewMetricRequestDTO.getType(), createNewMetricRequestDTO.getRecurrence(), createNewMetricRequestDTO.isEnabled(), createNewMetricRequestDTO.getProperties(), new HashMap<>());
         return new ResponseEntity<>(createdMetricRequestDTO, HttpStatus.OK);
     }
 

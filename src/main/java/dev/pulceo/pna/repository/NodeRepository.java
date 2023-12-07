@@ -14,6 +14,7 @@ public interface NodeRepository extends CrudRepository<Node, Long> {
 
     Optional<Node> findByIsLocalNode(boolean isLocalNode);
 
+    @EntityGraph(value="graph.Node.jobs")
     Optional<Node> findByUuid(UUID uuid);
 
 }

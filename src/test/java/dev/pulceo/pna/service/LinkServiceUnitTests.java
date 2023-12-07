@@ -44,7 +44,7 @@ public class LinkServiceUnitTests {
         Node srcNode = NodeUtil.createTestSrcNodeWithId(1L);
         Node destNode = NodeUtil.createTestDestNodeWithId(2L);
         Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
-        when(nodeService.readNodeByPnaUUID(srcNode.getId())).thenReturn(Optional.empty());
+        when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.empty());
 
         // when
         LinkServiceException linkServiceException = assertThrows(LinkServiceException.class, () -> {
@@ -61,8 +61,8 @@ public class LinkServiceUnitTests {
         Node srcNode = NodeUtil.createTestSrcNodeWithId(1L);
         Node destNode = NodeUtil.createTestDestNodeWithId(2L);
         Link link = new Link("testLink", ResourceType.NODE, srcNode, destNode);
-        when(nodeService.readNodeByPnaUUID(srcNode.getId())).thenReturn(Optional.of(srcNode));
-        when(nodeService.readNodeByPnaUUID(destNode.getId())).thenReturn(Optional.empty());
+        when(nodeService.readNode(srcNode.getId())).thenReturn(Optional.of(srcNode));
+        when(nodeService.readNode(destNode.getId())).thenReturn(Optional.empty());
 
         // when
         LinkServiceException linkServiceException = assertThrows(LinkServiceException.class, () -> {

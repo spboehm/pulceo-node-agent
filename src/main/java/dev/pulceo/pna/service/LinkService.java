@@ -31,9 +31,9 @@ public class LinkService {
     NodeService nodeService;
 
     public long createLink(Link link) throws LinkServiceException {
-        if (nodeService.readNodeByPnaUUID(link.getSrcNode().getId()).isEmpty()) {
+        if (nodeService.readNode(link.getSrcNode().getId()).isEmpty()) {
             throw new LinkServiceException("Source node with id %d does not exist!".formatted(link.getSrcNode().getId()));
-        } else if (nodeService.readNodeByPnaUUID(link.getDestNode().getId()).isEmpty()) {
+        } else if (nodeService.readNode(link.getDestNode().getId()).isEmpty()) {
             throw new LinkServiceException("Destination node with id %d does not exist!".formatted(link.getDestNode().getId()));
         }
         return this.linkRepository.save(link).getId();

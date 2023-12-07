@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/nodes")
@@ -28,7 +29,7 @@ public class NodeController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<NodeDTO> getNodeByUUID(@PathVariable String uuid) {
-        Optional<Node> node = this.nodeService.readNodeByPnaUUID(uuid);
+        Optional<Node> node = this.nodeService.readNodeByUUID(UUID.fromString(uuid));
         if (node.isPresent()) {
             return new ResponseEntity<>(this.modelMapper.map(node.get(), NodeDTO.class), HttpStatus.OK);
         } else {

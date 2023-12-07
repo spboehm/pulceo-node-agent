@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4d66c2da-1b30-4742-b1d1-3fc6d196c839" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../../../../../main/java/dev/pulceo/pna/model/ping/PingCmd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../main/java/dev/pulceo/pna/model/ping/PingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../../../../main/java/dev/pulceo/pna/model/ping/PingResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../../docs/todos.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../../docs/todos.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../../../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2VvyRfTS6uEVvAQuF36rFiS5QX8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/sebastian.boehm/git/sampleprojects/thingsboard",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4d66c2da-1b30-4742-b1d1-3fc6d196c839" name="Changes" comment="" />
+      <created>1695730841516</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695730841516</updated>
+      <workItem from="1695730842506" duration="13000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

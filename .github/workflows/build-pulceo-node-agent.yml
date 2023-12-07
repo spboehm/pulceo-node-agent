@@ -13,8 +13,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Install xmllint
-        run: sudo apt-get install -y iperf3 nmap
+      # TODO: make sure that iperf3 nmap is installed
       - name: Build with Gradle
         uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
         with:

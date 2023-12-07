@@ -1,17 +1,17 @@
 package dev.pulceo.pna.dto.metricrequests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MetricRequestDTO {
-    private UUID uuid;
+@Builder
+public class CreateNewMetricRequestIcmpRttDTO {
     private String type;
     private String recurrence;
     private boolean enabled;

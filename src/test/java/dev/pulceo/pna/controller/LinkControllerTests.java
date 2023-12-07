@@ -2,7 +2,7 @@ package dev.pulceo.pna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
 import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
@@ -107,8 +107,8 @@ public class LinkControllerTests {
         String linkUuid = objectMapper.readTree(linkResult.getResponse().getContentAsString()).get("linkUUID").asText();
 
         // when and then
-        CreateNewMetricRequestDTO createNewMetricRequestDTO = MetricRequestDTOUtil.createIcmpRttMetricRequestDTO("icmp-rtt");
-        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestDTO);
+        CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO = MetricRequestDTOUtil.createIcmpRttMetricRequestDTO("icmp-rtt");
+        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestIcmpRttDTO);
         MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests/icmp-rtt-requests")
                         .contentType("application/json")
                         .accept("application/json")

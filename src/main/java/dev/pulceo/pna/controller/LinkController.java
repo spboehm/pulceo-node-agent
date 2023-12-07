@@ -2,8 +2,8 @@ package dev.pulceo.pna.controller;
 
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestDTO;
-import dev.pulceo.pna.dto.metricrequests.MetricRequestDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
+import dev.pulceo.pna.dto.metricrequests.ShortMetricRequestDTO;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.jobs.PingJob;
@@ -72,15 +72,7 @@ public class LinkController {
 
 
     @PostMapping("{linkId}/metric-requests/icmp-rtt-requests")
-    public ResponseEntity<MetricRequestDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestDTO createNewMetricRequestDTO) throws JobServiceException {
-
-
-        // decide if icmp-rtt, udp-rtt, tcp-rtt
-
-        // decide if icmp-e2e, udp-e2e, tcp-e2e
-
-        // decide if udp-bw, tcp-bw
-
+    public ResponseEntity<ShortMetricRequestDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {
         // first, get the link
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
         if (retrievedLink.isEmpty()) {
@@ -92,26 +84,40 @@ public class LinkController {
 
         // Read key-values form hashmap
         // TODO: set default values globally
-        IPVersion ipVersion = IPVersion.valueOf(createNewMetricRequestDTO.getProperties().getOrDefault("ip-version", IPVersion.IPv4.toString()));
-        int count = Integer.parseInt(createNewMetricRequestDTO.getProperties().getOrDefault("count", "10"));
-        int dataLength = Integer.parseInt(createNewMetricRequestDTO.getProperties().getOrDefault("data-length", "66"));
-        String iface = createNewMetricRequestDTO.getProperties().getOrDefault("iface", "lo");
+        IPVersion ipVersion = IPVersion.valueOf(createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("ip-version", IPVersion.IPv4.toString()));
+        int count = Integer.parseInt(createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("count", "10"));
+        int dataLength = Integer.parseInt(createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("data-length", "66"));
+        String iface = createNewMetricRequestIcmpRttDTO.getProperties().getOrDefault("iface", "lo");
 
         // create PingRequest
         PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(),link.getSrcNode().getHost(), ipVersion, count, dataLength, iface);
         // Encapsulate PingRequest in PingJob
-        PingJob pingJob = new PingJob(pingRequest, Integer.parseInt(createNewMetricRequestDTO.getRecurrence()));
+        PingJob pingJob = new PingJob(pingRequest, Integer.parseInt(createNewMetricRequestIcmpRttDTO.getRecurrence()));
         long id = this.jobService.createPingJob(pingJob);
 
         // if enabled
-        if (createNewMetricRequestDTO.isEnabled()) {
+        if (createNewMetricRequestIcmpRttDTO.isEnabled()) {
             this.jobService.enablePingJob(id);
         }
 
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        MetricRequestDTO createdMetricRequestDTO = new MetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestDTO.getType(), createNewMetricRequestDTO.getRecurrence(), createNewMetricRequestDTO.isEnabled(), createNewMetricRequestDTO.getProperties(), new HashMap<>());
-        return new ResponseEntity<>(createdMetricRequestDTO, HttpStatus.OK);
+        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled(), createNewMetricRequestIcmpRttDTO.getProperties(), new HashMap<>());
+        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
     }
+
+    // TODO: udp-rtt
+
+    // TODO: tcp-rtt
+
+    // TODO: icmp-e2e
+
+    // TODO: udp-e2e
+
+    // TODO: tcp-e2e
+
+    // TODO: udp-bw
+
+    // TODO: tcp-bw
 
 }

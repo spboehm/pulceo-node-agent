@@ -1,5 +1,4 @@
-
-name: Build Gradle project
+name: Build pulceo-node-agent
 
 on:
   push:

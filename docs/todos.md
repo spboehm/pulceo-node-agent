@@ -174,6 +174,7 @@
 - [x] Add additional test cases for UDP
 - [x] Add additional test cases for integer results, case TCP
 - [ ] Check if additional tests for isTCPSender / testIsUDPSender are required
+- [ ] Rename all `--bind-dev` tp `--bind` in `IperfCmd` and other classes
 
 ## PingUtils
 

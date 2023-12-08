@@ -38,9 +38,9 @@ public class IperfRequest {
 
     public String getCmd() {
         if (isUDPSender()) {
-            return String.format("/bin/iperf3 -c %s -u -p %s -b %sM -t %s -f %s --bind-dev %s", destinationHost, port, bitrate, time, format, bindDev);
+            return String.format("/bin/iperf3 -c %s -u -p %s -b %sM -t %s -f %s --bind %s", destinationHost, port, bitrate, time, format, bindDev);
         } else {
-            return String.format("/bin/iperf3 -c %s -p %s -b %sM -t %s -f %s --bind-dev %s", destinationHost, port, bitrate, time, format, bindDev);
+            return String.format("/bin/iperf3 -c %s -p %s -b %sM -t %s -f %s --bind %s", destinationHost, port, bitrate, time, format, bindDev);
         }
     }
 

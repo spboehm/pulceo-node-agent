@@ -32,7 +32,7 @@ public class IperfLinkJobServiceTests {
     @Autowired
     IperfService iperfService;
 
-    private final String bindDev = "lo";
+    private final String bindDev = "localhost";
 
     @BeforeEach
     @AfterEach

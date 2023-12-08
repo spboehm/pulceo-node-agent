@@ -36,8 +36,8 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 #### Iperf3
 
 * General structure: `/bin/iperf3 [-s|-c host] [options]`
-* Throughput with TCP: `/bin/iperf3 -s -p 5001 -f m --bind-dev lo` (server), `/bin/iperf3 -c localhost -p 5001 -n 10 -f m --bind-dev lo` (client)
-* Throughput with UDP: `/bin/iperf3 -s -p 5001 -f m --bind-dev lo` (server), `/bin/iperf3 -c localhost -u -p 5001 -b 1M -n 10 -f m --bind-dev lo` (client) 
+* Throughput with TCP: `/bin/iperf3 -s -p 5001 -f m --bind localhost` (server), `/bin/iperf3 -c localhost -p 5001 -n 10 -f m --bind localhost` (client)
+* Throughput with UDP: `/bin/iperf3 -s -p 5001 -f m --bind localhost` (server), `/bin/iperf3 -c localhost -u -p 5001 -b 1M -n 10 -f m --bind localhost` (client) 
 
 
 ### Endpoints

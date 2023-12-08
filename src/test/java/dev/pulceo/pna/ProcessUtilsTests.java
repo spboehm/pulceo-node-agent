@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ProcessUtilsTests {
 
-    private String bindDev = "lo";
+    private String bindDev = "localhost";
 
     @BeforeAll
     @AfterAll
@@ -86,7 +86,7 @@ public class ProcessUtilsTests {
         // given
         int port = 5001;
         IperfServerCmd iperfServerCmd = new IperfServerCmd(port, bindDev);
-        String[] expectedResult = new String[]{"/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind-dev", "lo" };
+        String[] expectedResult = new String[]{"/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind", "localhost" };
         List<String> expectedResultList = Arrays.asList(expectedResult);
 
         // when
@@ -101,7 +101,7 @@ public class ProcessUtilsTests {
     @ValueSource(longs = {32450, 19199, 19233, 4685})
     public void testGetPidOfpsEntry(long expectedPid) {
         // given
-        String psEntry = expectedPid + " iperf3   /bin/iperf3 -s -p 5001 -f m --bind-dev lo";
+        String psEntry = expectedPid + " iperf3   /bin/iperf3 -s -p 5001 -f m --bind localhost";
 
         // when
         long actualPid = ProcessUtils.getPidOfpsEntry(psEntry);

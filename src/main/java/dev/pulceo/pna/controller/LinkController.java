@@ -3,6 +3,7 @@ package dev.pulceo.pna.controller;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestTcpRttDto;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
 import dev.pulceo.pna.dto.metricrequests.ShortMetricRequestDTO;
 import dev.pulceo.pna.exception.JobServiceException;
@@ -141,11 +142,33 @@ public class LinkController {
         return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
     }
 
+    @PostMapping("{linkUUID}/metric-requests/tcp-rtt-requests")
+    public ResponseEntity<ShortMetricRequestDTO> newUdpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto) throws JobServiceException {
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
+        if (retrievedLink.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Link link = retrievedLink.get();
+
+        // create NpingRequest
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.TCP, this.rounds, this.iface);
+        NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestTcpRttDto.getRecurrence()));
+        long id = this.jobService.createNpingJob(npingJob);
+
+        // if enabled
+        if (createNewMetricRequestTcpRttDto.isEnabled()) {
+            this.jobService.enableNpingJob(id);
+        }
+
+        this.jobService.scheduleNpingJob(id);
+        NpingJob createdNpingJob = this.jobService.readNpingJob(npingJob.getId());
+        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdNpingJob.getUuid(), createNewMetricRequestTcpRttDto.getType(), createNewMetricRequestTcpRttDto.getRecurrence(), createNewMetricRequestTcpRttDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+    }
 
 
-    // TODO: udp-rtt
 
-    // TODO: tcp-rtt
+
 
     // TODO: icmp-e2e
 

@@ -3,6 +3,7 @@ package dev.pulceo.pna.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestTcpRttDto;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
@@ -11,6 +12,7 @@ import dev.pulceo.pna.dtos.NodeDTOUtil;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.nping.NpingTCPDelayMeasurement;
 import dev.pulceo.pna.model.nping.NpingUDPDelayMeasurement;
 import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
@@ -158,6 +160,46 @@ public class LinkControllerTests {
         assertEquals(1, npingUDPDelayMeasurement.getUdpReceivedPackets());
         assertEquals(0, npingUDPDelayMeasurement.getUdpLostPacketsAbsolute());
         assertEquals(0.0, npingUDPDelayMeasurement.getUdpLostPacketsRelative());
+    }
+
+    @Test
+    public void testNewTcpRttRequest() throws Exception {
+        // given
+        String nodeUuid = createNewTestDestNode();
+        String linkUuid = createNewTestLink(nodeUuid);
+
+        // when and then
+        CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto = MetricRequestDTOUtil.createNewMetricRequestTcpRttDto("tcp-rtt");
+        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestTcpRttDto);
+        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests/tcp-rtt-requests")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(metricRequestAsJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // TODO: do validation here of MetricRequestDTO
+
+        // wait for tcp-rtt value
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
+        Message message = messageBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        NpingTCPDelayMeasurement npingTCPDelayMeasurement = (NpingTCPDelayMeasurement) map.get("npingTCPDelayMeasurement");
+
+        // then
+        assertNotNull(message);
+        assert("localhost".equals(map.get("sourceHost")));
+        assert("localhost".equals(map.get("destinationHost")));
+        assertTrue(npingTCPDelayMeasurement.getMaxRTT() > 0);
+        assertTrue(npingTCPDelayMeasurement.getMinRTT() > 0);
+        assertTrue(npingTCPDelayMeasurement.getAvgRTT() > 0);
+        assertEquals(1, npingTCPDelayMeasurement.getTcpConnectionAttempts());
+        assertEquals(1, npingTCPDelayMeasurement.getTcpSuccessfulConnections());
+        assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsAbsolute());
+        assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsRelative());
     }
 
     private String createNewTestLink(String nodeUuid) throws Exception {

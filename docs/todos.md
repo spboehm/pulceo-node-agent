@@ -11,13 +11,13 @@
 - [ ] Check `JPA mappings` in all `model` classes
 - [ ] Consider adding name of device to `Node` class
 - [ ] Consider changing the attribute names for the json serialization
-- [ ] Check if validation must 
 - [ ] Introduce Version for all entities
 - [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
 - [ ] Consider adding `@Builder` for all 
 - [ ] Check all set UUIDs in the project
 - [ ] Consider using Spring HATEOS for all Outgoing DTOs
 - [ ] Repository classes in tests should manage the lifecycle of the entities
+- [ ] Enable proper bean validation for all DTOs
 
 ## Overall Issues
 
@@ -191,6 +191,7 @@
 - [ ] Disable Devtools by setting 'spring.devtools.add-properties' to false
 - [ ] Ensure that device id is properly set (`pna.id`)
 - [ ] Ensure that the device name is properly set (`pna.name`)
+- [ ] Ensure that all low level tools a function properly, e.g., `ping`, `nping`, `iperf3`, by doing a short check during the first startup
 
 ## Join Process
 

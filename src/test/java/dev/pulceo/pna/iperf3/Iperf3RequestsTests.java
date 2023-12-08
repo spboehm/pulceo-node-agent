@@ -4,10 +4,8 @@ import dev.pulceo.pna.model.iperf.IperfClientProtocol;
 import dev.pulceo.pna.model.iperf.IperfRequest;
 import dev.pulceo.pna.model.iperf.IperfServerCmd;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class Iperf3RequestsTests {
 
     String bindDev = "localhost";

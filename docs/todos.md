@@ -18,6 +18,7 @@
 - [ ] Consider using Spring HATEOS for all Outgoing DTOs
 - [ ] Repository classes in tests should manage the lifecycle of the entities
 - [ ] Enable proper bean validation for all DTOs
+- [ ] Make sure defaults are set for all DTOs at one proper location
 
 ## Overall Issues
 
@@ -131,7 +132,7 @@
 - [x] Add `NpingRequest` instead of `NpingJob`
 - [ ] Ensure that no duplicate measurements can be created
 - [x] Remove port from all methods
-- [ ] Add test cases for UDP
+- [x] Add test cases for UDP
 - [ ] Ensure that the inheritance is correctly chosen
 - [ ] Rework waiting on starting process in `measure...()`
 - [x] Rename `NpingTCPJob` to `NpingJob`

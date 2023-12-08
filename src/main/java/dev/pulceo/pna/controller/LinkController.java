@@ -3,12 +3,16 @@ package dev.pulceo.pna.controller;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
 import dev.pulceo.pna.dto.metricrequests.ShortMetricRequestDTO;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
+import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.nping.NpingClientProtocol;
+import dev.pulceo.pna.model.nping.NpingRequest;
 import dev.pulceo.pna.model.ping.PingRequest;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.LinkService;
@@ -17,6 +21,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +37,24 @@ public class LinkController {
     private final LinkService linkService;
     private final JobService jobService;
     private final ModelMapper modelMapper;
+
+    @Value("${pna.host:localhost}")
+    private String sourceHost;
+
+    @Value("${pna.delay.udp.port:4001}")
+    private int npingDelayUDPPort;
+
+    @Value("${pna.delay.tcp.port:4002}")
+    private int npingDelayTCPPort;
+
+    @Value("${pna.delay.rounds:10}")
+    private int rounds;
+
+    @Value("${pna.delay.interface:eth0}")
+    private String iface;
+
+    @Value("${pna.delay.udp.data.length}")
+    private int dataLength;
 
     @Autowired
     public LinkController(NodeService nodeService, LinkService linkService, JobService jobService, ModelMapper modelMapper) {
@@ -69,14 +92,14 @@ public class LinkController {
     }
 
 
-    @PostMapping("{linkId}/metric-requests/icmp-rtt-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newMetricRequestForLink(@PathVariable UUID linkId, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {
-        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkId);
+    @PostMapping("{linkUUID}/metric-requests/icmp-rtt-requests")
+    public ResponseEntity<ShortMetricRequestDTO> newIcmpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
         Link link = retrievedLink.get();
+
         // create PingRequest
         PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), createNewMetricRequestIcmpRttDTO.getIpVersion(), createNewMetricRequestIcmpRttDTO.getCount(), createNewMetricRequestIcmpRttDTO.getDataLength(), createNewMetricRequestIcmpRttDTO.getIface());
         // Encapsulate PingRequest in PingJob
@@ -93,6 +116,32 @@ public class LinkController {
         ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled());
         return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
     }
+
+    @PostMapping("{linkUUID}/metric-requests/udp-rtt-requests")
+    public ResponseEntity<ShortMetricRequestDTO> newUdpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpRttDto createNewMetricRequestUdpRttDto) throws JobServiceException {
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
+        if (retrievedLink.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Link link = retrievedLink.get();
+
+        // create NpingRequest
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.UDP, this.rounds, this.iface);
+        NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestUdpRttDto.getRecurrence()));
+        long id = this.jobService.createNpingJob(npingJob);
+
+        // if enabled
+        if (createNewMetricRequestUdpRttDto.isEnabled()) {
+            this.jobService.enableNpingJob(id);
+        }
+
+        this.jobService.scheduleNpingJob(id);
+        NpingJob createdNpingJob = this.jobService.readNpingJob(npingJob.getId());
+        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdNpingJob.getUuid(), createNewMetricRequestUdpRttDto.getType(), createNewMetricRequestUdpRttDto.getRecurrence(), createNewMetricRequestUdpRttDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+    }
+
+
 
     // TODO: udp-rtt
 

@@ -3,6 +3,7 @@ package dev.pulceo.pna.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
 import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
@@ -10,6 +11,7 @@ import dev.pulceo.pna.dtos.NodeDTOUtil;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.nping.NpingUDPDelayMeasurement;
 import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
@@ -46,6 +48,9 @@ public class LinkControllerTests {
 
     @Autowired
     PublishSubscribeChannel pingServiceMessageChannel;
+
+    @Autowired
+    PublishSubscribeChannel delayServiceMessageChannel;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -113,6 +118,46 @@ public class LinkControllerTests {
         assertTrue(pingDelayMeasurement.getRttAvg() >= 0);
         assertTrue(pingDelayMeasurement.getRttMax() >= 0);
         assertTrue(pingDelayMeasurement.getRttMdev() >= 0);
+    }
+
+    @Test
+    public void testNewUdpRttRequest() throws Exception {
+        // given
+        String nodeUuid = createNewTestDestNode();
+        String linkUuid = createNewTestLink(nodeUuid);
+
+        // when and then
+        CreateNewMetricRequestUdpRttDto createNewMetricRequestUdpRttDto = MetricRequestDTOUtil.createUdpRttMetricRequestDTO("udp-rtt");
+        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestUdpRttDto);
+        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests/udp-rtt-requests")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(metricRequestAsJson))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        // TODO: do validation here of MetricRequestDTO
+
+        // wait for udp-rtt value
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
+        Message message = messageBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        NpingUDPDelayMeasurement npingUDPDelayMeasurement = (NpingUDPDelayMeasurement) map.get("npingUDPDelayMeasurement");
+
+        // then
+        assertNotNull(message);
+        assert("localhost".equals(map.get("sourceHost")));
+        assert("localhost".equals(map.get("destinationHost")));
+        assertTrue(npingUDPDelayMeasurement.getMaxRTT() > 0);
+        assertTrue(npingUDPDelayMeasurement.getMinRTT() > 0);
+        assertTrue(npingUDPDelayMeasurement.getAvgRTT() > 0);
+        assertEquals(1, npingUDPDelayMeasurement.getUdpPacketsSent());
+        assertEquals(1, npingUDPDelayMeasurement.getUdpReceivedPackets());
+        assertEquals(0, npingUDPDelayMeasurement.getUdpLostPacketsAbsolute());
+        assertEquals(0.0, npingUDPDelayMeasurement.getUdpLostPacketsRelative());
     }
 
     private String createNewTestLink(String nodeUuid) throws Exception {

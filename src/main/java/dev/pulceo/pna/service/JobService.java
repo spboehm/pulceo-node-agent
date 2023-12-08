@@ -11,7 +11,9 @@ import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
+import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
+import dev.pulceo.pna.model.nping.NpingUDPResult;
 import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.repository.BandwidthJobRepository;
 import dev.pulceo.pna.repository.JobRepository;
@@ -80,6 +82,9 @@ public class JobService {
     @Value("${pna.uuid}")
     private String deviceId;
 
+    @Value("${pna.delay.udp.data.length}")
+    private String udpDataLength;
+
     public Optional<LinkJob> readJob(long id) throws JobServiceException {
         Optional<LinkJob> retrievedJob = this.jobRepository.findById(id);
         if (retrievedJob.isPresent()) {
@@ -124,7 +129,39 @@ public class JobService {
     // TODO: handle situation when the jobs are crashing
     public long scheduleNpingJob(long id) throws JobServiceException {
         NpingJob retrievedNpingJob = this.readNpingJob(id);
-        long retrievedNpingTCPJobId = retrievedNpingJob.getId();
+        long retrievedNpingJobId = retrievedNpingJob.getId();
+        if (retrievedNpingJob.getNpingRequest().getNpingClientProtocol().equals(NpingClientProtocol.TCP)) {
+            scheduleNpingTCPJob(retrievedNpingJob, retrievedNpingJobId);
+        } else if (retrievedNpingJob.getNpingRequest().getNpingClientProtocol().equals(NpingClientProtocol.UDP)) {
+            scheduleNpingUDPJob(retrievedNpingJob, retrievedNpingJobId);
+        } else {
+            throw new JobServiceException("NpingClientProtocol is not supported!");
+        }
+        return retrievedNpingJobId;
+    }
+
+    private void scheduleNpingUDPJob(NpingJob retrievedNpingJob, long retrievedNpingUDPJobId) {
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            try {
+                NpingUDPResult npingUDPResult = npingService.measureUDPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost(), Integer.parseInt(udpDataLength));
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(npingUDPResult.getUuid())
+                        .metricType(npingUDPResult.getMetricType())
+                        .jobUUID(retrievedNpingJob.getUuid())
+                        .metricResult(npingUDPResult)
+                        .build();
+
+                Message message = new Message(deviceId, networkMetric);
+                this.delayServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            } catch (DelayServiceException e) {
+                throw new RuntimeException(e);
+            }
+        }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
+
+        this.TCPDelayJobHashMap.put(retrievedNpingUDPJobId, scheduledFuture);
+    }
+
+    private void scheduleNpingTCPJob(NpingJob retrievedNpingJob, long retrievedNpingTCPJobId) {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost());
@@ -143,11 +180,11 @@ public class JobService {
         }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
 
         this.TCPDelayJobHashMap.put(retrievedNpingTCPJobId, scheduledFuture);
-        return retrievedNpingTCPJobId;
     }
 
+
     // TODO: reimplement cancelNpingJob, consider active flag checked for unscheduling
-    public boolean cancelNpingTCPJob(long id) {
+    public boolean cancelNpingJob(long id) {
         return this.TCPDelayJobHashMap.get(id).cancel(false);
     }
 

@@ -7,6 +7,7 @@ import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingRequest;
 import dev.pulceo.pna.model.nping.NpingTCPDelayMeasurement;
+import dev.pulceo.pna.model.nping.NpingUDPDelayMeasurement;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.NpingService;
 import org.junit.jupiter.api.AfterEach;
@@ -34,6 +35,7 @@ public class NpingLinkJobServiceTests {
 
     @Autowired
     NpingService npingService;
+
 
     @BeforeEach
     @AfterEach
@@ -153,7 +155,7 @@ public class NpingLinkJobServiceTests {
         long localJobId = this.jobService.scheduleNpingJob(id);
         BlockingQueue<Message> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
         this.delayServiceMessageChannel.subscribe(message -> npingTCPResultBlockingQueue.add((Message) message.getPayload()));
-        this.jobService.cancelNpingTCPJob(localJobId);
+        this.jobService.cancelNpingJob(localJobId);
         Message message = npingTCPResultBlockingQueue.take();
 
         NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
@@ -171,6 +173,40 @@ public class NpingLinkJobServiceTests {
         assertEquals(1, npingTCPDelayMeasurement.getTcpSuccessfulConnections());
         assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsAbsolute());
         assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsRelative());
+    }
+
+    @Test
+    public void testScheduleNpingUdpJob() throws Exception {
+        // given
+        // prepare UDP listener on port 4001
+        // implicitly done be SpringBootIntegration, see dev.pulceo.pna.config.UdpConfig
+        // given
+        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4001, NpingClientProtocol.UDP, 1, "lo");
+        NpingJob npingJob = new NpingJob(npingRequest, 15);
+        long id = this.jobService.createNpingJob(npingJob);
+
+        // when
+        long localJobId = this.jobService.scheduleNpingJob(id);
+        BlockingQueue<Message> npingUdpResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.delayServiceMessageChannel.subscribe(message -> npingUdpResultBlockingQueue.add((Message) message.getPayload()));
+        this.jobService.cancelNpingJob(localJobId);
+        Message message = npingUdpResultBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        NpingUDPDelayMeasurement npingUDPDelayMeasurement = (NpingUDPDelayMeasurement) map.get("npingUDPDelayMeasurement");
+
+        // then
+        assertNotNull(message);
+        assert("localhost".equals(map.get("sourceHost")));
+        assert("localhost".equals(map.get("destinationHost")));
+        assertTrue(npingUDPDelayMeasurement.getMaxRTT() > 0);
+        assertTrue(npingUDPDelayMeasurement.getMinRTT() > 0);
+        assertTrue(npingUDPDelayMeasurement.getAvgRTT() > 0);
+        assertEquals(1, npingUDPDelayMeasurement.getUdpPacketsSent());
+        assertEquals(1, npingUDPDelayMeasurement.getUdpReceivedPackets());
+        assertEquals(0, npingUDPDelayMeasurement.getUdpLostPacketsAbsolute());
+        assertEquals(0.0, npingUDPDelayMeasurement.getUdpLostPacketsRelative());
     }
 
 }

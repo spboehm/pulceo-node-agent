@@ -11,7 +11,7 @@ public class PingUtils {
 
     public static PingDelayMeasurement extractPingDelayMeasurement(List<String> pingOutput) throws PingException {
         for (int i = pingOutput.size() - 1; i >= 0; i--) {
-            if (pingOutput.get(i).contains("---  ping statistics ---")) {
+            if (pingOutput.get(i).contains("ping statistics ---")) {
                 PingPacketStatistics pingPacketStatistics = new PingPacketStatistics();
                 if (pingOutput.size() > i+1) {
                     // process packetStatistics

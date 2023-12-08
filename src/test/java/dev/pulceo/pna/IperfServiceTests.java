@@ -28,8 +28,8 @@ public class IperfServiceTests {
     @Autowired
     Environment environment;
 
-    @Value("${pna.iperf3.bind.dev}")
-    private String bindDev;
+    @Value("${pna.iperf3.bind}")
+    private String bind;
 
     @Test
     void contextLoads() {
@@ -240,7 +240,7 @@ public class IperfServiceTests {
         int port = 5001;
         startIperf3ServerInstance(port);
         int recurrence = 15;
-        IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bindDev);
+        IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bind);
 
         // when
         IperfResult iperf3Result = this.iperfService.measureBandwidth(iperfUDPClientRequest);
@@ -279,7 +279,7 @@ public class IperfServiceTests {
         int port = 5001;
         startIperf3ServerInstance(port);
         int recurrence = 15;
-        IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev);
+        IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bind);
 
         // when
         IperfResult iperf3Result = this.iperfService.measureBandwidth(iperfTCPClientRequest);

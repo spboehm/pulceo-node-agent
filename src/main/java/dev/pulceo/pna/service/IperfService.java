@@ -24,8 +24,8 @@ public class IperfService {
     @Value("${pna.iperf3.max.server.instances:16}")
     private Integer maxNumberOfIperf3Instances;
 
-    @Value("${pna.iperf3.bind.dev}")
-    private String bindDev;
+    @Value("${pna.iperf3.bind}")
+    private String bind;
 
     @Autowired
     PublishSubscribeChannel bandwidthServiceMessageChannel;
@@ -33,7 +33,7 @@ public class IperfService {
     public long startIperf3Server() throws BandwidthServiceException {
         try {
             int nextAvailablePort = getNextAvailablePort();
-            IperfServerCmd iperfServerCmd = new IperfServerCmd(nextAvailablePort,  bindDev);
+            IperfServerCmd iperfServerCmd = new IperfServerCmd(nextAvailablePort, bind);
             Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfServerCmd.getCmd())).start();
             return ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
         } catch (IOException | InterruptedException | ProcessException e) {

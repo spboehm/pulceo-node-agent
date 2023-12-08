@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ProcessUtilsTests {
 
-    private String bindDev = "localhost";
+    private String bind = "localhost";
 
     @BeforeAll
     @AfterAll
@@ -85,7 +85,7 @@ public class ProcessUtilsTests {
     public void testSplitCmdByWhitespaces() {
         // given
         int port = 5001;
-        IperfServerCmd iperfServerCmd = new IperfServerCmd(port, bindDev);
+        IperfServerCmd iperfServerCmd = new IperfServerCmd(port, bind);
         String[] expectedResult = new String[]{"/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind", "localhost" };
         List<String> expectedResultList = Arrays.asList(expectedResult);
 

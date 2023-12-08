@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class Iperf3RequestsTests {
 
-    String bindDev = "localhost";
+    String bind = "localhost";
 
     @Test
     public void testIperf3ServerCmd() {
@@ -16,7 +16,7 @@ public class Iperf3RequestsTests {
         String cmdTCPReceiverShort = "/bin/iperf3 -s -p 5001 -f m --bind localhost";
 
         // when
-        String iperf3ServerCmd = new IperfServerCmd(5001, bindDev).getCmd();
+        String iperf3ServerCmd = new IperfServerCmd(5001, bind).getCmd();
 
         // then
         Assertions.assertEquals(cmdTCPReceiverShort, iperf3ServerCmd);
@@ -28,7 +28,7 @@ public class Iperf3RequestsTests {
         String expectedIperfUDPClientCmd = "/bin/iperf3 -c localhost -u -p 5001 -b 1M -t 1 -f m --bind localhost";
 
         // when
-        String actualIperfTCPClientCmd = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bindDev).getCmd();
+        String actualIperfTCPClientCmd = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bind).getCmd();
 
         // then
         Assertions.assertEquals(expectedIperfUDPClientCmd, actualIperfTCPClientCmd);
@@ -40,7 +40,7 @@ public class Iperf3RequestsTests {
         String expectedIperfTCPClientCmd = "/bin/iperf3 -c localhost -p 5001 -b 0M -t 1 -f m --bind localhost";
 
         // when
-        String actualIperfTCPClientCmd = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bindDev).getCmd();
+        String actualIperfTCPClientCmd = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bind).getCmd();
 
         // then
         Assertions.assertEquals(expectedIperfTCPClientCmd, actualIperfTCPClientCmd);

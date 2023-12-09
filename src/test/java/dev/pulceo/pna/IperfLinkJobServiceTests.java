@@ -1,10 +1,12 @@
 package dev.pulceo.pna;
 
 import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.model.iperf.IperfBandwidthMeasurement;
 import dev.pulceo.pna.model.iperf.IperfClientProtocol;
 import dev.pulceo.pna.model.iperf.IperfRequest;
-import dev.pulceo.pna.model.iperf.IperfResult;
 import dev.pulceo.pna.model.jobs.IperfJob;
+import dev.pulceo.pna.model.message.Message;
+import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.service.IperfService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -139,7 +142,7 @@ public class IperfLinkJobServiceTests {
     }
 
     @Test
-    public void testScheduleIperf3Job() throws Exception {
+    public void testScheduleIperf3TCPJob() throws Exception {
         // given
         int port = 5001;
         IperfServiceTests.startIperf3ServerInstance(port);
@@ -149,20 +152,25 @@ public class IperfLinkJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleIperfJob(id);
-        BlockingQueue<IperfResult> iperfResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> iperfResultBlockingQueue = new ArrayBlockingQueue<>(1);
         this.bandwidthServiceMessageChannel.subscribe(message -> {
-            iperfResultBlockingQueue.add((IperfResult) message.getPayload());
+            iperfResultBlockingQueue.add((Message) message.getPayload());
         });
         // initiate orderly shutdown
         this.jobService.cancelIperfJob(localJobId);
-        IperfResult iperfResult = iperfResultBlockingQueue.take();
+        Message message = iperfResultBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = (IperfBandwidthMeasurement) map.get("iperfBandwidthMeasurementReceiver");
+        IperfBandwidthMeasurement iperfBandwidthMeasurementSender = (IperfBandwidthMeasurement) map.get("iperfBandwidthMeasurementSender");
 
         // then
-        assertNotNull(iperfResult);
-        assert("localhost".equals(iperfResult.getSourceHost()));
-        assert("localhost".equals(iperfResult.getDestinationHost()));
-        assertTrue(iperfResult.getIperfBandwidthMeasurementReceiver().getBitrate() > 0);
-        assertTrue(iperfResult.getIperfBandwidthMeasurementSender().getBitrate() > 0);
+        assertNotNull(map);
+        assert("localhost".equals(map.get("sourceHost")));
+        assert("localhost".equals(map.get("destinationHost")));
+        assertTrue(iperfBandwidthMeasurementReceiver.getBitrate() > 0);
+        assertTrue(iperfBandwidthMeasurementSender.getBitrate() > 0);
     }
 
 }

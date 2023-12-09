@@ -2,12 +2,12 @@ package dev.pulceo.pna.controller;
 
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.link.LinkDTO;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestTcpRttDto;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
-import dev.pulceo.pna.dto.metricrequests.ShortMetricRequestDTO;
+import dev.pulceo.pna.dto.metricrequests.*;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
+import dev.pulceo.pna.model.iperf.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf.IperfRequest;
+import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
@@ -166,6 +166,37 @@ public class LinkController {
         return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
     }
 
+    // TODO: udp-bw
+    @PostMapping("{linkUUID}/metric-requests/udp-bw-requests")
+    public ResponseEntity<ShortMetricRequestDTO> newUdpBwMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpBwDto createNewMetricRequestUdpBwDto) throws JobServiceException {
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
+        if (retrievedLink.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Link link = retrievedLink.get();
+
+        // create
+        // ask for the next free port on the other node, now statically mocked
+        // TODO: do this dynamically
+        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), 5000, createNewMetricRequestUdpBwDto.getBitrate(), createNewMetricRequestUdpBwDto.getTime(), IperfClientProtocol.UDP, "localhost");
+        // Encapsulate PingRequest in PingJob
+        IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestUdpBwDto.getRecurrence()));
+        long id = this.jobService.createIperfJob(iperfJob);
+
+        // if enabled
+        if (createNewMetricRequestUdpBwDto.isEnabled()) {
+            this.jobService.enableIperfJob(id);
+        }
+
+        this.jobService.scheduleIperfJob(id);
+
+        IperfJob createdIperfJob = this.jobService.readIperfJob(iperfJob.getId());
+        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdIperfJob.getUuid(), createNewMetricRequestUdpBwDto.getType(), createNewMetricRequestUdpBwDto.getRecurrence(), createNewMetricRequestUdpBwDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+    }
+
+    // TODO: tcp-bw
+    //@PostMapping("{linkUUID}/metric-requests/udp-tcp-requests")
 
 
 
@@ -176,8 +207,5 @@ public class LinkController {
 
     // TODO: tcp-e2e
 
-    // TODO: udp-bw
-
-    // TODO: tcp-bw
 
 }

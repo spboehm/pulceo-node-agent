@@ -5,6 +5,8 @@ import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf.*;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Service
 public class IperfService {
+
+    private final Logger logger = LoggerFactory.getLogger(IperfService.class);
 
     @Value("${pna.host}")
     private String hostname;

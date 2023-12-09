@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestTcpRttDto;
+import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpBwDto;
 import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
 import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
+import dev.pulceo.pna.model.iperf.*;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.node.Node;
@@ -17,6 +19,8 @@ import dev.pulceo.pna.model.nping.NpingUDPDelayMeasurement;
 import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
+import dev.pulceo.pna.service.IperfService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +31,7 @@ import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -45,8 +50,12 @@ public class LinkControllerTests {
 
     @Autowired
     private LinkRepository linkRepository;
+
     @Autowired
     private NodeRepository nodeRepository;
+
+    @Autowired
+    private IperfService iperfService;
 
     @Autowired
     PublishSubscribeChannel pingServiceMessageChannel;
@@ -54,10 +63,22 @@ public class LinkControllerTests {
     @Autowired
     PublishSubscribeChannel delayServiceMessageChannel;
 
+    @Autowired
+    PublishSubscribeChannel bandwidthServiceMessageChannel;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${pna.uuid}")
     private String pnaUuid;
+
+    // TODO: remove this workaround after properly setting up iperf3 server start and stop
+    @BeforeEach
+    @AfterEach
+    public void killAllIperf3Instances() throws InterruptedException, IOException {
+        Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
+        p.waitFor();
+        //this.bandwidthService = new BandwidthService(environment);
+    }
 
     @BeforeEach
     public void setUp() {
@@ -141,7 +162,7 @@ public class LinkControllerTests {
         // TODO: do validation here of MetricRequestDTO
 
         // wait for udp-rtt value
-        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(5);
         this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
         Message message = messageBlockingQueue.take();
 
@@ -181,7 +202,7 @@ public class LinkControllerTests {
         // TODO: do validation here of MetricRequestDTO
 
         // wait for tcp-rtt value
-        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(5);
         this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
         Message message = messageBlockingQueue.take();
 
@@ -200,6 +221,60 @@ public class LinkControllerTests {
         assertEquals(1, npingTCPDelayMeasurement.getTcpSuccessfulConnections());
         assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsAbsolute());
         assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsRelative());
+    }
+
+    @Test
+    public void testNewUdpBwRequest() throws Exception {
+        // given
+        String nodeUuid = createNewTestDestNode();
+        String linkUuid = createNewTestLink(nodeUuid);
+
+        // then and then
+        CreateNewMetricRequestUdpBwDto createNewMetricRequestUdpBwDto = MetricRequestDTOUtil.createNewMetricRequestUdpBwDto("udp-bw");
+        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestUdpBwDto);
+        // TODO: start the iperf3 server on remote instance, but this is just a workaround, must be triggered by pna or prm via API requests
+        this.iperfService.startIperf3Server();
+        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests/udp-bw-requests")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(metricRequestAsJson))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        // TODO: do validation here of MetricRequestDTO
+
+        // wait for udp-bw value
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        this.bandwidthServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
+        Message message = messageBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementSender = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementSender");
+        IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementReceiver = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementReceiver");
+
+        // then
+        assertEquals("localhost", map.get("sourceHost"));
+        assertEquals("localhost", map.get("destinationHost"));
+        // Sender
+        assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementSender.getIperf3Protocol());
+        assertTrue(iperfUDPBandwidthMeasurementSender.getBitrate() > 0);
+        assertEquals("Mbits/s", iperfUDPBandwidthMeasurementSender.getBandwidthUnit());
+        assertEquals(IperfRole.SENDER, iperfUDPBandwidthMeasurementSender.getIperfRole());
+
+        assertTrue(iperfUDPBandwidthMeasurementSender.getJitter() >= 0.00f);
+        assertTrue(iperfUDPBandwidthMeasurementSender.getLostDatagrams() >= 0);
+        assertTrue(iperfUDPBandwidthMeasurementSender.getTotalDatagrams() > 0);
+
+        // Receiver
+        assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementReceiver.getIperf3Protocol());
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getBitrate() > 0);
+        assertEquals("Mbits/s", iperfUDPBandwidthMeasurementReceiver.getBandwidthUnit());
+        assertEquals(IperfRole.RECEIVER, iperfUDPBandwidthMeasurementReceiver.getIperfRole());
+
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getJitter() >= 0.00f);
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getLostDatagrams() >= 0);
+        assertTrue(iperfUDPBandwidthMeasurementReceiver.getTotalDatagrams() > 0);
     }
 
     private String createNewTestLink(String nodeUuid) throws Exception {

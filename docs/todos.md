@@ -19,6 +19,7 @@
 - [ ] Repository classes in tests should manage the lifecycle of the entities
 - [ ] Enable proper bean validation for all DTOs
 - [ ] Make sure defaults are set for all DTOs at one proper location
+- [ ] `ShortRequestDto` should be clear about the `UUID` and the mapping either to type `metric` or ``
 
 ## Overall Issues
 
@@ -119,6 +120,8 @@
   - [ ] In TCP mode, bitrate can be 0
 - [ ] Ensure that `IperfBandwidthMeasurement` has the right inheritance
 - [ ] Rework waiting on starting process in `measure...()`
+- [ ] !!! Provide possibility to set the target port dynamically by asking the source node for the next free port, do this dynamically in `LinkController`
+- [ ] Structure of Inheritance between `IperfBandwidthMeasurement` and `IperfUDPBandwidthMeasurement` is unclear and hard to handle 
 
 ## DelayService
 
@@ -148,13 +151,14 @@
 - [ ] Ensure that status flag of linkJob is set properly in `scheduleIperfJob(...)`
 - [ ] Ensure that all jobs are rescheduled after application crash
 - [ ] Ensure that cancellation of jobs properly sets the active flag
-- [ ] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
+- [x] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
 - [ ] Ensure that no duplicate jobs can be created
 - [ ] Add appropriate logging for 
 - [ ] Consider moving PublishSubscribeChannels for bandwidth and delay to another place
 - [ ] Consider working with `Optional` for all read operations
 - [ ] Check if a (Network) Job can be created even without being attached to a link
 - [ ] Check if there are cross references between Jobs and links
+- [ ] `JObService#scheduleIperfJob` should completely encapsulate `IperfResult`, not a map-like structure that ends up in not proper mappings  
 
 ## NpingUtils
 

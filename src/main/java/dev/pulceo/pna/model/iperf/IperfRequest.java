@@ -18,7 +18,7 @@ public class IperfRequest {
     private String sourceHost;
     private String destinationHost;
     private int port;
-    // default is set to unlimited bandwidth (0)
+    // default is set to unlimited bandwidth (0), unit in Mbit
     private int bitrate = 0;
     private int time;
     // default format is Mbit ("m")

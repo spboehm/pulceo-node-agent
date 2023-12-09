@@ -226,9 +226,15 @@ public class JobService {
         long retrievedIperfJobId = retrievedIperfJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                // job.getObject
                 IperfResult iperfResult = iperfService.measureBandwidth(retrievedIperfJob.getIperfRequest());
-                this.bandwidthServiceMessageChannel.send(new GenericMessage<>(iperfResult));
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(iperfResult.getUuid())
+                        .metricType(iperfResult.getMetricType())
+                        .jobUUID(iperfResult.getUuid())
+                        .metricResult(iperfResult)
+                        .build();
+                Message message = new Message(deviceId, networkMetric);
+                this.bandwidthServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (BandwidthServiceException e) {
                 throw new RuntimeException(e);
             }

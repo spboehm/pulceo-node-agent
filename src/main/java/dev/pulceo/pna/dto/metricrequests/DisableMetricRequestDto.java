@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class DisableMetricRequestDto {
+    @Builder.Default
     private boolean enabled = false;
 }

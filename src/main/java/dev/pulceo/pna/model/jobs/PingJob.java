@@ -19,13 +19,6 @@ public class PingJob extends LinkJob {
     @OneToOne(cascade = CascadeType.ALL)
     private PingRequest pingRequest;
     private int recurrence;
-    // default false
-    private boolean enabled = false;
-
-    public PingJob(PingRequest pingRequest, int recurrence) {
-        this.pingRequest = pingRequest;
-        this.recurrence = recurrence;
-    }
 
 }
 

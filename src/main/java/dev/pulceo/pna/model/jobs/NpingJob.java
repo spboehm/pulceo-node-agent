@@ -19,12 +19,5 @@ public class NpingJob extends LinkJob {
     @OneToOne(cascade = CascadeType.ALL)
     private NpingRequest npingRequest;
     private int recurrence;
-    // default false
-    private boolean enabled = false;
-
-    public NpingJob(NpingRequest npingRequest, int recurrence) {
-        this.npingRequest = npingRequest;
-        this.recurrence = recurrence;
-    }
 
 }

@@ -12,5 +12,6 @@ import lombok.EqualsAndHashCode;
 @Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(callSuper = true)
 public abstract class Job extends Resource {
-
+    // default false
+    private boolean enabled = false;
 }

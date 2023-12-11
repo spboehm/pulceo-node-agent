@@ -159,6 +159,10 @@
 - [ ] Check if a (Network) Job can be created even without being attached to a link
 - [ ] Check if there are cross references between Jobs and links
 - [ ] `JObService#scheduleIperfJob` should completely encapsulate `IperfResult`, not a map-like structure that ends up in not proper mappings  
+- [ ] Ensure that cancellation and disabling of jobs is properly handeled with an additional parameter `true` or `false`
+- [ ] Ensure that cancellation and disabling is properly set in other methods in `JobService`
+- [ ] Clean `JobService` with concrete methods
+- [ ] Ensure that on startup, alle enabled jobs are loaded into the `JobHashMap` 
 
 ## NpingUtils
 

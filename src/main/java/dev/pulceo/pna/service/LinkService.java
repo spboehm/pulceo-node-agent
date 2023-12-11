@@ -61,7 +61,7 @@ public class LinkService {
             throw new LinkServiceException("Link with id %d does not exist!".formatted(linkId));
         }
 
-        Optional<LinkJob> job = this.jobService.readJob(jobId);
+        Optional<LinkJob> job = this.jobService.readLinkJob(jobId);
         if (job.isEmpty()) {
             throw new LinkServiceException("Job with id %d does not exist!".formatted(jobId));
         }

@@ -5,20 +5,14 @@ import dev.pulceo.pna.exception.DelayServiceException;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.PingServiceException;
 import dev.pulceo.pna.model.iperf.IperfResult;
-import dev.pulceo.pna.model.jobs.IperfJob;
-import dev.pulceo.pna.model.jobs.LinkJob;
-import dev.pulceo.pna.model.jobs.NpingJob;
-import dev.pulceo.pna.model.jobs.PingJob;
+import dev.pulceo.pna.model.jobs.*;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.nping.NpingUDPResult;
 import dev.pulceo.pna.model.ping.PingResult;
-import dev.pulceo.pna.repository.BandwidthJobRepository;
-import dev.pulceo.pna.repository.JobRepository;
-import dev.pulceo.pna.repository.NpingTCPJobRepository;
-import dev.pulceo.pna.repository.PingJobRepository;
+import dev.pulceo.pna.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
@@ -44,6 +38,9 @@ public class JobService {
 
     @Autowired
     private PingJobRepository pingJobRepository;
+
+    @Autowired
+    private LinkJobRepository linkJobRepository;
 
     @Autowired
     private JobRepository jobRepository;
@@ -86,8 +83,12 @@ public class JobService {
     @Value("${pna.delay.udp.data.length}")
     private String udpDataLength;
 
-    public Optional<LinkJob> readJob(long id) throws JobServiceException {
-        Optional<LinkJob> retrievedJob = this.jobRepository.findById(id);
+    public Optional<Job> readJob(long id) {
+        return this.jobRepository.findById(id);
+    }
+
+    public Optional<LinkJob> readLinkJob(long id) throws JobServiceException {
+        Optional<LinkJob> retrievedJob = this.linkJobRepository.findById(id);
         if (retrievedJob.isPresent()) {
             return retrievedJob;
         } else {
@@ -312,7 +313,12 @@ public class JobService {
     }
 
     public void cancelJob(long id) {
-
+        Optional<Job> jobToBeCancelled = this.readJob(id);
+        if (jobToBeCancelled.isPresent()) {
+            jobToBeCancelled.get().setEnabled(false);
+            this.jobHashMap.get(id).cancel(false);
+            this.jobRepository.save(jobToBeCancelled.get());
+        }
     }
 
     public boolean cancelPingJob(long id) {

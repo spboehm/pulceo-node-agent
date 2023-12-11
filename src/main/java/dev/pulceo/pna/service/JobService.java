@@ -75,6 +75,7 @@ public class JobService {
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> pingJobHashMap = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> jobHashMap = new ConcurrentHashMap<>();
 
     @Value("${pna.metrics.mqtt.topic}")
     private String metricsMqttTopic;
@@ -158,7 +159,7 @@ public class JobService {
             }
         }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
 
-        this.TCPDelayJobHashMap.put(retrievedNpingUDPJobId, scheduledFuture);
+        this.jobHashMap.put(retrievedNpingUDPJobId, scheduledFuture);
     }
 
     private void scheduleNpingTCPJob(NpingJob retrievedNpingJob, long retrievedNpingTCPJobId) {
@@ -179,13 +180,13 @@ public class JobService {
             }
         }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
 
-        this.TCPDelayJobHashMap.put(retrievedNpingTCPJobId, scheduledFuture);
+        this.jobHashMap.put(retrievedNpingTCPJobId, scheduledFuture);
     }
 
 
     // TODO: reimplement cancelNpingJob, consider active flag checked for unscheduling
     public boolean cancelNpingJob(long id) {
-        return this.TCPDelayJobHashMap.get(id).cancel(false);
+        return this.jobHashMap.get(id).cancel(false);
     }
 
     public long createIperfJob(IperfJob iperfJob) {
@@ -240,13 +241,13 @@ public class JobService {
             }
 
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
-        this.bandwidthJobHashMap.put(retrievedIperfJobId, scheduledFuture);
+        this.jobHashMap.put(retrievedIperfJobId, scheduledFuture);
         return retrievedIperfJobId;
     }
 
     // TODO: reimplement cancelIperfJob, consider active flag
     public boolean cancelIperfJob(long id) {
-        return this.bandwidthJobHashMap.get(id).cancel(false);
+        return this.jobHashMap.get(id).cancel(false);
     }
 
     // create
@@ -306,11 +307,15 @@ public class JobService {
                 throw new RuntimeException(e);
             }
         }, Duration.ofSeconds(retrievedPingJob.getRecurrence()));
-        this.pingJobHashMap.put(retrievedPingJobId, scheduledFuture);
+        this.jobHashMap.put(retrievedPingJobId, scheduledFuture);
         return retrievedPingJobId;
     }
 
+    public void cancelJob(long id) {
+
+    }
+
     public boolean cancelPingJob(long id) {
-        return this.pingJobHashMap.get(id).cancel(false);
+        return this.jobHashMap.get(id).cancel(false);
     }
 }

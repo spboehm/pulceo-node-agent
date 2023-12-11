@@ -8,6 +8,7 @@ import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.iperf.IperfClientProtocol;
 import dev.pulceo.pna.model.iperf.IperfRequest;
 import dev.pulceo.pna.model.jobs.IperfJob;
+import dev.pulceo.pna.model.jobs.LinkJob;
 import dev.pulceo.pna.model.jobs.NpingJob;
 import dev.pulceo.pna.model.jobs.PingJob;
 import dev.pulceo.pna.model.link.Link;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -101,7 +103,7 @@ public class LinkController {
         }
         Link link = retrievedLink.get();
 
-//        List<LinkJob> linkJobs = link.getLinkJobs();
+        List<LinkJob> linkJobs = link.getLinkJobs();
 //        linkJobs.stream().filter(linkJob -> linkJob.getUuid().equals(metricRequestUUID)).findFirst().ifPresent(linkJob -> {
 //            if (disableMetricRequestDto.isEnabled()) {
 //                this.jobService.enableJob(linkJob.getId());

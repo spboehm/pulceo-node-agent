@@ -92,6 +92,28 @@ public class LinkController {
             return new ResponseEntity<>(linkDTO, HttpStatus.CREATED);
     }
 
+    @PatchMapping("/{linkUUID}/metric-requests/{metricRequestUUID}")
+    public ResponseEntity<ShortMetricRequestDTO> updateMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID, @Valid @NotNull @RequestBody DisableMetricRequestDto disableMetricRequestDto) throws JobServiceException {
+        // find metric request by uuid
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
+        if (retrievedLink.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Link link = retrievedLink.get();
+
+//        List<LinkJob> linkJobs = link.getLinkJobs();
+//        linkJobs.stream().filter(linkJob -> linkJob.getUuid().equals(metricRequestUUID)).findFirst().ifPresent(linkJob -> {
+//            if (disableMetricRequestDto.isEnabled()) {
+//                this.jobService.enableJob(linkJob.getId());
+//            } else {
+//                this.jobService.disableJob(linkJob.getId());
+//            }
+//        });
+
+        // cancel job
+        return null;
+    }
+
 
     @PostMapping("{linkUUID}/metric-requests/icmp-rtt-requests")
     public ResponseEntity<ShortMetricRequestDTO> newIcmpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {

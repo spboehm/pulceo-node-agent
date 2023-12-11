@@ -2,15 +2,14 @@ package dev.pulceo.pna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.link.CreateNewLinkDTO;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestIcmpRttDTO;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestTcpRttDto;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpBwDto;
-import dev.pulceo.pna.dto.metricrequests.CreateNewMetricRequestUdpRttDto;
+import dev.pulceo.pna.dto.metricrequests.*;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.LinkDTOUtil;
 import dev.pulceo.pna.dtos.MetricRequestDTOUtil;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
-import dev.pulceo.pna.model.iperf.*;
+import dev.pulceo.pna.model.iperf.IperfClientProtocol;
+import dev.pulceo.pna.model.iperf.IperfRole;
+import dev.pulceo.pna.model.iperf.IperfUDPBandwidthMeasurement;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.node.Node;
@@ -38,6 +37,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -102,6 +102,35 @@ public class LinkControllerTests {
     }
 
     @Test
+    public void testCancelMetricRequest() throws Exception {
+        // given
+        String nodeUuid = createNewTestDestNode();
+        String linkUuid = createNewTestLink(nodeUuid);
+
+        CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO = MetricRequestDTOUtil.createIcmpRttMetricRequestDTO("icmp-rtt");
+        String metricRequestAsJson = objectMapper.writeValueAsString(createNewMetricRequestIcmpRttDTO);
+        MvcResult metricRequestResult = this.mockMvc.perform(post("/api/v1/links/" + linkUuid + "/metric-requests/icmp-rtt-requests")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(metricRequestAsJson))
+                .andExpect(status().isOk())
+                .andReturn();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+
+        // when
+        PatchMetricDto patchMetricDto = PatchMetricDto.builder().enabled(false).build();
+        String patchMetricDtoAsJson = objectMapper.writeValueAsString(patchMetricDto);
+        this.mockMvc.perform(patch("/api/v1/links/" + linkUuid + "/metric-requests/" + metricRequestUuid)
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(patchMetricDtoAsJson))
+                .andExpect(status().isNoContent());
+
+        // then
+        // TODO: perform another get request to check if the metric request is disabled
+    }
+
+    @Test
     public void testNewICMPRTTRequest() throws Exception {
         // given
         String nodeUuid = createNewTestDestNode();
@@ -118,6 +147,8 @@ public class LinkControllerTests {
                         .andReturn();
 
         // TODO: do validation here of MetricRequestDTO
+
+        // TODO: cancel the job
 
         // wait for icmp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);

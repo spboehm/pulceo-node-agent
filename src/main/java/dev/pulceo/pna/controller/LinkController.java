@@ -7,10 +7,7 @@ import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
 import dev.pulceo.pna.model.iperf.IperfClientProtocol;
 import dev.pulceo.pna.model.iperf.IperfRequest;
-import dev.pulceo.pna.model.jobs.IperfJob;
-import dev.pulceo.pna.model.jobs.LinkJob;
-import dev.pulceo.pna.model.jobs.NpingJob;
-import dev.pulceo.pna.model.jobs.PingJob;
+import dev.pulceo.pna.model.jobs.*;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.model.nping.NpingClientProtocol;
@@ -95,7 +92,7 @@ public class LinkController {
     }
 
     @PatchMapping("/{linkUUID}/metric-requests/{metricRequestUUID}")
-    public ResponseEntity<ShortMetricRequestDTO> updateMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID, @Valid @NotNull @RequestBody DisableMetricRequestDto disableMetricRequestDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricRequestDTO> updateMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID, @Valid @NotNull @RequestBody PatchMetricDto patchMetricDto) throws JobServiceException {
         // find metric request by uuid
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
@@ -104,18 +101,16 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         List<LinkJob> linkJobs = link.getLinkJobs();
-//        linkJobs.stream().filter(linkJob -> linkJob.getUuid().equals(metricRequestUUID)).findFirst().ifPresent(linkJob -> {
-//            if (disableMetricRequestDto.isEnabled()) {
-//                this.jobService.enableJob(linkJob.getId());
-//            } else {
-//                this.jobService.disableJob(linkJob.getId());
-//            }
-//        });
-
+        linkJobs.stream().filter(linkJob -> linkJob.getUuid().equals(metricRequestUUID)).findFirst().ifPresent(linkJob -> {
+            if (patchMetricDto.isEnabled()) {
+                // TODO: implement this
+            } else {
+                this.jobService.cancelJob(linkJob.getId());
+            }
+        });
         // cancel job
-        return null;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
     @PostMapping("{linkUUID}/metric-requests/icmp-rtt-requests")
     public ResponseEntity<ShortMetricRequestDTO> newIcmpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {

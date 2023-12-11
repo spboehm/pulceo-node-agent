@@ -22,6 +22,7 @@ public interface LinkRepository extends CrudRepository<Link, Long> {
 
     Optional<Link> findLinkByDestNode(Node destNode);
 
+    @EntityGraph(value="graph.Link.jobs")
     Optional<Link> findByUuid(UUID uuid);
 
 }

@@ -235,3 +235,5 @@
 
 - [ ] Add own controller for `metric-requests`
 - [ ] Refactor properties mapping to own method
+- [ ] Add a method for reading a Link
+- [ ] In check for disabling / cancelling a job, add the corresponding check for the test case `testCancelMetricRequest`

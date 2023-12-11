@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DisableMetricRequestDto {
+public class PatchMetricDto {
     @Builder.Default
     private boolean enabled = false;
 }

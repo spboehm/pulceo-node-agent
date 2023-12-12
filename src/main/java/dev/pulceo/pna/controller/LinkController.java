@@ -138,7 +138,7 @@ public class LinkController {
     }
 
     @PostMapping("{linkUUID}/metric-requests/udp-rtt-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newUdpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpRttDto createNewMetricRequestUdpRttDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricRequestDTO> newTcpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpRttDto createNewMetricRequestUdpRttDto) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -162,7 +162,7 @@ public class LinkController {
     }
 
     @PostMapping("{linkUUID}/metric-requests/tcp-rtt-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newUdpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricRequestDTO> newTcpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -170,7 +170,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create NpingRequest
-        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.TCP, this.rounds, this.iface);
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), this.npingDelayTCPPort, NpingClientProtocol.TCP, this.rounds, this.iface);
         NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestTcpRttDto.getRecurrence()));
         long id = this.jobService.createNpingJob(npingJob);
 

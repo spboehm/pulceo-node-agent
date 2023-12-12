@@ -118,6 +118,13 @@ public class LinkControllerTests {
         String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
 
         // when
+        cancelMetricRequest(linkUuid, metricRequestUuid);
+
+        // then
+        // TODO: perform another get request to check if the metric request is disabled
+    }
+
+    private void cancelMetricRequest(String linkUuid, String metricRequestUuid) throws Exception {
         PatchMetricDto patchMetricDto = PatchMetricDto.builder().enabled(false).build();
         String patchMetricDtoAsJson = objectMapper.writeValueAsString(patchMetricDto);
         this.mockMvc.perform(patch("/api/v1/links/" + linkUuid + "/metric-requests/" + metricRequestUuid)
@@ -125,9 +132,6 @@ public class LinkControllerTests {
                         .accept("application/json")
                         .content(patchMetricDtoAsJson))
                 .andExpect(status().isNoContent());
-
-        // then
-        // TODO: perform another get request to check if the metric request is disabled
     }
 
     @Test
@@ -145,10 +149,9 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
-
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        cancelMetricRequest(linkUuid, metricRequestUuid);
         // TODO: do validation here of MetricRequestDTO
-
-        // TODO: cancel the job
 
         // wait for icmp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
@@ -189,6 +192,8 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        cancelMetricRequest(linkUuid, metricRequestUuid);
 
         // TODO: do validation here of MetricRequestDTO
 
@@ -229,6 +234,8 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                 .andExpect(status().isOk())
                 .andReturn();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        cancelMetricRequest(linkUuid, metricRequestUuid);
 
         // TODO: do validation here of MetricRequestDTO
 
@@ -236,6 +243,7 @@ public class LinkControllerTests {
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(5);
         this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
         Message message = messageBlockingQueue.take();
+        System.out.println(message);
 
         NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
         Map<String, Object> map = networkMetric.getMetricResult().getResultData();
@@ -271,6 +279,8 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        cancelMetricRequest(linkUuid, metricRequestUuid);
 
         // TODO: do validation here of MetricRequestDTO
 

@@ -59,7 +59,6 @@ public class NodeControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.pnaUUID").value("4c961268-df2a-49c1-965a-2e5036158ac0"))
                 .andReturn();
-        System.out.println(createNewNodeResult.getResponse().getContentAsString());
         String nodeUuid = objectMapper.readTree(createNewNodeResult.getResponse().getContentAsString()).get("nodeUUID").asText();
 
         MvcResult readNodeResult = this.mockMvc.perform(get("/api/v1/nodes/" + nodeUuid)

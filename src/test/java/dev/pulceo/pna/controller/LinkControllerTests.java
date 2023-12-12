@@ -61,7 +61,10 @@ public class LinkControllerTests {
     PublishSubscribeChannel pingServiceMessageChannel;
 
     @Autowired
-    PublishSubscribeChannel delayServiceMessageChannel;
+    PublishSubscribeChannel npingUdpPubSubChannel;
+
+    @Autowired
+    PublishSubscribeChannel npingTcpPubSubChannel;
 
     @Autowired
     PublishSubscribeChannel bandwidthServiceMessageChannel;
@@ -155,10 +158,10 @@ public class LinkControllerTests {
 
         // wait for icmp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
-        this.pingServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
-        Message message = messageBlockingQueue.take();
+        this.pingServiceMessageChannel.subscribe(message -> {
+            Message payload = (Message) message.getPayload();
 
-        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        NetworkMetric networkMetric = (NetworkMetric) payload.getMetric();
         Map<String, Object> map = networkMetric.getMetricResult().getResultData();
         PingDelayMeasurement pingDelayMeasurement = (PingDelayMeasurement) map.get("pingDelayMeasurement");
 
@@ -175,6 +178,8 @@ public class LinkControllerTests {
         assertTrue(pingDelayMeasurement.getRttAvg() >= 0);
         assertTrue(pingDelayMeasurement.getRttMax() >= 0);
         assertTrue(pingDelayMeasurement.getRttMdev() >= 0);
+        });
+
     }
 
     @Test
@@ -199,24 +204,25 @@ public class LinkControllerTests {
 
         // wait for udp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(5);
-        this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
-        Message message = messageBlockingQueue.take();
+        this.npingUdpPubSubChannel.subscribe(message -> {
+            Message payload = (Message) message.getPayload();
 
-        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
-        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
-        NpingUDPDelayMeasurement npingUDPDelayMeasurement = (NpingUDPDelayMeasurement) map.get("npingUDPDelayMeasurement");
+            NetworkMetric networkMetric = (NetworkMetric) payload.getMetric();
+            Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+            NpingUDPDelayMeasurement npingUDPDelayMeasurement = (NpingUDPDelayMeasurement) map.get("npingUDPDelayMeasurement");
 
-        // then
-        assertNotNull(message);
-        assert("localhost".equals(map.get("sourceHost")));
-        assert("localhost".equals(map.get("destinationHost")));
-        assertTrue(npingUDPDelayMeasurement.getMaxRTT() > 0);
-        assertTrue(npingUDPDelayMeasurement.getMinRTT() > 0);
-        assertTrue(npingUDPDelayMeasurement.getAvgRTT() > 0);
-        assertEquals(1, npingUDPDelayMeasurement.getUdpPacketsSent());
-        assertEquals(1, npingUDPDelayMeasurement.getUdpReceivedPackets());
-        assertEquals(0, npingUDPDelayMeasurement.getUdpLostPacketsAbsolute());
-        assertEquals(0.0, npingUDPDelayMeasurement.getUdpLostPacketsRelative());
+            // then
+            assertNotNull(message);
+            assert ("localhost".equals(map.get("sourceHost")));
+            assert ("localhost".equals(map.get("destinationHost")));
+            assertTrue(npingUDPDelayMeasurement.getMaxRTT() > 0);
+            assertTrue(npingUDPDelayMeasurement.getMinRTT() > 0);
+            assertTrue(npingUDPDelayMeasurement.getAvgRTT() > 0);
+            assertEquals(1, npingUDPDelayMeasurement.getUdpPacketsSent());
+            assertEquals(1, npingUDPDelayMeasurement.getUdpReceivedPackets());
+            assertEquals(0, npingUDPDelayMeasurement.getUdpLostPacketsAbsolute());
+            assertEquals(0.0, npingUDPDelayMeasurement.getUdpLostPacketsRelative());
+        });
     }
 
     @Test
@@ -236,16 +242,13 @@ public class LinkControllerTests {
                 .andReturn();
         String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
         cancelMetricRequest(linkUuid, metricRequestUuid);
-
         // TODO: do validation here of MetricRequestDTO
 
         // wait for tcp-rtt value
-        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(5);
-        this.delayServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
-        Message message = messageBlockingQueue.take();
-        System.out.println(message);
+        this.npingTcpPubSubChannel.subscribe(message -> {
+            Message payload = (Message) message.getPayload();
 
-        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        NetworkMetric networkMetric = (NetworkMetric) payload.getMetric();
         Map<String, Object> map = networkMetric.getMetricResult().getResultData();
         NpingTCPDelayMeasurement npingTCPDelayMeasurement = (NpingTCPDelayMeasurement) map.get("npingTCPDelayMeasurement");
 
@@ -260,6 +263,7 @@ public class LinkControllerTests {
         assertEquals(1, npingTCPDelayMeasurement.getTcpSuccessfulConnections());
         assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsAbsolute());
         assertEquals(0, npingTCPDelayMeasurement.getTcpFailedConnectionsRelative());
+        });
     }
 
     @Test
@@ -286,36 +290,37 @@ public class LinkControllerTests {
 
         // wait for udp-bw value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
-        this.bandwidthServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
-        Message message = messageBlockingQueue.take();
+        this.bandwidthServiceMessageChannel.subscribe(message -> {
+            Message payload = (Message) message.getPayload();
 
-        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
-        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
-        IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementSender = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementSender");
-        IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementReceiver = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementReceiver");
+            NetworkMetric networkMetric = (NetworkMetric) payload.getMetric();
+            Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+            IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementSender = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementSender");
+            IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementReceiver = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementReceiver");
 
-        // then
-        assertEquals("localhost", map.get("sourceHost"));
-        assertEquals("localhost", map.get("destinationHost"));
-        // Sender
-        assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementSender.getIperf3Protocol());
-        assertTrue(iperfUDPBandwidthMeasurementSender.getBitrate() > 0);
-        assertEquals("Mbits/s", iperfUDPBandwidthMeasurementSender.getBandwidthUnit());
-        assertEquals(IperfRole.SENDER, iperfUDPBandwidthMeasurementSender.getIperfRole());
+            // then
+            assertEquals("localhost", map.get("sourceHost"));
+            assertEquals("localhost", map.get("destinationHost"));
+            // Sender
+            assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementSender.getIperf3Protocol());
+            assertTrue(iperfUDPBandwidthMeasurementSender.getBitrate() > 0);
+            assertEquals("Mbits/s", iperfUDPBandwidthMeasurementSender.getBandwidthUnit());
+            assertEquals(IperfRole.SENDER, iperfUDPBandwidthMeasurementSender.getIperfRole());
 
-        assertTrue(iperfUDPBandwidthMeasurementSender.getJitter() >= 0.00f);
-        assertTrue(iperfUDPBandwidthMeasurementSender.getLostDatagrams() >= 0);
-        assertTrue(iperfUDPBandwidthMeasurementSender.getTotalDatagrams() > 0);
+            assertTrue(iperfUDPBandwidthMeasurementSender.getJitter() >= 0.00f);
+            assertTrue(iperfUDPBandwidthMeasurementSender.getLostDatagrams() >= 0);
+            assertTrue(iperfUDPBandwidthMeasurementSender.getTotalDatagrams() > 0);
 
-        // Receiver
-        assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementReceiver.getIperf3Protocol());
-        assertTrue(iperfUDPBandwidthMeasurementReceiver.getBitrate() > 0);
-        assertEquals("Mbits/s", iperfUDPBandwidthMeasurementReceiver.getBandwidthUnit());
-        assertEquals(IperfRole.RECEIVER, iperfUDPBandwidthMeasurementReceiver.getIperfRole());
+            // Receiver
+            assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementReceiver.getIperf3Protocol());
+            assertTrue(iperfUDPBandwidthMeasurementReceiver.getBitrate() > 0);
+            assertEquals("Mbits/s", iperfUDPBandwidthMeasurementReceiver.getBandwidthUnit());
+            assertEquals(IperfRole.RECEIVER, iperfUDPBandwidthMeasurementReceiver.getIperfRole());
 
-        assertTrue(iperfUDPBandwidthMeasurementReceiver.getJitter() >= 0.00f);
-        assertTrue(iperfUDPBandwidthMeasurementReceiver.getLostDatagrams() >= 0);
-        assertTrue(iperfUDPBandwidthMeasurementReceiver.getTotalDatagrams() > 0);
+            assertTrue(iperfUDPBandwidthMeasurementReceiver.getJitter() >= 0.00f);
+            assertTrue(iperfUDPBandwidthMeasurementReceiver.getLostDatagrams() >= 0);
+            assertTrue(iperfUDPBandwidthMeasurementReceiver.getTotalDatagrams() > 0);
+        });
     }
 
     private String createNewTestLink(String nodeUuid) throws Exception {

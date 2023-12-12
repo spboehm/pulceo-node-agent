@@ -11,7 +11,7 @@ public class MetricRequestDTOUtil {
     public static CreateNewMetricRequestIcmpRttDTO createIcmpRttMetricRequestDTO(String type) {
         return CreateNewMetricRequestIcmpRttDTO.builder()
                 .type(type)
-                .recurrence("15")
+                .recurrence("30")
                 .enabled(true)
                 .ipVersion(IPVersion.IPv4)
                 .count(1)
@@ -22,7 +22,7 @@ public class MetricRequestDTOUtil {
     public static CreateNewMetricRequestUdpRttDto createUdpRttMetricRequestDTO(String type) {
         return CreateNewMetricRequestUdpRttDto.builder()
                 .type(type)
-                .recurrence("15")
+                .recurrence("30")
                 .rounds(1)
                 .build();
     }
@@ -38,7 +38,7 @@ public class MetricRequestDTOUtil {
     public static CreateNewMetricRequestUdpBwDto createNewMetricRequestUdpBwDto(String type) {
         return CreateNewMetricRequestUdpBwDto.builder()
                 .type(type)
-                .recurrence("15")
+                .recurrence("30")
                 .enabled(true)
                 .bitrate(32)
                 .time(1)

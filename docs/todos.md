@@ -163,6 +163,7 @@
 - [ ] Ensure that cancellation and disabling is properly set in other methods in `JobService`
 - [ ] Clean `JobService` with concrete methods
 - [ ] Ensure that on startup, alle enabled jobs are loaded into the `JobHashMap` 
+- [ ] Check naming and design of spring integration channels in Iperf3-related Jobs
 
 ## NpingUtils
 

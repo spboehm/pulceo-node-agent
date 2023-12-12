@@ -13,7 +13,12 @@ import org.springframework.messaging.MessageChannel;
 public class DelayServiceConfig {
 
     @Bean
-    public PublishSubscribeChannel delayServiceMessageChannel() {
+    public PublishSubscribeChannel npingTcpPubSubChannel() {
+        return new PublishSubscribeChannel();
+    }
+
+    @Bean
+    public PublishSubscribeChannel npingUdpPubSubChannel() {
         return new PublishSubscribeChannel();
     }
 
@@ -22,7 +27,15 @@ public class DelayServiceConfig {
 
     @Bean
     public IntegrationFlow routerFlow3() {
-        return IntegrationFlow.from("delayServiceMessageChannel")
+        return IntegrationFlow.from("npingTcpPubSubChannel")
+                .transform(Transformers.toJson())
+                .route(router3())
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow routerFlow3_1() {
+        return IntegrationFlow.from("npingUdpPubSubChannel")
                 .transform(Transformers.toJson())
                 .route(router3())
                 .get();

@@ -31,7 +31,10 @@ public class NpingLinkJobServiceTests {
     JobService jobService;
 
     @Autowired
-    PublishSubscribeChannel delayServiceMessageChannel;
+    PublishSubscribeChannel npingUdpPubSubChannel;
+
+    @Autowired
+    PublishSubscribeChannel npingTcpPubSubChannel;
 
     @Autowired
     NpingService npingService;
@@ -154,7 +157,7 @@ public class NpingLinkJobServiceTests {
         // when
         long localJobId = this.jobService.scheduleNpingJob(id);
         BlockingQueue<Message> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
-        this.delayServiceMessageChannel.subscribe(message -> npingTCPResultBlockingQueue.add((Message) message.getPayload()));
+        this.npingTcpPubSubChannel.subscribe(message -> npingTCPResultBlockingQueue.add((Message) message.getPayload()));
         this.jobService.cancelNpingJob(localJobId);
         Message message = npingTCPResultBlockingQueue.take();
 
@@ -188,7 +191,7 @@ public class NpingLinkJobServiceTests {
         // when
         long localJobId = this.jobService.scheduleNpingJob(id);
         BlockingQueue<Message> npingUdpResultBlockingQueue = new ArrayBlockingQueue<>(1);
-        this.delayServiceMessageChannel.subscribe(message -> npingUdpResultBlockingQueue.add((Message) message.getPayload()));
+        this.npingUdpPubSubChannel.subscribe(message -> npingUdpResultBlockingQueue.add((Message) message.getPayload()));
         this.jobService.cancelNpingJob(localJobId);
         Message message = npingUdpResultBlockingQueue.take();
 

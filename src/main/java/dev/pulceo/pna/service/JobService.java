@@ -60,7 +60,10 @@ public class JobService {
     // TODO: resolve that delayService and pingService is ambigious
     // TODO: consider renaming to job-related semantics
     @Autowired
-    PublishSubscribeChannel delayServiceMessageChannel;
+    PublishSubscribeChannel npingUdpPubSubChannel;
+
+    @Autowired
+    PublishSubscribeChannel npingTcpPubSubChannel;
 
     // TODO: consider renaming to job-related semantics
     @Autowired
@@ -154,7 +157,7 @@ public class JobService {
                         .build();
 
                 Message message = new Message(deviceId, networkMetric);
-                this.delayServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                this.npingUdpPubSubChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (DelayServiceException e) {
                 throw new RuntimeException(e);
             }
@@ -173,9 +176,8 @@ public class JobService {
                         .jobUUID(retrievedNpingJob.getUuid())
                         .metricResult(npingTCPResult)
                         .build();
-
                 Message message = new Message(deviceId, networkMetric);
-                this.delayServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                this.npingTcpPubSubChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (DelayServiceException e) {
                 throw new RuntimeException(e);
             }
@@ -183,7 +185,6 @@ public class JobService {
 
         this.jobHashMap.put(retrievedNpingTCPJobId, scheduledFuture);
     }
-
 
     // TODO: reimplement cancelNpingJob, consider active flag checked for unscheduling
     public boolean cancelNpingJob(long id) {

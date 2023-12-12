@@ -238,3 +238,10 @@
 - [ ] Refactor properties mapping to own method
 - [ ] Add a method for reading a Link
 - [ ] In check for disabling / cancelling a job, add the corresponding check for the test case `testCancelMetricRequest`
+
+## LinkControllerTests
+
+- [ ] Ensure that messages are properly taken out from a the PubSubQueue
+- [ ] Add tests cases for tcp-bw
+- [ ] Replace message queues with another PubSub Queue
+- [ ] Get rid of terminating all iperf3 processes

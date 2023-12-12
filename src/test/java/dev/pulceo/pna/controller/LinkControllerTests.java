@@ -19,7 +19,8 @@ import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
 import dev.pulceo.pna.service.IperfService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,9 @@ public class LinkControllerTests {
     private String pnaUuid;
 
     // TODO: remove this workaround after properly setting up iperf3 server start and stop
-    @BeforeEach
-    @AfterEach
-    public void killAllIperf3Instances() throws InterruptedException, IOException {
+    @BeforeAll
+    @AfterAll
+    public static void killAllIperf3Instances() throws InterruptedException, IOException {
         Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
         p.waitFor();
         //this.bandwidthService = new BandwidthService(environment);
@@ -290,10 +291,9 @@ public class LinkControllerTests {
 
         // wait for udp-bw value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
-        this.bandwidthServiceMessageChannel.subscribe(message -> {
-            Message payload = (Message) message.getPayload();
-
-            NetworkMetric networkMetric = (NetworkMetric) payload.getMetric();
+        this.bandwidthServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
+            Message message = messageBlockingQueue.take();
+            NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
             Map<String, Object> map = networkMetric.getMetricResult().getResultData();
             IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementSender = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementSender");
             IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementReceiver = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementReceiver");
@@ -320,7 +320,6 @@ public class LinkControllerTests {
             assertTrue(iperfUDPBandwidthMeasurementReceiver.getJitter() >= 0.00f);
             assertTrue(iperfUDPBandwidthMeasurementReceiver.getLostDatagrams() >= 0);
             assertTrue(iperfUDPBandwidthMeasurementReceiver.getTotalDatagrams() > 0);
-        });
     }
 
     private String createNewTestLink(String nodeUuid) throws Exception {

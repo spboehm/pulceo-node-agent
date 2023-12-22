@@ -1,0 +1,21 @@
+{"sysstat": {
+  "hosts": [
+    {
+      "nodename": "0c1ffb2705a3",
+      "sysname": "Linux",
+      "release": "6.6.6-1-default",
+      "machine": "x86_64",
+      "number-of-cpus": 16,
+      "date": "12/21/23",
+      "statistics": [
+        {
+          "timestamp": "11:38:48",
+          "cpu-load": [
+            {"cpu": "all", "usr": 4.98, "nice": 0.00, "sys": 2.20, "iowait": 0.18, "irq": 0.00, "soft": 0.09, "steal": 0.00, "guest": 0.00, "gnice": 0.00, "idle": 92.55}
+          ]
+        }
+      ]
+    }
+  ]
+}}
+

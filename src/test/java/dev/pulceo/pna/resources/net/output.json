@@ -1,0 +1,33 @@
+[ {
+  "ifindex": 15,
+  "ifname": "eth0",
+  "flags": [ "BROADCAST","MULTICAST","UP","LOWER_UP" ],
+  "mtu": 1500,
+  "qdisc": "pfifo_fast",
+  "operstate": "UP",
+  "linkmode": "DEFAULT",
+  "group": "default",
+  "txqlen": 1000,
+  "link_type": "ether",
+  "address": "9c:2d:cd:c8:a9:86",
+  "broadcast": "ff:ff:ff:ff:ff:ff",
+  "stats64": {
+    "rx": {
+      "bytes": 438081054,
+      "packets": 427027,
+      "errors": 0,
+      "dropped": 3504,
+      "over_errors": 0,
+      "multicast": 0
+    },
+    "tx": {
+      "bytes": 18488862,
+      "packets": 94932,
+      "errors": 0,
+      "dropped": 0,
+      "carrier_errors": 0,
+      "collisions": 0
+    }
+  },
+  "altnames": [ "enp0s13f0u3u4u4u3" ]
+} ]

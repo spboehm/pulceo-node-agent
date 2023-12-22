@@ -1,34 +1,24 @@
 package dev.pulceo.pna.service;
 
-public class ResourceUtilizationService {
+import org.springframework.stereotype.Service;
 
-    /* Important mount /proc of host to container
-     * CPU utilization
+@Service
+public class OSResourceUtilizationService {
+    /* Dynamic
+    /* Important mount /proc and /sys of host to container
+     * CPU
      */
+    // TS, value, unit
 
-    // CPU utilization of node
-    //
-    // node
-    // TS
-    // value
-    // unit
-
-    /* Memory utilization  */
+    /* Memory  */
     // /proc/meminfo
     //
 
     /* Disk */
     // free capacity
-    
+    // free -h
 
-
-    // TODO: statically available resources (CPU, memory, disk, network, etc.) on Nodes and their replicates
-
-    // TODO: totally available resources (CPU, memory, disk, network, etc.) on Nodes and their replicates
-
-
-    //
-
+    /* Net */
     // tx rx
     // ip -s -j -p link show eth0
     // /sys/class/net/eth0/statistics

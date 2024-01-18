@@ -191,6 +191,15 @@
 
 - [ ] Check error handling of PingUtils in case of `name or service not found`, might not be good idea to pass the output of the nping proces to the user
 
+## ProcessUtils
+
+- [ ] Check randomly continuing `sleep` processes in `ProcessUtils`
+- [ ] FindProcessByName must be more exact by looking into the columns of `ps -eo pid,fname,cmd`. Check for
+  - [ ] `ping`
+  - [ ] `nping`
+  - [ ] `iperf3`
+  - [ ] `sleep`
+
 ## Helper classes (package `utils`)
 
 - [ ] Refactor int and float parsing methods in `NpingUtils`, `Iperf3Utils`, `PingUtils`

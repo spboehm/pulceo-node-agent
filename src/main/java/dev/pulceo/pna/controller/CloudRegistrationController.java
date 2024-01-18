@@ -32,7 +32,9 @@ public class CloudRegistrationController {
     @PostMapping
     public ResponseEntity<CloudRegistrationResponseDto> newInitialCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) throws CloudRegistrationException {
         CloudRegistrationRequest cloudRegistrationRequest = this.modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
+
         CloudRegistration cloudRegistration = this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
+
         return new ResponseEntity<>(this.modelMapper.map(cloudRegistration, CloudRegistrationResponseDto.class), HttpStatus.OK);
     }
 

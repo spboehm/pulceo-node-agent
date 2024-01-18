@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class CloudRegistration extends Resource {
 
+    private String pnaUUID;
     private String prmUUID;
     private String prmEndpoint;
     private String pnaToken;

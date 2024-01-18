@@ -15,7 +15,7 @@ public class CloudRegistrationResponseDto {
 
     @NotBlank
     @UUID
-    String uuid;
+    String pnaUUID;
 
     @NotBlank
     @UUID

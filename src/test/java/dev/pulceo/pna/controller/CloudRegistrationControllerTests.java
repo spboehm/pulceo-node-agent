@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.registration.CloudRegistrationRequestDto;
 import dev.pulceo.pna.repository.CloudRegistrationRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,7 +53,7 @@ public class CloudRegistrationControllerTests {
                 .accept("application/json")
                 .content(cloudRegistrationRequestDtoAsJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid", matchesPattern(uuidRegex)))
+                .andExpect(jsonPath("$.pnaUUID", matchesPattern(uuidRegex)))
                 .andExpect(jsonPath("$.prmUUID").value(prmUUID))
                 .andExpect(jsonPath("$.prmEndpoint").value(prmEndpoint))
                 .andExpect(jsonPath("$.pnaToken", matchesPattern(base64EncodedRegex)));

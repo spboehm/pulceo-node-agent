@@ -78,7 +78,7 @@ public class CloudRegistrationService {
             String prmEndpoint = cloudRegistrationRequest.getPrmEndpoint();
             // TODO: hash token
             String pnaToken = generatePnaToken();
-            return this.cloudRegistrationRepository.save(new CloudRegistration(prmUUID, prmEndpoint, pnaToken));
+            return this.cloudRegistrationRepository.save(new CloudRegistration(this.pnaId, prmUUID, prmEndpoint, pnaToken));
         } else {
             throw new CloudRegistrationException("pnaInitToken does not exist!");
         }

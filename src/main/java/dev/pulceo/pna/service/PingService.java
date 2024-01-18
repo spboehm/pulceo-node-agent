@@ -19,7 +19,7 @@ public class PingService {
 
     public boolean checkForRunningPingInstance(String destinationHost) throws PingServiceException {
         try {
-            List<String> listOfRunningPingInstances = ProcessUtils.getListOfRunningProcessesByName("ping");
+            List<String> listOfRunningPingInstances = ProcessUtils.getListOfRunningProcessesByName("/usr/bin/ping");
             for (String runningPingInstance : listOfRunningPingInstances) {
                 return isHostPartofRunningPingInstanceCmd(destinationHost, runningPingInstance);
             }

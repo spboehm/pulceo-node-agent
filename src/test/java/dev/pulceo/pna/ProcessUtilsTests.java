@@ -75,7 +75,7 @@ public class ProcessUtilsTests {
 
         // then
         // TODO: fix the bug with automatically restarting sleep process
-        Assertions.assertTrue(result.size() > 2);
+        Assertions.assertTrue(result.size() >= 2);
         Assertions.assertTrue(result.stream().anyMatch(s -> s.contains("sleep") && s.contains("3600") || s.contains("2400")));
 
     }

@@ -19,7 +19,8 @@ import java.util.UUID;
 public class LinkDTO {
     private UUID linkUUID;
     private String name;
-    private ResourceType resourceType;
+    @Builder.Default
+    private ResourceType resourceType = ResourceType.NODE;
     @Builder.Default
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     private UUID srcNode;

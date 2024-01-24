@@ -2,6 +2,7 @@
 
 ## Data model
 
+- [ ] Remove `ResourceType` and `LinkDirectionType` from `CreateNewLinkDTO` and `LinkDTO`
 - [ ] Add CreatedDate
 - [ ] Add CreatedBy
 - [ ] Add LastModifiedDate

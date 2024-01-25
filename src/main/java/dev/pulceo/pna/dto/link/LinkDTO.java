@@ -23,8 +23,8 @@ public class LinkDTO {
     private ResourceType resourceType = ResourceType.NODE;
     @Builder.Default
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
-    private UUID srcNode;
-    private UUID destNode;
+    private UUID srcNodeUUID;
+    private UUID destNodeUUID;
     @Builder.Default
     private List<LinkJob> linkJobs = new ArrayList<>();
 }

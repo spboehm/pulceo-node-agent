@@ -84,8 +84,8 @@ public class LinkController {
                     .name(createdLink.getName())
                     .resourceType(createdLink.getResourceType())
                     .linkDirectionType(createdLink.getLinkDirectionType())
-                    .srcNode(createdLink.getSrcNode().getUuid())
-                    .destNode(createdLink.getDestNode().getUuid())
+                    .srcNodeUUID(createdLink.getSrcNode().getUuid())
+                    .destNodeUUID(createdLink.getDestNode().getUuid())
                     .linkJobs(createdLink.getLinkJobs())
                     .build();
             return new ResponseEntity<>(linkDTO, HttpStatus.CREATED);

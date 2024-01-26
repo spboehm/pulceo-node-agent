@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'application'
 	id 'org.springframework.boot' version '3.1.5'
 	id 'io.spring.dependency-management' version '1.1.0'
 }
@@ -42,6 +43,28 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core:5.6.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.0'
+}
+
+tasks.register("bootRun-pna-test1") {
+	group = "application"
+	description = "Runs pna with the test1 profile"
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "test1")
+		}
+	}
+	finalizedBy("bootRun")
+}
+
+tasks.register("bootRun-pna-test2") {
+	group = "application"
+	description = "Runs pna with the test2 profile"
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "test2")
+		}
+	}
+	finalizedBy("bootRun")
 }
 
 test {

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 
@@ -25,7 +26,8 @@ import java.util.concurrent.BlockingQueue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class NpingLinkJobServiceTests {
+public class
+NpingLinkJobServiceTests {
 
     @Autowired
     JobService jobService;
@@ -39,6 +41,8 @@ public class NpingLinkJobServiceTests {
     @Autowired
     NpingService npingService;
 
+    @Value("${pna.local.address}")
+    private String localAddress;
 
     @BeforeEach
     @AfterEach
@@ -51,7 +55,7 @@ public class NpingLinkJobServiceTests {
     @Test
     public void testCreateNpingTCPJob() {
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
 
         // when
@@ -64,7 +68,7 @@ public class NpingLinkJobServiceTests {
     @Test
     public void testCreatedNpingTCPJobIsInactive() throws JobServiceException {
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
 
         // when
@@ -78,7 +82,7 @@ public class NpingLinkJobServiceTests {
     @Test
     public void testEnableNpingTCPJobWithDisabledJob() throws JobServiceException {
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
 
         // newly created job is disabled by default, means active = false
@@ -95,7 +99,7 @@ public class NpingLinkJobServiceTests {
     @Test
     public void testEnableNpingTCPJobWithEnabledJob() throws JobServiceException {
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingJob.setEnabled(true);
@@ -112,7 +116,7 @@ public class NpingLinkJobServiceTests {
     @Test
     public void testDisableNpingTCPJobWithEnabledJob() throws JobServiceException {
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         npingJob.setEnabled(true);
@@ -130,7 +134,7 @@ public class NpingLinkJobServiceTests {
     @Test
     public void testDisableNpingTCPJobWithDisabledJob() throws JobServiceException {
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         // newly created job is disabled by default, means active = false
         long savedNpingTCPJobId = this.jobService.createNpingJob(npingJob);
@@ -150,7 +154,7 @@ public class NpingLinkJobServiceTests {
         // prepare TCP listener on port 4002
         // implicitly done be SpringBootIntegration, see dev.pulceo.pna.config.TcpConfig
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4002, NpingClientProtocol.TCP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4002, NpingClientProtocol.TCP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         long id = this.jobService.createNpingJob(npingJob);
 
@@ -167,8 +171,8 @@ public class NpingLinkJobServiceTests {
 
         // then
         assertNotNull(message);
-        assert("localhost".equals(map.get("sourceHost")));
-        assert("localhost".equals(map.get("destinationHost")));
+        assert(localAddress.equals(map.get("sourceHost")));
+        assert(localAddress.equals(map.get("destinationHost")));
         assertTrue(npingTCPDelayMeasurement.getMaxRTT() > 0);
         assertTrue(npingTCPDelayMeasurement.getMinRTT() > 0);
         assertTrue(npingTCPDelayMeasurement.getAvgRTT() > 0);
@@ -184,7 +188,7 @@ public class NpingLinkJobServiceTests {
         // prepare UDP listener on port 4001
         // implicitly done be SpringBootIntegration, see dev.pulceo.pna.config.UdpConfig
         // given
-        NpingRequest npingRequest = new NpingRequest("localhost", "localhost", 4001, NpingClientProtocol.UDP, 1, "lo");
+        NpingRequest npingRequest = new NpingRequest(localAddress, localAddress, 4001, NpingClientProtocol.UDP, 1, "lo");
         NpingJob npingJob = new NpingJob(npingRequest, 15);
         long id = this.jobService.createNpingJob(npingJob);
 
@@ -201,8 +205,8 @@ public class NpingLinkJobServiceTests {
 
         // then
         assertNotNull(message);
-        assert("localhost".equals(map.get("sourceHost")));
-        assert("localhost".equals(map.get("destinationHost")));
+        assert(localAddress.equals(map.get("sourceHost")));
+        assert(localAddress.equals(map.get("destinationHost")));
         assertTrue(npingUDPDelayMeasurement.getMaxRTT() > 0);
         assertTrue(npingUDPDelayMeasurement.getMinRTT() > 0);
         assertTrue(npingUDPDelayMeasurement.getAvgRTT() > 0);

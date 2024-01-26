@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
@@ -26,6 +27,9 @@ public class NpingServiceTests {
 
     @Autowired
     Environment environment;
+
+    @Value("${pna.local.address}")
+    private String localAddress;
 
     @Test
     void contextLoads() {
@@ -49,7 +53,7 @@ public class NpingServiceTests {
     @Test
     public void testCheckForRunningNpingUDPInstance() throws IOException, InterruptedException, DelayServiceException {
         // given
-        String host = "localhost";
+        String host = localAddress;
         int port = Integer.parseInt(Objects.requireNonNull(this.environment.getProperty("pna.delay.udp.port")));
         int count = 0;
         startNpingUDPInstance(host, port, count);
@@ -64,13 +68,13 @@ public class NpingServiceTests {
     @Test
     public void testMeasureUDPDelay() throws DelayServiceException {
         // given
-        String destinationHost = "localhost";
+        String destinationHost = localAddress;
 
         // when
         NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost);
 
         // then
-        assertEquals(npingUDPResult.getSourceHost(), "localhost");
+        assertEquals(npingUDPResult.getSourceHost(), localAddress);
         assertEquals(npingUDPResult.getDestinationHost(), destinationHost);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getAvgRTT() > 0);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getMinRTT() > 0);
@@ -84,14 +88,14 @@ public class NpingServiceTests {
     @Test
     public void testMeasureUDPDelayWithCustomDataLength() throws DelayServiceException {
         // given
-        String destinationHost = "localhost";
+        String destinationHost = localAddress;
         int dataLength = 1024;
 
         // when
         NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost, dataLength);
 
         // then
-        assertEquals(npingUDPResult.getSourceHost(), "localhost");
+        assertEquals(npingUDPResult.getSourceHost(), localAddress);
         assertEquals(npingUDPResult.getDestinationHost(), destinationHost);
         assertEquals(npingUDPResult.getDataLength(), dataLength);
         assertTrue(npingUDPResult.getNpingUDPDelayMeasurement().getAvgRTT() > 0);
@@ -107,13 +111,13 @@ public class NpingServiceTests {
     @Test
     public void testMeasureTCPDelay() throws DelayServiceException {
         // given
-        String destinationHost = "localhost";
+        String destinationHost = localAddress;
 
         // when
         NpingTCPResult npingTCPResult = this.npingService.measureTCPDelay(destinationHost);
 
         // then
-        assertEquals(npingTCPResult.getSourceHost(), "localhost");
+        assertEquals(npingTCPResult.getSourceHost(), localAddress);
         assertEquals(npingTCPResult.getDestinationHost(), destinationHost);
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getAvgRTT() > 0);
         assertTrue(npingTCPResult.getNpingTCPDelayMeasurement().getMinRTT() > 0);

@@ -92,7 +92,7 @@ public class IperfServiceTests {
         // given
         int port = 5001;
         // start iperf3 receiver
-        startIperf3ServerInstance(port);
+        startIperf3ServerInstance(bind, port);
 
         // when
         iperfService.stopIperf3Server(5001);
@@ -122,7 +122,7 @@ public class IperfServiceTests {
 
         List<Long> pids = new ArrayList<>();
         for (int i = 0; i < numberOfIperf3ServerInstances; i++) {
-            startIperf3ServerInstance(5000 + i);
+            startIperf3ServerInstance(bind, 5000 + i);
         }
 
         iperfService.stopIperf3Server(5012);
@@ -140,7 +140,7 @@ public class IperfServiceTests {
         int expectedNumberOfIperf3ServerInstances = 16;
         List<Long> pids = new ArrayList<>();
         for (int i = 0; i < expectedNumberOfIperf3ServerInstances; i++) {
-            startIperf3ServerInstance(5000 + i);
+            startIperf3ServerInstance(bind, 5000 + i);
         }
 
         // when
@@ -154,14 +154,13 @@ public class IperfServiceTests {
     public void testCheckForRunningIperf3UDPSenderInstance() throws InterruptedException, IOException, BandwidthServiceException {
         // given
         int port = 5001;
-        startIperf3ServerInstance(port);
+        startIperf3ServerInstance(bind, port);
 
         // start iperf3 sender
-        String host = "localhost";
-        startIperf3UDPSenderInstance(host, port);
+        startIperf3UDPSenderInstance(bind, port);
 
         // when
-        boolean iperf3UDPSenderInstanceRunning = iperfService.checkForRunningIperf3Sender(IperfClientProtocol.UDP, host, port);
+        boolean iperf3UDPSenderInstanceRunning = iperfService.checkForRunningIperf3Sender(IperfClientProtocol.UDP, bind, port);
 
         // then
         assertTrue(iperf3UDPSenderInstanceRunning);
@@ -179,14 +178,13 @@ public class IperfServiceTests {
         // given
         int port = 5001;
         // start iperf3 receiver
-        startIperf3ServerInstance(port);
+        startIperf3ServerInstance(bind, port);
 
         // start iperf3 sender
-        String host = "localhost";
-        startIperf3TCPSenderInstance(host, port);
+        startIperf3TCPSenderInstance(bind, port);
 
         // when
-        boolean iperf3TCPSenderInstanceRunning = iperfService.checkForRunningIperf3Sender(IperfClientProtocol.TCP, host, port);
+        boolean iperf3TCPSenderInstanceRunning = iperfService.checkForRunningIperf3Sender(IperfClientProtocol.TCP, bind, port);
 
         // then
         assertTrue(iperf3TCPSenderInstanceRunning);
@@ -199,8 +197,8 @@ public class IperfServiceTests {
         }
     }
 
-    public static Process startIperf3ServerInstance(int port) throws IOException, InterruptedException {
-        Process iperf3ServerInstance = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port) ,"-f", "m").start();
+    public static Process startIperf3ServerInstance(String bind, int port) throws IOException, InterruptedException {
+        Process iperf3ServerInstance = new ProcessBuilder("/bin/iperf3", "-s", "-p", String.valueOf(port) ,"-f", "m", "--bind", bind).start();
         while (!iperf3ServerInstance.isAlive() ) {
             Thread.sleep(1000);
         }
@@ -211,7 +209,7 @@ public class IperfServiceTests {
     public void testCheckForRunningIperf3ReceiverInstance() throws IOException, InterruptedException, BandwidthServiceException {
         // given
         int port = 5001;
-        startIperf3ServerInstance(port);
+        startIperf3ServerInstance(bind, port);
 
         // when
         boolean iperf3ReceiverInstanceRunning = iperfService.checkForRunningIperf3Receiver(port);
@@ -224,7 +222,7 @@ public class IperfServiceTests {
     public void testGetPidOfRunningIperf3Receiver() throws BandwidthServiceException, IOException, InterruptedException {
         // given
         int port = 5001;
-        Process iperf3ServerInstance = startIperf3ServerInstance(port);
+        Process iperf3ServerInstance = startIperf3ServerInstance(bind, port);
         long expectedPidOfRunningIperf3Receiver = iperf3ServerInstance.pid();
 
         // when
@@ -238,17 +236,17 @@ public class IperfServiceTests {
     public void testMeasureUDPBandwidth() throws IOException, InterruptedException, BandwidthServiceException {
         // given
         int port = 5001;
-        startIperf3ServerInstance(port);
+        startIperf3ServerInstance(bind, port);
         int recurrence = 15;
-        IperfRequest iperfUDPClientRequest = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bind);
+        IperfRequest iperfUDPClientRequest = new IperfRequest(bind, bind, 5001, 1, 1, IperfClientProtocol.UDP, bind);
 
         // when
         IperfResult iperf3Result = this.iperfService.measureBandwidth(iperfUDPClientRequest);
 
         // then
         assertNotNull(iperf3Result);
-        assertEquals("localhost", iperf3Result.getSourceHost());
-        assertEquals("localhost", iperf3Result.getDestinationHost());
+        assertEquals(bind, iperf3Result.getSourceHost());
+        assertEquals(bind, iperf3Result.getDestinationHost());
         // Sender
         assertEquals(IperfClientProtocol.UDP, iperf3Result.getIperfBandwidthMeasurementSender().getIperf3Protocol());
         assertTrue(iperf3Result.getIperfBandwidthMeasurementSender().getBitrate() > 0);
@@ -277,17 +275,17 @@ public class IperfServiceTests {
     public void testMeasureTCPBandwidth() throws IOException, InterruptedException, BandwidthServiceException {
         // given
         int port = 5001;
-        startIperf3ServerInstance(port);
+        startIperf3ServerInstance(bind, port);
         int recurrence = 15;
-        IperfRequest iperfTCPClientRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bind);
+        IperfRequest iperfTCPClientRequest = new IperfRequest(bind, bind, 5001, 0, 1, IperfClientProtocol.TCP, bind);
 
         // when
         IperfResult iperf3Result = this.iperfService.measureBandwidth(iperfTCPClientRequest);
 
         // then
         assertNotNull(iperf3Result);
-        assertEquals("localhost", iperf3Result.getSourceHost());
-        assertEquals("localhost", iperf3Result.getDestinationHost());
+        assertEquals(bind, iperf3Result.getSourceHost());
+        assertEquals(bind, iperf3Result.getDestinationHost());
         // Sender
         assertEquals(IperfClientProtocol.TCP ,iperf3Result.getIperfBandwidthMeasurementSender().getIperf3Protocol());
         assertTrue(iperf3Result.getIperfBandwidthMeasurementSender().getBitrate() > 0);

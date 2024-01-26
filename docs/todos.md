@@ -40,6 +40,10 @@
 - [ ] Set cascade type for @OneToOne relationships in `Link` class
 - [ ] Revise if some resources can be emdedded, e.g, `Requests` in `Jobs` for less database transactions
 
+## ControllerTest
+
+- [ ] Revise pubsub channels for correct assertions of Junit
+
 ## MQTT Endpoint
 
 - [ ] Shorten messages for "icmp-rtt", "tcp-bw", and "udp-bw" and so on, introduce a long and short version
@@ -123,6 +127,8 @@
 - [ ] Rework waiting on starting process in `measure...()`
 - [ ] !!! Provide possibility to set the target port dynamically by asking the source node for the next free port, do this dynamically in `LinkController`
 - [ ] Structure of Inheritance between `IperfBandwidthMeasurement` and `IperfUDPBandwidthMeasurement` is unclear and hard to handle 
+- [ ] Remove `bind` from `Iperf3Request`
+- [ ] Search for "localhost" static values in all tests
 
 ## DelayService
 

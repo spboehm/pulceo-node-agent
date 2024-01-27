@@ -145,7 +145,7 @@ public class IperfLinkJobServiceTests {
     public void testScheduleIperf3TCPJob() throws Exception {
         // given
         int port = 5001;
-        IperfServiceTests.startIperf3ServerInstance(port);
+        IperfServiceTests.startIperf3ServerInstance(bind, port);
         IperfRequest iperfRequest = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bind);
         IperfJob iperfJob = new IperfJob(iperfRequest, 15);
         long id = this.jobService.createIperfJob(iperfJob);

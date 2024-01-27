@@ -2,6 +2,7 @@
 
 ## Data model
 
+- [ ] Remove `ResourceType` and `LinkDirectionType` from `CreateNewLinkDTO` and `LinkDTO`
 - [ ] Add CreatedDate
 - [ ] Add CreatedBy
 - [ ] Add LastModifiedDate
@@ -38,6 +39,10 @@
 - [ ] Implement builder pattern for all model classes
 - [ ] Set cascade type for @OneToOne relationships in `Link` class
 - [ ] Revise if some resources can be emdedded, e.g, `Requests` in `Jobs` for less database transactions
+
+## ControllerTest
+
+- [ ] Revise pubsub channels for correct assertions of Junit
 
 ## MQTT Endpoint
 
@@ -122,6 +127,8 @@
 - [ ] Rework waiting on starting process in `measure...()`
 - [ ] !!! Provide possibility to set the target port dynamically by asking the source node for the next free port, do this dynamically in `LinkController`
 - [ ] Structure of Inheritance between `IperfBandwidthMeasurement` and `IperfUDPBandwidthMeasurement` is unclear and hard to handle 
+- [ ] Remove `bind` from `Iperf3Request`
+- [ ] Search for "localhost" static values in all tests
 
 ## DelayService
 

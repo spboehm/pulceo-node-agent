@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dtos.NodeDTOUtil;
 import dev.pulceo.pna.repository.NodeRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,10 +29,13 @@ public class NodeControllerTests {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Value("${pna.local.address}")
+    private String localAddress;
+
     @Test
     public void testCreateNode() throws Exception {
         // given
-        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestDestNode();
+        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestDestNode(localAddress);
         String testDestNodeAsJson = objectMapper.writeValueAsString(testDestNode);
 
         // when and then
@@ -48,7 +51,7 @@ public class NodeControllerTests {
     @Test
     public void testReadNodeByUUID() throws Exception {
         // given
-        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestDestNode();
+        CreateNewNodeDTO testDestNode = NodeDTOUtil.createTestDestNode(localAddress);
         String testDestNodeAsJson = objectMapper.writeValueAsString(testDestNode);
 
         // when

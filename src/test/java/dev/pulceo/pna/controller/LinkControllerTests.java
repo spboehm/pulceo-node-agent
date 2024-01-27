@@ -75,6 +75,9 @@ public class LinkControllerTests {
     @Value("${pna.uuid}")
     private String pnaUuid;
 
+    @Value("${pna.local.address}")
+    private String localAddress;
+
     // TODO: remove this workaround after properly setting up iperf3 server start and stop
     @BeforeAll
     @AfterAll
@@ -169,8 +172,8 @@ public class LinkControllerTests {
         // then
         // TODO: refactor and expand the test to other metric values
         assertNotNull(message);
-        assert("localhost".equals(map.get("sourceHost")));
-        assert("localhost".equals(map.get("destinationHost")));
+        assert(localAddress.equals(map.get("sourceHost")));
+        assert(localAddress.equals(map.get("destinationHost")));
         assertEquals(1, pingDelayMeasurement.getPacketsTransmitted());
         assertTrue(pingDelayMeasurement.getPacketsReceived() >= 0);
         assertTrue(pingDelayMeasurement.getPacketLoss() >= 0.0);
@@ -214,8 +217,8 @@ public class LinkControllerTests {
 
             // then
             assertNotNull(message);
-            assert ("localhost".equals(map.get("sourceHost")));
-            assert ("localhost".equals(map.get("destinationHost")));
+            assert (localAddress.equals(map.get("sourceHost")));
+            assert (localAddress.equals(map.get("destinationHost")));
             assertTrue(npingUDPDelayMeasurement.getMaxRTT() > 0);
             assertTrue(npingUDPDelayMeasurement.getMinRTT() > 0);
             assertTrue(npingUDPDelayMeasurement.getAvgRTT() > 0);
@@ -255,8 +258,8 @@ public class LinkControllerTests {
 
         // then
         assertNotNull(message);
-        assert("localhost".equals(map.get("sourceHost")));
-        assert("localhost".equals(map.get("destinationHost")));
+        assert(localAddress.equals(map.get("sourceHost")));
+        assert(localAddress.equals(map.get("destinationHost")));
         assertTrue(npingTCPDelayMeasurement.getMaxRTT() > 0);
         assertTrue(npingTCPDelayMeasurement.getMinRTT() > 0);
         assertTrue(npingTCPDelayMeasurement.getAvgRTT() > 0);
@@ -299,8 +302,8 @@ public class LinkControllerTests {
             IperfUDPBandwidthMeasurement iperfUDPBandwidthMeasurementReceiver = (IperfUDPBandwidthMeasurement) map.get("iperfBandwidthMeasurementReceiver");
 
             // then
-            assertEquals("localhost", map.get("sourceHost"));
-            assertEquals("localhost", map.get("destinationHost"));
+            assertEquals(localAddress, map.get("sourceHost"));
+            assertEquals(localAddress, map.get("destinationHost"));
             // Sender
             assertEquals(IperfClientProtocol.UDP, iperfUDPBandwidthMeasurementSender.getIperf3Protocol());
             assertTrue(iperfUDPBandwidthMeasurementSender.getBitrate() > 0);
@@ -335,7 +338,7 @@ public class LinkControllerTests {
     }
 
     private String createNewTestDestNode() throws Exception {
-        CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode();
+        CreateNewNodeDTO createNewNodeDTO = NodeDTOUtil.createTestDestNode(localAddress);
         String nodeAsJson = objectMapper.writeValueAsString(createNewNodeDTO);
         MvcResult nodeResult = this.mockMvc.perform(post("/api/v1/nodes")
                 .contentType("application/json")

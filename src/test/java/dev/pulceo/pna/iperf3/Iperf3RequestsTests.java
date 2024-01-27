@@ -25,7 +25,7 @@ public class Iperf3RequestsTests {
     @Test
     public void testIperf3UDPClientCmd() {
         // given
-        String expectedIperfUDPClientCmd = "/bin/iperf3 -c localhost -u -p 5001 -b 1M -t 1 -f m --bind localhost";
+        String expectedIperfUDPClientCmd = "/bin/iperf3 -c localhost -u -p 5001 -b 1M -t 1 -f m";
 
         // when
         String actualIperfTCPClientCmd = new IperfRequest("localhost", "localhost", 5001, 1, 1, IperfClientProtocol.UDP, bind).getCmd();
@@ -37,7 +37,7 @@ public class Iperf3RequestsTests {
     @Test
     public void testIperf3TCPClientCmd() {
         // given
-        String expectedIperfTCPClientCmd = "/bin/iperf3 -c localhost -p 5001 -b 0M -t 1 -f m --bind localhost";
+        String expectedIperfTCPClientCmd = "/bin/iperf3 -c localhost -p 5001 -b 0M -t 1 -f m";
 
         // when
         String actualIperfTCPClientCmd = new IperfRequest("localhost", "localhost", 5001, 0, 1, IperfClientProtocol.TCP, bind).getCmd();

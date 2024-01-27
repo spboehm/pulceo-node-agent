@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 
@@ -37,6 +38,9 @@ public class PingLinkJobServiceTests {
 
     private final String iface = "lo";
 
+    @Value("${pna.local.address}")
+    private String localAddress;
+
     @BeforeEach
     @AfterEach
     public void killAllPingInstances() throws InterruptedException, IOException {
@@ -47,7 +51,7 @@ public class PingLinkJobServiceTests {
     @Test
     public void testCreatePingJob() {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
 
         // when
@@ -63,7 +67,7 @@ public class PingLinkJobServiceTests {
     @Test
     public void testCreatedPingJobIsInactive() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
 
         // when
@@ -77,7 +81,7 @@ public class PingLinkJobServiceTests {
     @Test
     public void testEnablePingJobWithDisabledJob() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
         // newly created job is disabled by default, means active = false
         long savedPingJobId = this.jobService.createPingJob(pingJob);
@@ -93,7 +97,7 @@ public class PingLinkJobServiceTests {
     @Test
     public void testEnablePingJobWithEnabledJob() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         pingJob.setEnabled(true);
@@ -111,7 +115,7 @@ public class PingLinkJobServiceTests {
     // given
     public void testDisablePingJobWithEnabledJob() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
         // set to enabled, because newly created job is disabled by default, means active = false
         pingJob.setEnabled(true);
@@ -128,7 +132,7 @@ public class PingLinkJobServiceTests {
     @Test
     public void testDisablePingJobWithDisabledJob() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
         // newly created job is disabled by default, means active = false
         long savedPingJobId = this.jobService.createPingJob(pingJob);
@@ -145,7 +149,7 @@ public class PingLinkJobServiceTests {
     @Test
     public void testSchedulePingJob() throws Exception {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, iface);
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, iface);
         PingJob pingJob = new PingJob(pingRequest, 15);
         long pingJobId = this.jobService.createPingJob(pingJob);
 
@@ -163,8 +167,8 @@ public class PingLinkJobServiceTests {
 
         // then
         assertNotNull(message);
-        assert("localhost".equals(map.get("sourceHost")));
-        assert("localhost".equals(map.get("destinationHost")));
+        assert(localAddress.equals(map.get("sourceHost")));
+        assert(localAddress.equals(map.get("destinationHost")));
         assertEquals(1, pingDelayMeasurement.getPacketsTransmitted());
         assertTrue(pingDelayMeasurement.getPacketsReceived() >= 0);
         assertTrue(pingDelayMeasurement.getPacketLoss() >= 0.0);

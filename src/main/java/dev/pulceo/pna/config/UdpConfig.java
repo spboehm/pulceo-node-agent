@@ -9,13 +9,16 @@ import org.springframework.integration.ip.dsl.Udp;
 @Configuration
 public class UdpConfig {
 
+    @Value("${pna.local.address}")
+    private String localAddress;
+
     @Value("${pna.delay.udp.port:4001}")
     private int npingDelayUDPPort;
 
     // TODO: Replace with traditional Java Config
     @Bean
     public IntegrationFlow udpServerForNping() {
-        return IntegrationFlow.from(Udp.inboundAdapter(npingDelayUDPPort).id("udpIn"))
+        return IntegrationFlow.from(Udp.inboundAdapter(npingDelayUDPPort).localAddress(localAddress).id("udpIn"))
                 .handle(Udp.outboundAdapter("headers['ip_packetAddress']")
                         .socketExpression("@udpIn.socket"))
                 .get();

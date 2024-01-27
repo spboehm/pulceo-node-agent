@@ -31,6 +31,7 @@ public class LinkService {
     NodeService nodeService;
 
     public long createLink(Link link) throws LinkServiceException {
+        // TODO: check if link exists
         if (nodeService.readNode(link.getSrcNode().getId()).isEmpty()) {
             throw new LinkServiceException("Source node with id %d does not exist!".formatted(link.getSrcNode().getId()));
         } else if (nodeService.readNode(link.getDestNode().getId()).isEmpty()) {

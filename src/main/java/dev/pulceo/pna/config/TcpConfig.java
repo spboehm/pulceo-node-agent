@@ -12,12 +12,17 @@ import org.springframework.messaging.MessageChannel;
 @Configuration
 public class TcpConfig {
 
+    @Value("${pna.local.address}")
+    private String localAddress;
+
     @Value("${pna.delay.tcp.port:4002}")
     private int npingDelayTCPPort;
 
     @Bean
     public AbstractServerConnectionFactory serverCF() {
-        return new TcpNetServerConnectionFactory(this.npingDelayTCPPort);
+        TcpNetServerConnectionFactory serverCF = new TcpNetServerConnectionFactory(this.npingDelayTCPPort);
+        serverCF.setLocalAddress(localAddress);
+        return serverCF;
     }
 
     @Bean

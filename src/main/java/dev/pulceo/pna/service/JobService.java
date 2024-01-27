@@ -80,6 +80,9 @@ public class JobService {
     @Value("${pna.metrics.mqtt.topic}")
     private String metricsMqttTopic;
 
+    @Value("${pna.health.mqtt.topic}")
+    private String healthMqttTopic;
+
     @Value("${pna.uuid}")
     private String deviceId;
 

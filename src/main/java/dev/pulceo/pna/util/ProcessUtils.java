@@ -2,13 +2,13 @@ package dev.pulceo.pna.util;
 
 import dev.pulceo.pna.exception.ProcessException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class ProcessUtils {
 
@@ -29,12 +29,20 @@ public class ProcessUtils {
         }
     }
 
+    // TODO: replace with ProcessHandler, this is rather a workaround
     public static List<String> getListOfRunningProcesses() throws ProcessException {
         try {
-            Process p = new ProcessBuilder("ps", "-eo", "pid,fname,cmd").start();
+            String tmpFileName = UUID.randomUUID() + ".tmp";
+            File tmpProcessOutputFile = new File(tmpFileName);
+            ProcessBuilder builder = new ProcessBuilder("ps", "-eo", "pid,fname,cmd");
+            builder.redirectOutput(ProcessBuilder.Redirect.to(tmpProcessOutputFile));
+            builder.redirectError(ProcessBuilder.Redirect.to(tmpProcessOutputFile));
+            Process p = builder.start();
             p.waitFor();
-            return ProcessUtils.readProcessOutput(p.getInputStream());
-        } catch (IOException | InterruptedException | ProcessException e) {
+            List<String> processOutput = Files.readAllLines(Paths.get(tmpFileName));
+            boolean filedeleted = tmpProcessOutputFile.delete();
+            return processOutput;
+        } catch (IOException | InterruptedException e) {
             throw new ProcessException("Could not determine list of running processes", e);
         }
     }

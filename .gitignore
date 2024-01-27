@@ -175,3 +175,5 @@ gradle-app.setting
 
 # pna config directory
 config/**
+
+pna_temporary_file_for_process_output.txt

@@ -31,9 +31,9 @@ public class ProcessUtils {
 
     // TODO: replace with ProcessHandler, this is rather a workaround
     public static List<String> getListOfRunningProcesses() throws ProcessException {
+        String tmpFileName = UUID.randomUUID() + ".tmp";
+        File tmpProcessOutputFile = new File(tmpFileName);
         try {
-            String tmpFileName = UUID.randomUUID() + ".tmp";
-            File tmpProcessOutputFile = new File(tmpFileName);
             ProcessBuilder builder = new ProcessBuilder("ps", "-eo", "pid,fname,cmd");
             builder.redirectOutput(ProcessBuilder.Redirect.to(tmpProcessOutputFile));
             builder.redirectError(ProcessBuilder.Redirect.to(tmpProcessOutputFile));
@@ -41,6 +41,9 @@ public class ProcessUtils {
             p.waitFor();
             List<String> processOutput = Files.readAllLines(Paths.get(tmpFileName));
             boolean filedeleted = tmpProcessOutputFile.delete();
+            if (!filedeleted) {
+                throw new ProcessException("Could not delete temporary file for reading from process output" + tmpFileName);
+            }
             return processOutput;
         } catch (IOException | InterruptedException e) {
             throw new ProcessException("Could not determine list of running processes", e);

@@ -7,6 +7,7 @@ import dev.pulceo.pna.model.ping.IPVersion;
 import dev.pulceo.pna.model.ping.PingRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
@@ -19,10 +20,13 @@ public class JobServiceTests {
     @Autowired
     JobService jobService;
 
+    @Value("${pna.local.address}")
+    private String localAddress;
+
     @Test
     public void testCancelJob() throws JobServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, "lo");
         PingJob pingJob = new PingJob(pingRequest, 5);
         long pingJobId = this.jobService.createPingJob(pingJob);
         this.jobService.schedulePingJob(pingJobId);

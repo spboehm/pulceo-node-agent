@@ -55,29 +55,29 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 
 
 
-#### PingResult
+#### ICMP RTT
 
 ```json
 {
-  "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
+  "deviceId": "0247fea1-3ca3-401b-8fa2-b6f83a469680",
   "metric": {
-    "metricUUID": "8fd3c6b8-4d4c-438f-8e28-e642d866a5c0",
-    "jobUUID": "d6093440-bf51-4e36-87c0-5c8026f4757f",
-    "metricType": "PING_ICMP",
+    "metricUUID": "99976261-b25d-4466-b522-8682496dccb2",
+    "jobUUID": "f806ca34-2cea-41f4-a17e-ae3c0efcc971",
+    "metricType": "ICMP_RTT",
     "metricResult": {
       "sourceHost": "localhost",
       "destinationHost": "localhost",
-      "startTime": "2023-11-11T01:30:10.087823670Z",
-      "endTime": "2023-11-11T01:30:10.092789044Z",
+      "startTime": "2024-01-29T09:06:59.157516308Z",
+      "endTime": "2024-01-29T09:06:59.160564103Z",
       "pingDelayMeasurement": {
-        "uuid": "615091cc-6bef-4949-931d-9ec61bd9a22f",
+        "uuid": "6d6237bf-8400-4761-ad66-502711143b23",
         "packetsTransmitted": 1,
         "packetsReceived": 1,
         "packetLoss": 0.0,
         "time": 0,
-        "rttMin": 0.042,
-        "rttAvg": 0.042,
-        "rttMax": 0.042,
+        "rttMin": 0.045,
+        "rttAvg": 0.045,
+        "rttMax": 0.045,
         "rttMdev": 0.0
       }
     }
@@ -85,22 +85,22 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 }
 ```
 
-### NpingTCPResult
+### TCP RTT
 
 ```json
 {
-  "deviceId": "pna-0247fea1-3ca3-401b-8fa2-b6f83a469680",
+  "deviceId": "0247fea1-3ca3-401b-8fa2-b6f83a469680",
   "metric": {
-    "metricUUID": "0ad1545b-9058-4fd4-85ac-5dfddb6bc087",
-    "jobUUID": "56159fab-8aae-4e85-908d-58b337f108e2",
-    "metricType": "NPING_TCP",
+    "metricUUID": "cbd29b61-5955-4743-9c62-6710bf7bcab5",
+    "jobUUID": "ac122df4-32b0-4c2d-9048-6cfd7971b477",
+    "metricType": "TCP_RTT",
     "metricResult": {
-      "sourceHost": "localhost",
-      "destinationHost": "localhost",
-      "startTime": "2023-11-11T01:34:35.490202817Z",
-      "endTime": "2023-11-11T01:34:35.496742587Z",
+      "sourceHost": "127.0.0.1",
+      "destinationHost": "127.0.0.1",
+      "startTime": "2024-01-29T09:07:11.716082302Z",
+      "endTime": "2024-01-29T09:07:11.725847321Z",
       "npingTCPDelayMeasurement": {
-        "uuid": "8bce9dba-1a6f-4f5a-8274-406ae877658b",
+        "uuid": "0874f97b-58a3-48d8-b1ed-7db09884e803",
         "maxRTT": 0.007,
         "minRTT": 0.007,
         "avgRTT": 0.007,
@@ -113,3 +113,76 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
   }
 }
 ```
+
+### UDP RTT
+
+```json
+{
+  "deviceId": "0247fea1-3ca3-401b-8fa2-b6f83a469680",
+  "metric": {
+    "metricUUID": "6cc6c101-b632-4a0c-b4d4-a5ad2a208c31",
+    "jobUUID": "da409089-5605-43ff-8eba-6e7ce7038d52",
+    "metricType": "UDP_RTT",
+    "metricResult": {
+      "sourceHost": "127.0.0.1",
+      "destinationHost": "127.0.0.1",
+      "startTime": "2024-01-29T09:06:56.679421866Z",
+      "endTime": "2024-01-29T09:06:56.686175106Z",
+      "dataLength": 4,
+      "npingUDPDelayMeasurement": {
+        "uuid": "3883095f-1366-4b3a-b5ff-cfa6ec8a110d",
+        "maxRTT": 0.897,
+        "minRTT": 0.897,
+        "avgRTT": 0.897,
+        "udpPacketsSent": 1,
+        "udpReceivedPackets": 1,
+        "udpLostPacketsAbsolute": 0,
+        "udpLostPacketsRelative": 0.0
+      }
+    }
+  }
+}
+```
+
+### Iperf3 TCP BW
+
+```json
+```
+
+### Iperf3 UDP BW
+
+```json
+{
+  "deviceId": "0247fea1-3ca3-401b-8fa2-b6f83a469680",
+  "metric": {
+    "metricUUID": "a4524c72-f53d-449e-9b3b-37fe7904eae4",
+    "jobUUID": "a4524c72-f53d-449e-9b3b-37fe7904eae4",
+    "metricType": "UDP_BW",
+    "metricResult": {
+      "sourceHost": "127.0.0.1",
+      "destinationHost": "127.0.0.1",
+      "startTime": "2024-01-29T09:06:57.008627239Z",
+      "endTime": "2024-01-29T09:06:58.011300946Z",
+      "iperfBandwidthMeasurementReceiver": {
+        "iperf3Protocol": "UDP",
+        "bitrate": 32.1,
+        "bandwidthUnit": "Mbits/s",
+        "iperfRole": "RECEIVER",
+        "jitter": 0.017,
+        "lostDatagrams": 0,
+        "totalDatagrams": 241
+      },
+      "iperfBandwidthMeasurementSender": {
+        "iperf3Protocol": "UDP",
+        "bitrate": 32.1,
+        "bandwidthUnit": "Mbits/s",
+        "iperfRole": "SENDER",
+        "jitter": 0.0,
+        "lostDatagrams": 0,
+        "totalDatagrams": 241
+      }
+    }
+  }
+}
+```
+

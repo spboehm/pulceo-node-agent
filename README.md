@@ -65,8 +65,8 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
     "jobUUID": "f806ca34-2cea-41f4-a17e-ae3c0efcc971",
     "metricType": "ICMP_RTT",
     "metricResult": {
-      "sourceHost": "localhost",
-      "destinationHost": "localhost",
+      "sourceHost": "127.0.0.1",
+      "destinationHost": "127.0.0.1",
       "startTime": "2024-01-29T09:06:59.157516308Z",
       "endTime": "2024-01-29T09:06:59.160564103Z",
       "pingDelayMeasurement": {
@@ -154,8 +154,8 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
     "jobUUID": "fee50cfc-1360-4713-a70e-a0827d2d6976",
     "metricType": "TCP_BW",
     "metricResult": {
-      "sourceHost": "localhost",
-      "destinationHost": "localhost",
+      "sourceHost": "127.0.0.1",
+      "destinationHost": "127.0.0.1",
       "startTime": "2024-01-29T10:32:57.465165Z",
       "endTime": "2024-01-29T10:32:58.479535020Z",
       "iperfBandwidthMeasurementReceiver": {

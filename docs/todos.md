@@ -171,6 +171,7 @@
 - [ ] Clean `JobService` with concrete methods
 - [ ] Ensure that on startup, alle enabled jobs are loaded into the `JobHashMap` 
 - [ ] Check naming and design of spring integration channels in Iperf3-related Jobs
+- [ ] !!! Check UUID of retriebedIperfJob in `JobService#scheduleIperfJob(...)`
 
 ## NpingUtils
 

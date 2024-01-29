@@ -229,6 +229,7 @@ public class JobService {
     // TODO: handle situation when the jobs are crashing
     public long scheduleIperfJob(long id) throws JobServiceException {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
+        // TODO: Fix retrievedIperfJobId with UUID
         long retrievedIperfJobId = retrievedIperfJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {

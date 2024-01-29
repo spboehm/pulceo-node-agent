@@ -148,6 +148,7 @@
 - [x] Rename `NpingTCPJob` to `NpingJob`
 - [ ] Recurrence only in seconds, allow for modification in minutes or hours
 - [ ] Maybe add a sequence number for the delay measurement
+- [ ] Consider moving `dataLength` to `npingDelayMeasurement` instead of body
 
 ## PingService
 

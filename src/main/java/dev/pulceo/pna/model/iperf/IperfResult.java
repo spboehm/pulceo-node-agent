@@ -47,7 +47,11 @@ public class IperfResult extends Resource implements MetricResult {
     @Override
     @JsonIgnore
     public MetricType getMetricType() {
-        return MetricType.UDP_BW;
+        if (iperfBandwidthMeasurementReceiver.getIperf3Protocol().equals(IperfClientProtocol.UDP)) {
+            return MetricType.UDP_BW;
+        } else {
+            return MetricType.TCP_BW;
+        }
     }
 
     @Override

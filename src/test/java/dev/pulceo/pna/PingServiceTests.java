@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
@@ -21,6 +22,9 @@ public class PingServiceTests {
 
     @Autowired
     PingService pingService;
+
+    @Value("${pna.local.address}")
+    private String localAddress;
 
     @BeforeEach
     @AfterEach
@@ -39,7 +43,7 @@ public class PingServiceTests {
     @Test
     public void testCheckForRunningPingInstance() throws IOException, InterruptedException, PingServiceException {
         // given
-        String destinationHost = "localhost";
+        String destinationHost = localAddress;
         startPingInstance(destinationHost);
 
         // when
@@ -53,14 +57,14 @@ public class PingServiceTests {
     @Test
     public void testMeasurePingDelay() throws PingServiceException {
         // given
-        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, "lo");
 
         // when
         PingResult actualPingResult = pingService.measureRoundTripTime(pingRequest);
 
         // then
-        assertEquals("localhost", actualPingResult.getSourceHost());
-        assertEquals("localhost", actualPingResult.getSourceHost());
+        assertEquals(localAddress, actualPingResult.getSourceHost());
+        assertEquals(localAddress, actualPingResult.getSourceHost());
         assertEquals(1, actualPingResult.getPingDelayMeasurement().getPacketsTransmitted());
         assertEquals(1, actualPingResult.getPingDelayMeasurement().getPacketsReceived());
         assertEquals(0.0f, actualPingResult.getPingDelayMeasurement().getPacketLoss(), 0.1);

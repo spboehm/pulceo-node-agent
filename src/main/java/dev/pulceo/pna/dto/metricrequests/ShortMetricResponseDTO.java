@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShortMetricRequestDTO {
+public class ShortMetricResponseDTO {
     private UUID uuid;
     private String type;
     private String recurrence;

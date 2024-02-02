@@ -92,7 +92,7 @@ public class LinkController {
     }
 
     @PatchMapping("/{linkUUID}/metric-requests/{metricRequestUUID}")
-    public ResponseEntity<ShortMetricRequestDTO> updateMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID, @Valid @NotNull @RequestBody PatchMetricDto patchMetricDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricResponseDTO> updateMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID, @Valid @NotNull @RequestBody PatchMetricDto patchMetricDto) throws JobServiceException {
         // find metric request by uuid
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
@@ -113,7 +113,7 @@ public class LinkController {
     }
 
     @PostMapping("{linkUUID}/metric-requests/icmp-rtt-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newIcmpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {
+    public ResponseEntity<ShortMetricResponseDTO> newIcmpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestIcmpRttDTO createNewMetricRequestIcmpRttDTO) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -133,12 +133,12 @@ public class LinkController {
 
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled());
-        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled());
+        return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping("{linkUUID}/metric-requests/udp-rtt-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newTcpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpRttDto createNewMetricRequestUdpRttDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricResponseDTO> newTcpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpRttDto createNewMetricRequestUdpRttDto) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -157,12 +157,12 @@ public class LinkController {
 
         this.jobService.scheduleNpingJob(id);
         NpingJob createdNpingJob = this.jobService.readNpingJob(npingJob.getId());
-        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdNpingJob.getUuid(), createNewMetricRequestUdpRttDto.getType(), createNewMetricRequestUdpRttDto.getRecurrence(), createNewMetricRequestUdpRttDto.isEnabled());
-        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdNpingJob.getUuid(), createNewMetricRequestUdpRttDto.getType(), createNewMetricRequestUdpRttDto.getRecurrence(), createNewMetricRequestUdpRttDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping("{linkUUID}/metric-requests/tcp-rtt-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newTcpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricResponseDTO> newTcpRttMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -181,13 +181,13 @@ public class LinkController {
 
         this.jobService.scheduleNpingJob(id);
         NpingJob createdNpingJob = this.jobService.readNpingJob(npingJob.getId());
-        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdNpingJob.getUuid(), createNewMetricRequestTcpRttDto.getType(), createNewMetricRequestTcpRttDto.getRecurrence(), createNewMetricRequestTcpRttDto.isEnabled());
-        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdNpingJob.getUuid(), createNewMetricRequestTcpRttDto.getType(), createNewMetricRequestTcpRttDto.getRecurrence(), createNewMetricRequestTcpRttDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
     // TODO: udp-bw
     @PostMapping("{linkUUID}/metric-requests/udp-bw-requests")
-    public ResponseEntity<ShortMetricRequestDTO> newUdpBwMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpBwDto createNewMetricRequestUdpBwDto) throws JobServiceException {
+    public ResponseEntity<ShortMetricResponseDTO> newUdpBwMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpBwDto createNewMetricRequestUdpBwDto) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
         if (retrievedLink.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -210,8 +210,8 @@ public class LinkController {
         this.jobService.scheduleIperfJob(id);
 
         IperfJob createdIperfJob = this.jobService.readIperfJob(iperfJob.getId());
-        ShortMetricRequestDTO createdShortMetricRequestDTO = new ShortMetricRequestDTO(createdIperfJob.getUuid(), createNewMetricRequestUdpBwDto.getType(), createNewMetricRequestUdpBwDto.getRecurrence(), createNewMetricRequestUdpBwDto.isEnabled());
-        return new ResponseEntity<>(createdShortMetricRequestDTO, HttpStatus.OK);
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdIperfJob.getUuid(), createNewMetricRequestUdpBwDto.getType(), createNewMetricRequestUdpBwDto.getRecurrence(), createNewMetricRequestUdpBwDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
     // TODO: tcp-bw

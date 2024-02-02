@@ -21,6 +21,7 @@
 - [ ] Enable proper bean validation for all DTOs
 - [ ] Make sure defaults are set for all DTOs at one proper location
 - [ ] `ShortRequestDto` should be clear about the `UUID` and the mapping either to type `metric` or ``
+- [ ] add link `UUID` to all metrics
 
 ## Overall Issues
 

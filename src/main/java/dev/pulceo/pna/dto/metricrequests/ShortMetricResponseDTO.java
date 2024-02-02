@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ShortMetricResponseDTO {
     private UUID uuid;
+    private UUID linkUUID;
     private String type;
     private String recurrence;
     private boolean enabled;

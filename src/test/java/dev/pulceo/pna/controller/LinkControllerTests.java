@@ -159,6 +159,7 @@ public class LinkControllerTests {
         String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
         cancelMetricRequest(linkUuid, metricRequestUuid);
         // TODO: do validation here of MetricRequestDTO
+        // TODO: check for new linkUUID
 
         // wait for icmp-rtt value
         BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);

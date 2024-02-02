@@ -133,7 +133,7 @@ public class LinkController {
 
         this.jobService.schedulePingJob(id);
         PingJob createdPingJob = this.jobService.readPingJob(pingJob.getId());
-        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdPingJob.getUuid(), createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled());
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdPingJob.getUuid(), linkUUID, createNewMetricRequestIcmpRttDTO.getType(), createNewMetricRequestIcmpRttDTO.getRecurrence(), createNewMetricRequestIcmpRttDTO.isEnabled());
         return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
@@ -157,7 +157,7 @@ public class LinkController {
 
         this.jobService.scheduleNpingJob(id);
         NpingJob createdNpingJob = this.jobService.readNpingJob(npingJob.getId());
-        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdNpingJob.getUuid(), createNewMetricRequestUdpRttDto.getType(), createNewMetricRequestUdpRttDto.getRecurrence(), createNewMetricRequestUdpRttDto.isEnabled());
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdNpingJob.getUuid(), linkUUID, createNewMetricRequestUdpRttDto.getType(), createNewMetricRequestUdpRttDto.getRecurrence(), createNewMetricRequestUdpRttDto.isEnabled());
         return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
@@ -181,7 +181,7 @@ public class LinkController {
 
         this.jobService.scheduleNpingJob(id);
         NpingJob createdNpingJob = this.jobService.readNpingJob(npingJob.getId());
-        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdNpingJob.getUuid(), createNewMetricRequestTcpRttDto.getType(), createNewMetricRequestTcpRttDto.getRecurrence(), createNewMetricRequestTcpRttDto.isEnabled());
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdNpingJob.getUuid(), linkUUID, createNewMetricRequestTcpRttDto.getType(), createNewMetricRequestTcpRttDto.getRecurrence(), createNewMetricRequestTcpRttDto.isEnabled());
         return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
@@ -210,7 +210,7 @@ public class LinkController {
         this.jobService.scheduleIperfJob(id);
 
         IperfJob createdIperfJob = this.jobService.readIperfJob(iperfJob.getId());
-        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdIperfJob.getUuid(), createNewMetricRequestUdpBwDto.getType(), createNewMetricRequestUdpBwDto.getRecurrence(), createNewMetricRequestUdpBwDto.isEnabled());
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdIperfJob.getUuid(), linkUUID, createNewMetricRequestUdpBwDto.getType(), createNewMetricRequestUdpBwDto.getRecurrence(), createNewMetricRequestUdpBwDto.isEnabled());
         return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 

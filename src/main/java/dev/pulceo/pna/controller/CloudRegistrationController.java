@@ -8,6 +8,8 @@ import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import dev.pulceo.pna.service.CloudRegistrationService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/api/v1/cloud-registrations")
 public class CloudRegistrationController {
+
+    private final Logger logger = LoggerFactory.getLogger(NodeController.class);
 
     private final CloudRegistrationService cloudRegistrationService;
 
@@ -31,10 +35,9 @@ public class CloudRegistrationController {
 
     @PostMapping
     public ResponseEntity<CloudRegistrationResponseDto> newInitialCloudRegistration(@Valid @RequestBody CloudRegistrationRequestDto cloudRegistrationRequestDto) throws CloudRegistrationException {
+        this.logger.info("Received request to create a new CloudRegistration: " + cloudRegistrationRequestDto);
         CloudRegistrationRequest cloudRegistrationRequest = this.modelMapper.map(cloudRegistrationRequestDto, CloudRegistrationRequest.class);
-
         CloudRegistration cloudRegistration = this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);
-
         return new ResponseEntity<>(this.modelMapper.map(cloudRegistration, CloudRegistrationResponseDto.class), HttpStatus.OK);
     }
 

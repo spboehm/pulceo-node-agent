@@ -84,7 +84,6 @@ public class CloudRegistrationService {
             String pnaToken = generatePnaToken();
             // Obtain localnode
             Optional<Node> localNode = this.nodeService.readLocalNode();
-            String localNodeUUID = "";
             if (localNode.isEmpty()) {
                 throw new CloudRegistrationException("Local node does not exist!");
             }

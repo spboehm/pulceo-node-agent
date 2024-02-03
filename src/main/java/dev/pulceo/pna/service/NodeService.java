@@ -23,9 +23,6 @@ public class NodeService {
     @Value("${pna.uuid}")
     private String pnaUUID;
 
-    @Value("${pna.node.name}")
-    private String nodeName;
-
     @Value("${pna.node.endpoint}")
     private String nodeEndpoint;
 
@@ -65,7 +62,7 @@ public class NodeService {
         this.createNode(Node.builder()
                 .pnaUUID(pnaUUID)
                 .isLocalNode(true)
-                .name(nodeName)
+                .name(host)
                 .pnaEndpoint(nodeEndpoint)
                 .host(host)
                 .build());

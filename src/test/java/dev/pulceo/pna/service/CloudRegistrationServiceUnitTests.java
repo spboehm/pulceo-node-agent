@@ -1,6 +1,7 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.CloudRegistrationException;
+import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.model.registration.CloudRegistration;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import dev.pulceo.pna.model.registration.PnaInitToken;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +36,9 @@ public class CloudRegistrationServiceUnitTests {
 
     @Mock
     CloudRegistrationRepository cloudRegistrationRepository;
+
+    @Mock
+    NodeService nodeService;
 
     @InjectMocks
     CloudRegistrationService cloudRegistrationService;
@@ -133,6 +138,8 @@ public class CloudRegistrationServiceUnitTests {
         when(this.pnaInitTokenRepository.count()).thenReturn(1L);
         List<PnaInitToken> pnaInitTokens = List.of(new PnaInitToken(this.pnaId, this.pnaInitToken));
         when(this.pnaInitTokenRepository.findAll()).thenReturn(pnaInitTokens);
+        // only uuid required
+        when(this.nodeService.readLocalNode()).thenReturn(Optional.of(Node.builder().build()));
 
         // when
         this.cloudRegistrationService.newInitialCloudRegistration(cloudRegistrationRequest);

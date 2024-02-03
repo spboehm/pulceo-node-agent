@@ -53,6 +53,7 @@ public class CloudRegistrationControllerTests {
                 .accept("application/json")
                 .content(cloudRegistrationRequestDtoAsJson))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nodeUUID", matchesPattern(uuidRegex)))
                 .andExpect(jsonPath("$.pnaUUID", matchesPattern(uuidRegex)))
                 .andExpect(jsonPath("$.prmUUID").value(prmUUID))
                 .andExpect(jsonPath("$.prmEndpoint").value(prmEndpoint))

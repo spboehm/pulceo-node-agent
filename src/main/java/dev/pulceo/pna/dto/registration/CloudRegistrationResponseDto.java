@@ -12,6 +12,9 @@ import org.hibernate.validator.constraints.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CloudRegistrationResponseDto {
+    @NotBlank
+    @UUID
+    String nodeUUID;
 
     @NotBlank
     @UUID

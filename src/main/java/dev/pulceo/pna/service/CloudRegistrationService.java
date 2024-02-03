@@ -1,6 +1,7 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.CloudRegistrationException;
+import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.model.registration.CloudRegistration;
 import dev.pulceo.pna.model.registration.CloudRegistrationRequest;
 import dev.pulceo.pna.model.registration.PnaInitToken;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CloudRegistrationService {
@@ -24,9 +26,11 @@ public class CloudRegistrationService {
 
     private final PnaInitTokenRepository pnaInitTokenRepository;
     private final CloudRegistrationRepository cloudRegistrationRepository;
+    private final NodeService nodeService;
 
     @Autowired
-    public CloudRegistrationService(PnaInitTokenRepository pnaInitTokenRepository, CloudRegistrationRepository cloudRegistrationRepository) {
+    public CloudRegistrationService(NodeService nodeService, PnaInitTokenRepository pnaInitTokenRepository, CloudRegistrationRepository cloudRegistrationRepository) {
+        this.nodeService = nodeService;
         this.pnaInitTokenRepository = pnaInitTokenRepository;
         this.cloudRegistrationRepository = cloudRegistrationRepository;
     }
@@ -78,7 +82,13 @@ public class CloudRegistrationService {
             String prmEndpoint = cloudRegistrationRequest.getPrmEndpoint();
             // TODO: hash token
             String pnaToken = generatePnaToken();
-            return this.cloudRegistrationRepository.save(new CloudRegistration(this.pnaId, prmUUID, prmEndpoint, pnaToken));
+            // Obtain localnode
+            Optional<Node> localNode = this.nodeService.readLocalNode();
+            String localNodeUUID = "";
+            if (localNode.isEmpty()) {
+                throw new CloudRegistrationException("Local node does not exist!");
+            }
+            return this.cloudRegistrationRepository.save(new CloudRegistration(localNode.get().getUuid().toString(), this.pnaId, prmUUID, prmEndpoint, pnaToken));
         } else {
             throw new CloudRegistrationException("pnaInitToken does not exist!");
         }

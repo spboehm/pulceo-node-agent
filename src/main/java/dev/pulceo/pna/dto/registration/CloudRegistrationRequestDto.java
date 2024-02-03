@@ -12,7 +12,6 @@ import org.hibernate.validator.constraints.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CloudRegistrationRequestDto {
-        
         @NotBlank
         @UUID
         String prmUUID;

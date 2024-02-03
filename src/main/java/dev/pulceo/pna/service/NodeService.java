@@ -55,7 +55,6 @@ public class NodeService {
 
     @PostConstruct
     public void initLocalNode() {
-
         // check if local node already exists
         Optional<Node> localNode = this.nodeRepository.findByPnaUUID(pnaUUID);
 

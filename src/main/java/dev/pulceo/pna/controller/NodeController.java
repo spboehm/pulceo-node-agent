@@ -18,8 +18,6 @@ import java.util.UUID;
 @RequestMapping("/api/v1/nodes")
 public class NodeController {
 
-
-
     private final NodeService nodeService;
     private final ModelMapper modelMapper;
 

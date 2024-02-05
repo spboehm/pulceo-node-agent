@@ -10,8 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShortMetricResponseDTO {
-    private UUID uuid;
-    private UUID linkUUID;
+    private UUID remoteMetricRequestUUID;
+    private UUID remoteLinkUUID; // local on device
     private String type;
     private String recurrence;
     private boolean enabled;

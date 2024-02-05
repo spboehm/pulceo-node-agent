@@ -122,7 +122,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                 .andExpect(status().isOk())
                 .andReturn();
-        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("remoteLinkUUID").asText();
 
         // when
         cancelMetricRequest(linkUuid, metricRequestUuid);
@@ -156,7 +156,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
-        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("remoteLinkUUID").asText();
         cancelMetricRequest(linkUuid, metricRequestUuid);
         // TODO: do validation here of MetricRequestDTO
         // TODO: check for new linkUUID
@@ -202,7 +202,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
-        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("remoteLinkUUID").asText();
         cancelMetricRequest(linkUuid, metricRequestUuid);
 
         // TODO: do validation here of MetricRequestDTO
@@ -245,7 +245,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                 .andExpect(status().isOk())
                 .andReturn();
-        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("remoteLinkUUID").asText();
         cancelMetricRequest(linkUuid, metricRequestUuid);
         // TODO: do validation here of MetricRequestDTO
 
@@ -288,7 +288,7 @@ public class LinkControllerTests {
                         .content(metricRequestAsJson))
                         .andExpect(status().isOk())
                         .andReturn();
-        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("uuid").asText();
+        String metricRequestUuid = objectMapper.readTree(metricRequestResult.getResponse().getContentAsString()).get("remoteLinkUUID").asText();
         cancelMetricRequest(linkUuid, metricRequestUuid);
 
         // TODO: do validation here of MetricRequestDTO

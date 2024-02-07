@@ -13,6 +13,7 @@ import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.nping.NpingUDPResult;
 import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.repository.*;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
@@ -237,7 +238,7 @@ public class JobService {
                 NetworkMetric networkMetric = NetworkMetric.builder()
                         .metricUUID(iperfResult.getUuid())
                         .metricType(iperfResult.getMetricType())
-                        .jobUUID(iperfResult.getUuid())
+                        .jobUUID(retrievedIperfJob.getUuid())
                         .metricResult(iperfResult)
                         .build();
                 Message message = new Message(deviceId, networkMetric);
@@ -328,5 +329,28 @@ public class JobService {
 
     public boolean cancelPingJob(long id) {
         return this.jobHashMap.get(id).cancel(false);
+    }
+
+    @PostConstruct
+    private void init() {
+        Iterable<LinkJob> linkJobs = this.linkJobRepository.findByEnabled(true);
+        linkJobs.forEach(linkJob -> {
+            try {
+                if (linkJob instanceof NpingJob) {
+                    this.scheduleNpingJob(linkJob.getId());
+                } else if (linkJob instanceof IperfJob) {
+                    this.scheduleIperfJob(linkJob.getId());
+                } else if (linkJob instanceof PingJob) {
+                    this.schedulePingJob(linkJob.getId());
+                } else {
+                    throw new JobServiceException("Job type unknown!");
+                }
+            } catch (JobServiceException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // TODO: add node job
+
     }
 }

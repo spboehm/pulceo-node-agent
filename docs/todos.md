@@ -265,3 +265,6 @@
 - [ ] Add tests cases for tcp-bw
 - [ ] Replace message queues with another PubSub Queue
 - [ ] Get rid of terminating all iperf3 processes
+
+## CPUUtil
+- [ ] Correct calculation of CPU utilization

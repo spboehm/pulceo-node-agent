@@ -185,7 +185,6 @@ public class LinkController {
         return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
-    // TODO: udp-bw
     @PostMapping("{linkUUID}/metric-requests/udp-bw-requests")
     public ResponseEntity<ShortMetricResponseDTO> newUdpBwMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestUdpBwDto createNewMetricRequestUdpBwDto) throws JobServiceException {
         Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
@@ -214,17 +213,39 @@ public class LinkController {
         return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
     }
 
-    // TODO: tcp-bw
-    //@PostMapping("{linkUUID}/metric-requests/udp-tcp-requests")
+    @PostMapping("{linkUUID}/metric-requests/tcp-bw-requests")
+    public ResponseEntity<ShortMetricResponseDTO> newTcpBwMetricRequest(@PathVariable UUID linkUUID, @Valid @NotNull @RequestBody CreateNewMetricRequestTcpBwDto createNewMetricRequestTcpBwDto) throws JobServiceException {
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
+        if (retrievedLink.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Link link = retrievedLink.get();
 
+        // create
+        // ask for the next free port on the other node, now statically mocked
+        // TODO: do this dynamically
+        // TODO: datatype of port...pfusch
+        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), (int) createNewMetricRequestTcpBwDto.getPort(), createNewMetricRequestTcpBwDto.getBitrate(), createNewMetricRequestTcpBwDto.getTime(), IperfClientProtocol.TCP, "localhost");
+        // Encapsulate PingRequest in PingJob
+        IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestTcpBwDto.getRecurrence()));
+        long id = this.jobService.createIperfJob(iperfJob);
 
+        // if enabled
+        if (createNewMetricRequestTcpBwDto.isEnabled()) {
+            this.jobService.enableIperfJob(id);
+        }
 
+        this.jobService.scheduleIperfJob(id);
+
+        IperfJob createdIperfJob = this.jobService.readIperfJob(iperfJob.getId());
+        ShortMetricResponseDTO createdShortMetricResponseDTO = new ShortMetricResponseDTO(createdIperfJob.getUuid(), linkUUID, createNewMetricRequestTcpBwDto.getType(), createNewMetricRequestTcpBwDto.getRecurrence(), createNewMetricRequestTcpBwDto.isEnabled());
+        return new ResponseEntity<>(createdShortMetricResponseDTO, HttpStatus.OK);
+    }
 
     // TODO: icmp-e2e
 
     // TODO: udp-e2e
 
     // TODO: tcp-e2e
-
 
 }

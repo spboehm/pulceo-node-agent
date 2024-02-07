@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateNewMetricRequestTcpBwDto {
-    private String type;
-    private String recurrence;
-    private boolean enabled;
-    @Builder.Default
-    private int bitrate = 0;
-    @Builder.Default
-    private int time = 10;
+        private String type;
+        private String recurrence;
+        private boolean enabled;
+        private long port;
+        @Builder.Default
+        private int bitrate = 0;
+        @Builder.Default
+        private int time = 10;
 }

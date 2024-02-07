@@ -3,8 +3,10 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.BandwidthServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.iperf.*;
+import dev.pulceo.pna.repository.IperfServerRequestRepository;
 import dev.pulceo.pna.util.Iperf3Utils;
 import dev.pulceo.pna.util.ProcessUtils;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +36,56 @@ public class IperfService {
     @Autowired
     PublishSubscribeChannel bandwidthServiceMessageChannel;
 
+    private final IperfServerRequestRepository iperfServerRequestRepository;
+
+    @Autowired
+    public IperfService(IperfServerRequestRepository iperfServerRequestRepository) {
+        this.iperfServerRequestRepository = iperfServerRequestRepository;
+    }
+
+    public long startIperf3ServerAndReturnPort() throws BandwidthServiceException {
+        try {
+            int nextAvailablePort = getNextAvailablePort();
+            IperfServerCmd iperfServerCmd = new IperfServerCmd(nextAvailablePort, bind);
+            Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfServerCmd.getCmd())).start();
+            ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
+            this.iperfServerRequestRepository.save(IperfServerRequest.builder().port(nextAvailablePort).build());
+            return nextAvailablePort;
+        } catch (IOException | InterruptedException | ProcessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public long startIperf3Server() throws BandwidthServiceException {
         try {
             int nextAvailablePort = getNextAvailablePort();
             IperfServerCmd iperfServerCmd = new IperfServerCmd(nextAvailablePort, bind);
             Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfServerCmd.getCmd())).start();
             return ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
+            // TODO: persist iperf3 server process
         } catch (IOException | InterruptedException | ProcessException e) {
             throw new BandwidthServiceException("Could not start Iperf3 server process!", e);
         }
     }
 
+    @PostConstruct
+    private void init() throws InterruptedException, IOException {
+        // kill all iperf processes
+        Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
+        p.waitFor();
+        Iterable<IperfServerRequest> iperfServerRequests = this.iperfServerRequestRepository.findAll();
+        for (IperfServerRequest iperfServerRequest : iperfServerRequests) {
+            try {
+                // TODO: refactor and streamline with startIperf3Server
+                Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(new IperfServerCmd(iperfServerRequest.getPort(), bind).getCmd())).start();
+                ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
+            } catch (IOException | InterruptedException e) {
+                logger.error("Could not start Iperf3 server process!", e);
+            }
+        }
+    }
+
+    // TODO: synchronization
     private int getNextAvailablePort() throws BandwidthServiceException, ProcessException {
         List<String> listOfRunningIperf3ServerInstances = this.getListOfRunningIperf3Instances();
         List<Integer> availablePorts = new ArrayList<Integer>();
@@ -61,6 +102,7 @@ public class IperfService {
         }
     }
 
+    // TODO: rename by port
     public void stopIperf3Server(int port) throws BandwidthServiceException {
         try {
             if (!checkForRunningIperf3Receiver(port)) {
@@ -79,6 +121,7 @@ public class IperfService {
         }
     }
 
+    // TODO: rename by pid
     public void stopIperf3Server(long pid) throws BandwidthServiceException {
         try {
             Process p = new ProcessBuilder("kill", String.valueOf(pid)).start();

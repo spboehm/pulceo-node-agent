@@ -3,11 +3,11 @@ plugins {
 	id 'application'
 	id 'org.springframework.boot' version '3.1.5'
 	id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'dev.pulceo'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -43,6 +43,7 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core:5.6.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 tasks.register("bootRun-pna-test1") {
@@ -69,4 +70,7 @@ tasks.register("bootRun-pna-test2") {
 
 test {
 	useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(17)
 }

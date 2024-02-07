@@ -51,9 +51,9 @@ public class NodeService {
     }
 
     @PostConstruct
-    public void initLocalNode() {
+    private void initLocalNode() {
         // check if local node already exists
-        Optional<Node> localNode = this.nodeRepository.findByPnaUUID(pnaUUID);
+        Optional<Node> localNode = this.readLocalNode();
 
         if (localNode.isPresent()) {
             return;
@@ -67,7 +67,5 @@ public class NodeService {
                 .host(host)
                 .build());
     }
-
-
 
 }

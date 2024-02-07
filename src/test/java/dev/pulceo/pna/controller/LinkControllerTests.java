@@ -19,10 +19,8 @@ import dev.pulceo.pna.model.ping.PingDelayMeasurement;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.NodeRepository;
 import dev.pulceo.pna.service.IperfService;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import dev.pulceo.pna.service.NodeService;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -56,6 +54,9 @@ public class LinkControllerTests {
     private NodeRepository nodeRepository;
 
     @Autowired
+    private NodeService nodeService;
+
+    @Autowired
     private IperfService iperfService;
 
     @Autowired
@@ -79,9 +80,9 @@ public class LinkControllerTests {
     private String localAddress;
 
     // TODO: remove this workaround after properly setting up iperf3 server start and stop
-    @BeforeAll
-    @AfterAll
-    public static void killAllIperf3Instances() throws InterruptedException, IOException {
+    @BeforeEach
+    @AfterEach
+    public void killAllIperf3Instances() throws InterruptedException, IOException {
         Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
         p.waitFor();
         //this.bandwidthService = new BandwidthService(environment);
@@ -96,7 +97,7 @@ public class LinkControllerTests {
     public void testCreateLink() throws Exception {
         // given
         String nodeUuid = createNewTestDestNode();
-        Optional<Node> localNode = this.nodeRepository.findByPnaUUID(pnaUuid);
+        Optional<Node> localNode = this.nodeService.readLocalNode();
         CreateNewLinkDTO createNewLinkDTO = LinkDTOUtil.createTestLink(String.valueOf(localNode.get().getUuid()), nodeUuid);
         String createNewLinkDTOAsJson = this.objectMapper.writeValueAsString(createNewLinkDTO);
 

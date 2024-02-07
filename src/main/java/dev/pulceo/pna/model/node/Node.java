@@ -20,14 +20,14 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs"})
+@EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs", "cpuCapacity", "cpuAllocatable"})
 @NamedEntityGraph(
         name = "graph.Node.jobs",
         attributeNodes = {
                 @NamedAttributeNode("nodeJobs")
         }
 )
-@ToString(callSuper = true, exclude = {"nodeJobs"})
+@ToString(callSuper = true, exclude = {"nodeJobs","cpuCapacity","cpuAllocatable"})
 public class Node extends Resource {
 
     @NotBlank(message= "PNA id is required!")
@@ -81,4 +81,11 @@ public class Node extends Resource {
     @OneToMany(fetch = FetchType.LAZY,  mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NodeJob> nodeJobs = new ArrayList<>();
 
+    @Builder.Default
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private CPU cpuCapacity = CPU.builder().build();
+
+    @Builder.Default
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private CPU cpuAllocatable = CPU.builder().build();
 }

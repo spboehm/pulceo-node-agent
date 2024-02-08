@@ -75,4 +75,5 @@ public class NodeDTO {
 
     @Builder.Default
     private List<NodeJob> nodeJobs = new ArrayList<>();
+
 }

@@ -2,6 +2,7 @@ package dev.pulceo.pna.controller;
 
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dto.node.NodeDTO;
+import dev.pulceo.pna.dto.node.cpu.CPUDTO;
 import dev.pulceo.pna.model.node.CPU;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.service.NodeService;
@@ -45,11 +46,20 @@ public class NodeController {
         return new ResponseEntity<>(this.modelMapper.map(createdNode, NodeDTO.class), HttpStatus.CREATED);
     }
 
+    @GetMapping("/localNode/cpu")
+    public ResponseEntity<CPUDTO> getLocalNode() {
+        Optional<Node> node = this.nodeService.readLocalNode();
+        if (node.isPresent()) {
+            return new ResponseEntity<>(CPUDTO.fromCPU(node.get().getCpuCapacity()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("/{uuid}/cpu")
     public ResponseEntity<String> updateCPU(@PathVariable String uuid, @RequestBody CPU cpu) {
        return ResponseEntity.ok().body("");
     }
-
 
     // TODO: add exceptionHandler
 }

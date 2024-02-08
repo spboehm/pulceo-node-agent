@@ -3,6 +3,7 @@ package dev.pulceo.pna.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.registration.CloudRegistrationRequestDto;
 import dev.pulceo.pna.repository.CloudRegistrationRepository;
+import dev.pulceo.pna.repository.JobRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class CloudRegistrationControllerTests {
     @Autowired
     private CloudRegistrationRepository cloudRegistrationRepository;
 
+    @Autowired
+    private JobRepository jobRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     String uuidRegex = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
@@ -34,6 +38,7 @@ public class CloudRegistrationControllerTests {
     @BeforeEach
     public void setUp() {
         cloudRegistrationRepository.deleteAll();
+        this.jobRepository.deleteAll();
     }
 
     // TODO: Add similar test cases if one of the attributes is missing

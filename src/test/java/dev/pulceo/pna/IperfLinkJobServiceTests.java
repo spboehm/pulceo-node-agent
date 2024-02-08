@@ -7,6 +7,7 @@ import dev.pulceo.pna.model.iperf.IperfRequest;
 import dev.pulceo.pna.model.jobs.IperfJob;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
+import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.service.IperfService;
 import dev.pulceo.pna.service.JobService;
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IperfLinkJobServiceTests {
 
     @Autowired
+    JobRepository jobRepository;
+
+    @Autowired
     JobService jobService;
 
     @Autowired
@@ -43,6 +47,7 @@ public class IperfLinkJobServiceTests {
         Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
         p.waitFor();
         //this.bandwidthService = new BandwidthService(environment);
+        this.jobRepository.deleteAll();
     }
 
     @Test

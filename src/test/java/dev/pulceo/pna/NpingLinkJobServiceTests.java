@@ -8,6 +8,7 @@ import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingRequest;
 import dev.pulceo.pna.model.nping.NpingTCPDelayMeasurement;
 import dev.pulceo.pna.model.nping.NpingUDPDelayMeasurement;
+import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.NpingService;
 import org.junit.jupiter.api.AfterEach;
@@ -33,6 +34,9 @@ NpingLinkJobServiceTests {
     JobService jobService;
 
     @Autowired
+    JobRepository jobRepository;
+
+    @Autowired
     PublishSubscribeChannel npingUdpPubSubChannel;
 
     @Autowired
@@ -50,6 +54,7 @@ NpingLinkJobServiceTests {
         Process p = new ProcessBuilder("killall", "-e", "nping").start();
         p.waitFor();
         //this.bandwidthService = new BandwidthService(environment);
+        this.jobRepository.deleteAll();
     }
 
     @Test

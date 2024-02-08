@@ -1,6 +1,5 @@
 package dev.pulceo.pna.dto.node.cpu;
 
-import dev.pulceo.pna.model.node.CPU;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +20,7 @@ public class CPUDTO {
         private float minimalFrequency;
         private float averageFrequency;
         private float maximalFrequency;
+        private int shares;
         private float slots;
 
 }

@@ -47,7 +47,7 @@ public class NodeController {
     }
 
     @GetMapping("/localNode/cpu")
-    public ResponseEntity<CPUResourceDTO> getLocalNode() {
+    public ResponseEntity<CPUResourceDTO> readCPUResources() {
         Optional<Node> node = this.nodeService.readLocalNode();
         if (node.isPresent()) {
             // TODO: remove modelMapper and use builder instead

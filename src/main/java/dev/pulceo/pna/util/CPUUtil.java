@@ -69,6 +69,7 @@ public class CPUUtil {
                 .maximalFrequency(maxFrequency)
                 .averageFrequency((maxFrequency + minFrequency) / 2)
                 .slots(slots)
+                .shares(threadsPerCore * coresPerSocket * sockets * 1000)
                 .build();
     }
 

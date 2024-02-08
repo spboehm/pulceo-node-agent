@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class CPU extends Resource {
 
-    // TODO: add further vendor specific information
+    // TODO: add further vendor specific information, model number etc.
     private String modelName;
     private int cores;
     private int threads;
@@ -26,6 +26,7 @@ public class CPU extends Resource {
     private float minimalFrequency;
     private float averageFrequency;
     private float maximalFrequency;
+    private int shares;
     private float slots;
 
 }

@@ -34,6 +34,7 @@ public class CPUUtilTest {
                 .minimalFrequency(2200.0000f)
                 .maximalFrequency(4426.1709f)
                 .slots(0.0f)
+                .shares(16000)
                 .build();
 
         // when
@@ -70,6 +71,7 @@ public class CPUUtilTest {
                 .maximalFrequency(2593.905f)
                 .averageFrequency(2593.905f)
                 .slots(0.0f)
+                .shares(1000)
                 .build();
 
         // when
@@ -106,6 +108,7 @@ public class CPUUtilTest {
                 .maximalFrequency(4700.0000f)
                 .averageFrequency(2550.0000f)
                 .slots(0.0f)
+                .shares(24000)
                 .build();
 
         // when

@@ -23,18 +23,4 @@ public class CPUDTO {
         private float maximalFrequency;
         private float slots;
 
-        public static CPUDTO fromCPU(CPU cpu) {
-            return CPUDTO.builder()
-                    .modelName(cpu.getModelName())
-                    .cores(cpu.getCores())
-                    .threads(cpu.getThreads())
-                    .bogoMIPS(cpu.getBogoMIPS())
-                    .MIPS(cpu.getMIPS())
-                    .GFlop(cpu.getGFlop())
-                    .minimalFrequency(cpu.getMinimalFrequency())
-                    .averageFrequency(cpu.getAverageFrequency())
-                    .maximalFrequency(cpu.getMaximalFrequency())
-                    .slots(cpu.getSlots())
-                    .build();
-        }
 }

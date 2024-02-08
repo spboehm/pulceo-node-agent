@@ -3,6 +3,7 @@ package dev.pulceo.pna.service;
 import dev.pulceo.pna.exception.NodeServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.node.CPU;
+import dev.pulceo.pna.model.node.CPUResource;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.NodeRepository;
 import dev.pulceo.pna.util.CPUUtil;
@@ -66,6 +67,15 @@ public class NodeService {
         }
     }
 
+    public Optional<CPUResource> readLocalCPUResource() {
+        Optional<Node> localNode = this.readLocalNode();
+        if (localNode.isPresent()) {
+            return Optional.of(localNode.get().getCpuResource());
+        } else {
+            return Optional.empty();
+        }
+    }
+
     @PostConstruct
     private void initLocalNode() throws NodeServiceException {
         // check if local node already exists
@@ -76,8 +86,9 @@ public class NodeService {
         }
 
         // obtain cpu information
-        CPU cpu = this.obtainCPUInformation();
-        System.out.println(cpu.toString());
+        CPU cpuAllocatable = this.obtainCPUInformation();
+        CPU cpuCapacity = this.obtainCPUInformation();
+
 
         this.createNode(Node.builder()
                 .pnaUUID(pnaUUID)
@@ -85,8 +96,7 @@ public class NodeService {
                 .name(host)
                 .pnaEndpoint(nodeEndpoint)
                 .host(host)
-                .cpuAllocatable(cpu)
-                .cpuCapacity(cpu)
+                .cpuResource(CPUResource.builder().cpuAllocatable(cpuAllocatable).cpuCapacity(cpuCapacity).build())
                 .build());
     }
 

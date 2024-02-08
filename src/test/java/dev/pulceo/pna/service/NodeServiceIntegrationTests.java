@@ -50,15 +50,4 @@ public class NodeServiceIntegrationTests {
 
     // TODO: add read node
 
-    @Test
-    public void testReadNode() {
-        // given
-
-        // when
-
-        // then
-
-    }
-
-
 }

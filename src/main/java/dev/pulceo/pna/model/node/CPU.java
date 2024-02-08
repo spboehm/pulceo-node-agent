@@ -21,9 +21,9 @@ public class CPU extends Resource {
     private float bogoMIPS;
     private float MIPS;
     private float GFlop;
-    private float minFrequency;
-    private float avgFrequency;
-    private float maxFrequency;
+    private float minimalFrequency;
+    private float averageFrequency;
+    private float maximalFrequency;
     private float slots;
 
 }

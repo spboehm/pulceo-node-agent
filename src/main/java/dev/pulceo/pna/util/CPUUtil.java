@@ -66,9 +66,9 @@ public class CPUUtil {
                 .bogoMIPS(bogoMIPS)
                 .MIPS(bogoMIPS)
                 .GFlop(GFlop)
-                .minFrequency(minFrequency)
-                .maxFrequency(maxFrequency)
-                .avgFrequency((maxFrequency + minFrequency) / 2)
+                .minimalFrequency(minFrequency)
+                .maximalFrequency(maxFrequency)
+                .averageFrequency((maxFrequency + minFrequency) / 2)
                 .slots(slots)
                 .build();
     }

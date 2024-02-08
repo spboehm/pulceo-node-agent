@@ -31,8 +31,8 @@ public class CPUUtilTest {
                 .bogoMIPS(7203.61f)
                 .MIPS(7203.61f)
                 .GFlop(0.0f)
-                .minFrequency(2200.0000f)
-                .maxFrequency(4426.1709f)
+                .minimalFrequency(2200.0000f)
+                .maximalFrequency(4426.1709f)
                 .slots(0.0f)
                 .build();
 
@@ -46,8 +46,8 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getBogoMIPS(), actualCPUInformation.getBogoMIPS());
         assertEquals(expectedCPU.getMIPS(), actualCPUInformation.getMIPS());
         assertEquals(expectedCPU.getGFlop(), actualCPUInformation.getGFlop());
-        assertEquals(expectedCPU.getMinFrequency(), actualCPUInformation.getMinFrequency());
-        assertEquals(expectedCPU.getMaxFrequency(), actualCPUInformation.getMaxFrequency());
+        assertEquals(expectedCPU.getMinimalFrequency(), actualCPUInformation.getMinimalFrequency());
+        assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
     }
 
@@ -66,9 +66,9 @@ public class CPUUtilTest {
                 .bogoMIPS(5187.81f)
                 .MIPS(5187.81f)
                 .GFlop(0.0f)
-                .minFrequency(2593.905f)
-                .maxFrequency(2593.905f)
-                .avgFrequency(2593.905f)
+                .minimalFrequency(2593.905f)
+                .maximalFrequency(2593.905f)
+                .averageFrequency(2593.905f)
                 .slots(0.0f)
                 .build();
 
@@ -82,8 +82,8 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getBogoMIPS(), actualCPUInformation.getBogoMIPS());
         assertEquals(expectedCPU.getMIPS(), actualCPUInformation.getMIPS());
         assertEquals(expectedCPU.getGFlop(), actualCPUInformation.getGFlop());
-        assertEquals(expectedCPU.getMinFrequency(), actualCPUInformation.getMinFrequency());
-        assertEquals(expectedCPU.getMaxFrequency(), actualCPUInformation.getMaxFrequency());
+        assertEquals(expectedCPU.getMinimalFrequency(), actualCPUInformation.getMinimalFrequency());
+        assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
     }
 
@@ -102,9 +102,9 @@ public class CPUUtilTest {
                 .bogoMIPS(4993.00f)
                 .MIPS(4993.00f)
                 .GFlop(0.0f)
-                .minFrequency(400.0000f)
-                .maxFrequency(4700.0000f)
-                .avgFrequency(2550.0000f)
+                .minimalFrequency(400.0000f)
+                .maximalFrequency(4700.0000f)
+                .averageFrequency(2550.0000f)
                 .slots(0.0f)
                 .build();
 
@@ -118,8 +118,8 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getBogoMIPS(), actualCPUInformation.getBogoMIPS());
         assertEquals(expectedCPU.getMIPS(), actualCPUInformation.getMIPS());
         assertEquals(expectedCPU.getGFlop(), actualCPUInformation.getGFlop());
-        assertEquals(expectedCPU.getMinFrequency(), actualCPUInformation.getMinFrequency());
-        assertEquals(expectedCPU.getMaxFrequency(), actualCPUInformation.getMaxFrequency());
+        assertEquals(expectedCPU.getMinimalFrequency(), actualCPUInformation.getMinimalFrequency());
+        assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
     }
 

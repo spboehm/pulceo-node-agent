@@ -18,7 +18,6 @@ public class CPUUtil {
         int threadsPerCore = 0;
 
         float bogoMIPS = 0;
-        float MIPS = 0;
         float GFlop = 0;
         float minFrequency = 0;
         float maxFrequency = 0;

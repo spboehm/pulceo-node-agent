@@ -15,11 +15,15 @@ import lombok.experimental.SuperBuilder;
 public class CPU extends Resource {
 
     // TODO: add further vendor specific information
+    private String modelName;
     private int cores;
     private int threads;
+    private float bogoMIPS;
     private float MIPS;
     private float GFlop;
-    private float frequency;
+    private float minFrequency;
+    private float avgFrequency;
+    private float maxFrequency;
     private float slots;
 
 }

@@ -11,43 +11,66 @@ public class CPUUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static CPU extractCPUInformation(List<String> lsCPUAsString) throws JsonProcessingException {
-        int cores = 0;
-        int threads = 0;
+        // only used for calculation
+        String modelName = "";
+        int sockets = 0;
+        int coresPerSocket = 0;
+        int threadsPerCore = 0;
+
+        float bogoMIPS = 0;
         float MIPS = 0;
         float GFlop = 0;
-        float frequency = 0;
+        float minFrequency = 0;
+        float maxFrequency = 0;
+        float avgFrequency = 0;
         float slots = 0;
 
         for (String line : lsCPUAsString) {
-            if (line.startsWith("CPU(s):")) {
+            if (line.contains("Model name:")) {
                 String[] split = line.split(":");
-                threads = Integer.parseInt(split[1].trim());
-            }
-            if (line.contains("Core(s) per socket:")) {
+                modelName = split[1].trim();
+            } else if (line.contains("Socket(s):")) {
                 String[] split = line.split(":");
-                cores = Integer.parseInt(split[1].trim());
-            }
-            if (line.contains("MIPS:")) {
+                sockets = Integer.parseInt(split[1].trim());
+            } else if (line.contains("Core(s) per socket:")) {
                 String[] split = line.split(":");
-                MIPS = Float.parseFloat(split[1].trim());
+                coresPerSocket = Integer.parseInt(split[1].trim());
+            } else if (line.contains("Thread(s) per core:")) {
+                String[] split = line.split(":");
+                threadsPerCore = Integer.parseInt(split[1].trim());
+            } else if (line.contains("BogoMIPS:")) {
+                String[] split = line.split(":");
+                bogoMIPS = Float.parseFloat(split[1].trim());
             } else if (line.contains("CPU min MHz:")) {
                 String[] split = line.split(":");
-                frequency = Float.parseFloat(split[1].trim());
+                minFrequency = Float.parseFloat(split[1].trim());
+            } else if (line.contains("CPU max MHz:")) {
+                String[] split = line.split(":");
+                maxFrequency = Float.parseFloat(split[1].trim());
+            } else if (line.contains("CPU MHz:")) {
+                String[] split = line.split(":");
+                avgFrequency = Float.parseFloat(split[1].trim());
             }
         }
+
+        // if no min or max frequency is available
+        if (minFrequency == 0 || maxFrequency == 0) {
+            minFrequency = avgFrequency;
+            maxFrequency = avgFrequency;
+        }
+
         return CPU.builder()
-                .cores(cores)
-                .threads(threads)
-                .MIPS(MIPS)
+                .modelName(modelName)
+                .cores(coresPerSocket * sockets)
+                .threads(threadsPerCore * coresPerSocket * sockets)
+                .bogoMIPS(bogoMIPS)
+                .MIPS(bogoMIPS)
                 .GFlop(GFlop)
-                .frequency(frequency)
+                .minFrequency(minFrequency)
+                .maxFrequency(maxFrequency)
+                .avgFrequency((maxFrequency + minFrequency) / 2)
                 .slots(slots)
                 .build();
     }
-
-    public int extractMIPS(List<String> cpuInfo) {
-        return 0;
-    }
-
 
 }

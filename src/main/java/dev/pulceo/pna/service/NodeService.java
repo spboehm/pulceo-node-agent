@@ -1,12 +1,18 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.exception.NodeServiceException;
+import dev.pulceo.pna.exception.ProcessException;
+import dev.pulceo.pna.model.node.CPU;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.NodeRepository;
+import dev.pulceo.pna.util.CPUUtil;
+import dev.pulceo.pna.util.ProcessUtils;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,8 +56,18 @@ public class NodeService {
         return this.nodeRepository.findByIsLocalNode(true);
     }
 
+    public CPU obtainCPUInformation() throws NodeServiceException {
+        try {
+            Process lscpuProcess = new ProcessBuilder("lscpu").start();
+            lscpuProcess.waitFor();
+            return CPUUtil.extractCPUInformation(ProcessUtils.readProcessOutput(lscpuProcess.getInputStream()));
+        } catch (IOException | InterruptedException | ProcessException e) {
+            throw new NodeServiceException("Could not obtain CPU information", e);
+        }
+    }
+
     @PostConstruct
-    private void initLocalNode() {
+    private void initLocalNode() throws NodeServiceException {
         // check if local node already exists
         Optional<Node> localNode = this.readLocalNode();
 
@@ -59,12 +75,18 @@ public class NodeService {
             return;
         }
 
+        // obtain cpu information
+        CPU cpu = this.obtainCPUInformation();
+        System.out.println(cpu.toString());
+
         this.createNode(Node.builder()
                 .pnaUUID(pnaUUID)
                 .isLocalNode(true)
                 .name(host)
                 .pnaEndpoint(nodeEndpoint)
                 .host(host)
+                .cpuAllocatable(cpu)
+                .cpuCapacity(cpu)
                 .build());
     }
 

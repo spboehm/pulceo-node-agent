@@ -71,8 +71,9 @@ public class IperfService {
     @PostConstruct
     private void init() throws InterruptedException, IOException {
         // kill all iperf processes
-        Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
-        p.waitFor();
+//        Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
+//        p.waitFor();
+        // TODO: eventuall kill all iperf3 processes
         Iterable<IperfServerRequest> iperfServerRequests = this.iperfServerRequestRepository.findAll();
         for (IperfServerRequest iperfServerRequest : iperfServerRequests) {
             try {

@@ -10,6 +10,6 @@ public class IperfServerCmd {
     private final String bind;
 
     public String getCmd() {
-        return String.format("/bin/iperf3 -s -p %s -f %s --bind %s", port, format, bind);
+        return String.format("/usr/bin/iperf3 -s -p %s -f %s --bind %s", port, format, bind);
     }
 }

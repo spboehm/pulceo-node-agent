@@ -35,7 +35,7 @@ public class MQTTConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", mqttClientId,
+                new MqttPahoMessageDrivenChannelAdapter("tcp://127.0.0.1:1883", mqttClientId,
                         "topic1");
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
@@ -81,7 +81,7 @@ public class MQTTConfig {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[] { "tcp://localhost:1883"});
+        options.setServerURIs(new String[] { "tcp://127.0.0.1:1883"});
         options.setAutomaticReconnect(true);
         factory.setConnectionOptions(options);
         return factory;

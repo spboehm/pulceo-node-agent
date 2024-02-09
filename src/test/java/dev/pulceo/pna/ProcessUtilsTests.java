@@ -85,7 +85,7 @@ public class ProcessUtilsTests {
         // given
         int port = 5001;
         IperfServerCmd iperfServerCmd = new IperfServerCmd(port, bind);
-        String[] expectedResult = new String[]{"/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind", "localhost" };
+        String[] expectedResult = new String[]{"/usr/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind", "localhost" };
         List<String> expectedResultList = Arrays.asList(expectedResult);
 
         // when
@@ -100,7 +100,7 @@ public class ProcessUtilsTests {
     @ValueSource(longs = {32450, 19199, 19233, 4685})
     public void testGetPidOfpsEntry(long expectedPid) {
         // given
-        String psEntry = expectedPid + " iperf3   /bin/iperf3 -s -p 5001 -f m --bind localhost";
+        String psEntry = expectedPid + " iperf3   /usr/bin/iperf3 -s -p 5001 -f m --bind localhost";
 
         // when
         long actualPid = ProcessUtils.getPidOfpsEntry(psEntry);
@@ -112,8 +112,8 @@ public class ProcessUtilsTests {
     @Test
     public void testGetCmdOfpsEntry() {
         // given
-        String psEntry = "19199 iperf3   /bin/iperf3 -s -p 5001 -f m";
-        String expectedCmd = "/bin/iperf3 -s -p 5001 -f m";
+        String psEntry = "19199 iperf3   /usr/bin/iperf3 -s -p 5001 -f m";
+        String expectedCmd = "/usr/bin/iperf3 -s -p 5001 -f m";
 
         // when
         String actualCmd = ProcessUtils.getCmdOfpsEntry(psEntry);

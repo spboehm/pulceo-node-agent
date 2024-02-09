@@ -2,12 +2,10 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.NodeServiceException;
 import dev.pulceo.pna.exception.ProcessException;
-import dev.pulceo.pna.model.node.CPU;
-import dev.pulceo.pna.model.node.CPUResource;
-import dev.pulceo.pna.model.node.Memory;
-import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.node.*;
 import dev.pulceo.pna.repository.NodeRepository;
 import dev.pulceo.pna.util.CPUUtil;
+import dev.pulceo.pna.util.MemoryUtil;
 import dev.pulceo.pna.util.ProcessUtils;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +67,13 @@ public class NodeService {
     }
 
     public Memory obtainMemoryInformation() throws NodeServiceException {
-        return null;
+        try {
+            Process procMemInfoAsString = new ProcessBuilder("cat", "/proc/meminfo").start();
+            procMemInfoAsString.waitFor();
+            return MemoryUtil.extractMemoryInformation(ProcessUtils.readProcessOutput(procMemInfoAsString.getInputStream()));
+        } catch (IOException | InterruptedException | ProcessException e) {
+            throw new NodeServiceException("Could not obtain memory information", e);
+        }
     }
 
     public Optional<CPUResource> readLocalCPUResource() {
@@ -93,7 +97,8 @@ public class NodeService {
         // obtain cpu information
         CPU cpuAllocatable = this.obtainCPUInformation();
         CPU cpuCapacity = this.obtainCPUInformation();
-
+        Memory memoryAllocatable = this.obtainMemoryInformation();
+        Memory memoryCapacity = this.obtainMemoryInformation();
 
         this.createNode(Node.builder()
                 .pnaUUID(pnaUUID)
@@ -102,6 +107,7 @@ public class NodeService {
                 .pnaEndpoint(nodeEndpoint)
                 .host(host)
                 .cpuResource(CPUResource.builder().cpuAllocatable(cpuAllocatable).cpuCapacity(cpuCapacity).build())
+                .memoryResource(MemoryResource.builder().memoryAllocatable(memoryAllocatable).memoryCapacity(memoryCapacity).build())
                 .build());
     }
 

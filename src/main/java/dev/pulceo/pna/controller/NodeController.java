@@ -57,6 +57,7 @@ public class NodeController {
         }
     }
 
+    // TODO: add handler
     @PutMapping("/{uuid}/cpu")
     public ResponseEntity<String> updateCPU(@PathVariable String uuid, @RequestBody CPU cpu) {
        return ResponseEntity.ok().body("");

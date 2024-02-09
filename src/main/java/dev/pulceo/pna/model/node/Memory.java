@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class Memory extends Resource {
 
-    private int size;
+    private float size;
     private int slots;
 
     @Override
@@ -25,14 +25,14 @@ public class Memory extends Resource {
 
         Memory memory = (Memory) o;
 
-        if (size != memory.size) return false;
+        if (Float.compare(size, memory.size) != 0) return false;
         return slots == memory.slots;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + size;
+        result = 31 * result + (size != 0.0f ? Float.floatToIntBits(size) : 0);
         result = 31 * result + slots;
         return result;
     }

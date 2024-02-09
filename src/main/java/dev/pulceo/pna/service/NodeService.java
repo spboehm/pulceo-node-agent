@@ -4,6 +4,7 @@ import dev.pulceo.pna.exception.NodeServiceException;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.node.CPU;
 import dev.pulceo.pna.model.node.CPUResource;
+import dev.pulceo.pna.model.node.Memory;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.NodeRepository;
 import dev.pulceo.pna.util.CPUUtil;
@@ -65,6 +66,10 @@ public class NodeService {
         } catch (IOException | InterruptedException | ProcessException e) {
             throw new NodeServiceException("Could not obtain CPU information", e);
         }
+    }
+
+    public Memory obtainMemoryInformation() throws NodeServiceException {
+        return null;
     }
 
     public Optional<CPUResource> readLocalCPUResource() {

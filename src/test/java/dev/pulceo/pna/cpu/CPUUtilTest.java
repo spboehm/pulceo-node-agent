@@ -33,6 +33,7 @@ public class CPUUtilTest {
                 .GFlop(0.0f)
                 .minimalFrequency(2200.0000f)
                 .maximalFrequency(4426.1709f)
+                .averageFrequency(3313.0854f)
                 .slots(0.0f)
                 .shares(16000)
                 .build();
@@ -49,6 +50,7 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getGFlop(), actualCPUInformation.getGFlop());
         assertEquals(expectedCPU.getMinimalFrequency(), actualCPUInformation.getMinimalFrequency());
         assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
+        assertEquals(expectedCPU.getAverageFrequency(), actualCPUInformation.getAverageFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
     }
 
@@ -86,6 +88,7 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getGFlop(), actualCPUInformation.getGFlop());
         assertEquals(expectedCPU.getMinimalFrequency(), actualCPUInformation.getMinimalFrequency());
         assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
+        assertEquals(expectedCPU.getAverageFrequency(), actualCPUInformation.getAverageFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
     }
 
@@ -123,6 +126,7 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getGFlop(), actualCPUInformation.getGFlop());
         assertEquals(expectedCPU.getMinimalFrequency(), actualCPUInformation.getMinimalFrequency());
         assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
+        assertEquals(expectedCPU.getAverageFrequency(), actualCPUInformation.getAverageFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
     }
 

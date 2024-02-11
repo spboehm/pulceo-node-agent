@@ -2,8 +2,6 @@ name: Build pulceo-node-agent
 
 on:
   push:
-    tags:
-      - 'v*'
 
 env:
   REGISTRY: ghcr.io

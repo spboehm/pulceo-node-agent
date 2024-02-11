@@ -2,6 +2,8 @@ name: Build pulceo-node-agent
 
 on:
   push:
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
@@ -43,16 +45,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }}
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:

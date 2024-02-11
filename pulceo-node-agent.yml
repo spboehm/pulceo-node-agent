@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-pulceo-node-agent
+spec:
+  selector:
+    app.kubernetes.io/name: pulceo-node-agent
+  ports:
+    - protocol: TCP
+      port: 7676
+      targetPort: tcp-7676
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulceo-node-agent
+  labels:
+    app.kubernetes.io/name: pulceo-node-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulceo-node-agent
+  template:
+    metadata:
+      labels:
+        app: pulceo-node-agent
+    spec:
+      containers:
+        - name: pulceo-node-agent
+          image: ghcr.io/spboehm/pulceo-node-agent:cpu-util
+          ports:
+            - containerPort: 7676
+              name: tcp-7676

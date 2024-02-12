@@ -1,4 +1,4 @@
-piVersion: v1
+apiVersion: v1
 kind: Service
 metadata:
   name: pulceo-node-agent
@@ -7,6 +7,24 @@ spec:
     - name: web
       port: 7676
       targetPort: web
+    - name: web5000
+      port: 5000
+      targetPort: iperf5000
+    - name: web5001
+      port: 5001
+      targetPort: iperf5001
+    - name: web5002
+      port: 5002
+      targetPort: iperf5002
+    - name: web5003
+      port: 5003
+      targetPort: iperf5003
+    - name: web5004
+      port: 5004
+      targetPort: iperf5004
+    - name: web5005
+      port: 5005
+      targetPort: iperf5005
   selector:
     app: pulceo-node-agent
   type: LoadBalancer
@@ -32,8 +50,20 @@ spec:
           image: ghcr.io/spboehm/pulceo-node-agent:cpu-util
           imagePullPolicy: Always
           env:
-            - name: SERVER_ADDRESS
+            - name: PNA_LOCAL_ADDRESS
               value: "0.0.0.0"
           ports:
             - containerPort: 7676
               name: web
+            - containerPort: 5000
+              name: iperf5000
+            - containerPort: 5001
+              name: iperf5001
+            - containerPort: 5002
+              name: iperf5002
+            - containerPort: 5003
+              name: iperf5003
+            - containerPort: 5004
+              name: iperf5004
+            - containerPort: 5005
+              name: iperf5005

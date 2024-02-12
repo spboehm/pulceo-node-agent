@@ -121,7 +121,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create PingRequest
-        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), createNewMetricRequestIcmpRttDTO.getIpVersion(), createNewMetricRequestIcmpRttDTO.getCount(), createNewMetricRequestIcmpRttDTO.getDataLength(), createNewMetricRequestIcmpRttDTO.getIface());
+        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), createNewMetricRequestIcmpRttDTO.getIpVersion(), createNewMetricRequestIcmpRttDTO.getCount(), createNewMetricRequestIcmpRttDTO.getDataLength(), createNewMetricRequestIcmpRttDTO.getIface());
         // Encapsulate PingRequest in PingJob
         PingJob pingJob = new PingJob(pingRequest, Integer.parseInt(createNewMetricRequestIcmpRttDTO.getRecurrence()));
         long id = this.jobService.createPingJob(pingJob);
@@ -146,7 +146,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create NpingRequest
-        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.UDP, this.rounds, this.iface);
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.UDP, this.rounds, this.iface);
         NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestUdpRttDto.getRecurrence()));
         long id = this.jobService.createNpingJob(npingJob);
 
@@ -170,7 +170,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create NpingRequest
-        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), this.npingDelayTCPPort, NpingClientProtocol.TCP, this.rounds, this.iface);
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), this.npingDelayTCPPort, NpingClientProtocol.TCP, this.rounds, this.iface);
         NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestTcpRttDto.getRecurrence()));
         long id = this.jobService.createNpingJob(npingJob);
 
@@ -196,7 +196,7 @@ public class LinkController {
         // create
         // ask for the next free port on the other node, now statically mocked
         // TODO: do this dynamically
-        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), 5000, createNewMetricRequestUdpBwDto.getBitrate(), createNewMetricRequestUdpBwDto.getTime(), IperfClientProtocol.UDP, "localhost");
+        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), 5000, createNewMetricRequestUdpBwDto.getBitrate(), createNewMetricRequestUdpBwDto.getTime(), IperfClientProtocol.UDP, "localhost");
         // Encapsulate PingRequest in PingJob
         IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestUdpBwDto.getRecurrence()));
         long id = this.jobService.createIperfJob(iperfJob);
@@ -225,7 +225,7 @@ public class LinkController {
         // ask for the next free port on the other node, now statically mocked
         // TODO: do this dynamically
         // TODO: datatype of port...pfusch
-        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getSrcNode().getHost(), (int) createNewMetricRequestTcpBwDto.getPort(), createNewMetricRequestTcpBwDto.getBitrate(), createNewMetricRequestTcpBwDto.getTime(), IperfClientProtocol.TCP, "localhost");
+        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), (int) createNewMetricRequestTcpBwDto.getPort(), createNewMetricRequestTcpBwDto.getBitrate(), createNewMetricRequestTcpBwDto.getTime(), IperfClientProtocol.TCP, "localhost");
         // Encapsulate PingRequest in PingJob
         IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestTcpBwDto.getRecurrence()));
         long id = this.jobService.createIperfJob(iperfJob);

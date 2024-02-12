@@ -177,3 +177,5 @@ gradle-app.setting
 config/**
 
 pna_temporary_file_for_process_output.txt
+
+.k3s.yaml

@@ -168,7 +168,6 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,java,intellij
-*.k3s.yaml
 
 # sqlite db
 *.db
@@ -178,3 +177,4 @@ config/**
 
 pna_temporary_file_for_process_output.txt
 
+.k3s.yaml

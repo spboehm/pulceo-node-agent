@@ -48,6 +48,10 @@ spec:
       containers:
         - name: pulceo-node-agent
           image: ghcr.io/spboehm/pulceo-node-agent:cpu-util
+          volumeMounts:
+            - mountPath: /k3s.yaml
+              name: k3s
+              readOnly: true
           imagePullPolicy: Always
           env:
             - name: PNA_LOCAL_ADDRESS
@@ -67,3 +71,8 @@ spec:
               name: iperf5004
             - containerPort: 5005
               name: iperf5005
+      volumes:
+        - name: k3s
+          hostPath:
+            path: ./k3s.yaml
+            type: File

@@ -8,6 +8,13 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  prepare:
+    runs-on: self-hosted
+    steps:
+      - name: Spin up k3d cluster
+        run: k3d cluster create pna-test
+      - name: Copy k3s.yaml
+        run: cp /home/$USER/.kube/config $GITHUB_WORKSPACE/pulceo-node-agent/.k3s.yaml
   build:
     runs-on: self-hosted
     steps:

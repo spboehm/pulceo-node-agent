@@ -59,3 +59,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  teardown:
+    if: ${{ always() }}
+    needs: [ prepare, build, build-and-push-image ]
+    runs-on: self-hosted
+    steps:
+      - name: Teardown k3d cluster
+        run: k3d cluster delete pna-test

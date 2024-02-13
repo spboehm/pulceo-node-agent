@@ -16,7 +16,7 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicationComponent extends Resource implements HasEndpoint {
+public class ApplicationComponent extends Resource implements HasEndpoint, Kubernetes {
 
     private String name;
     private String image;
@@ -36,6 +36,16 @@ public class ApplicationComponent extends Resource implements HasEndpoint {
     @Override
     public URI getEndpoint() {
         return URI.create(this.getProtocol().toLowerCase() + "://" + this.getNode().getHost() + ":" + this.getPort());
+    }
+
+    @Override
+    public String getService() {
+        return null;
+    }
+
+    @Override
+    public String getPod() {
+        return null;
     }
 
     @Override

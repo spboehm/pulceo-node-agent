@@ -1,29 +1,21 @@
 package dev.pulceo.pna.service;
 
-import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.Configuration;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1Pod;
-import io.kubernetes.client.openapi.models.V1PodList;
-import io.kubernetes.client.openapi.models.V1Service;
-import io.kubernetes.client.openapi.models.V1ServiceList;
-import io.kubernetes.client.util.Config;
 
 import java.io.IOException;
 
 public class DeploymentServiceUnitTests {
     public static void main(String[] args) throws IOException, ApiException {
-        ApiClient client = Config.fromConfig("/home/sebastian.boehm/Desktop/config.yaml");
-        Configuration.setDefaultApiClient(client);
+//        ApiClient client = Config.fromConfig("/home/sebastian.boehm/Desktop/config.yaml");
+//        Configuration.setDefaultApiClient(client);
+//
+//        CoreV1Api api = new CoreV1Api();
 
-        CoreV1Api api = new CoreV1Api();
 
-
-        V1ServiceList v1ServiceList = api.listServiceForAllNamespaces(null, null, null, null, null, null, null, null, null, null, false);
-        for (V1Service s : v1ServiceList.getItems()) {
-            System.out.println(s.getMetadata().getName());
-        }
+//        V1ServiceList v1ServiceList = api.listServiceForAllNamespaces(null, null, null, null, null, null, null, null, null, null, false);
+//        for (V1Service s : v1ServiceList.getItems()) {
+//            System.out.println(s.getMetadata().getName());
+//        }
 
         // pod
 //        File file = new File("/home/sebastian.boehm/git/dissertation/pulceo-node-agent/src/test/java/dev/pulceo/pna/resources/k8s/test-pod.yaml");
@@ -34,12 +26,11 @@ public class DeploymentServiceUnitTests {
 //        File file2 = new File("/home/sebastian.boehm/git/dissertation/pulceo-node-agent/src/test/java/dev/pulceo/pna/resources/k8s/test-svc.yaml");
 //        V1Service svc = (V1Service) Yaml.load(file2);
 //        V1Service svc2 = api.createNamespacedService("pulceo", svc, null, null, null, null);
-
-        V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null, null);
-        for (V1Pod item : list.getItems()) {
-            System.out.println(item.getMetadata().getName());
+//
+//        V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null, null);
+//        for (V1Pod item : list.getItems()) {
+//            System.out.println(item.getMetadata().getName());
         }
 
 
-    }
 }

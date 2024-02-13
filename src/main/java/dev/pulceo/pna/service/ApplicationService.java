@@ -1,6 +1,7 @@
 package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.model.application.Application;
+import dev.pulceo.pna.model.application.ApplicationComponent;
 import dev.pulceo.pna.repository.ApplicationComponentRepository;
 import dev.pulceo.pna.repository.ApplicationRepository;
 import io.kubernetes.client.openapi.ApiClient;
@@ -38,8 +39,9 @@ public class ApplicationService {
         return this.applicationRepository.save(application);
     }
 
-
-
+    public ApplicationComponent createApplicationComponent(Application application, ApplicationComponent applicationComponent) {
+        return this.applicationComponentRepository.save(applicationComponent);
+    }
 
     @PostConstruct
     private void init() throws IOException, ApiException {

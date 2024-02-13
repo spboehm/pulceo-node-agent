@@ -2,10 +2,7 @@ package dev.pulceo.pna.model.application;
 
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.node.Node;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +23,15 @@ public class ApplicationComponent extends Resource implements HasEndpoint {
     private int port;
     private String protocol;
     private ApplicationComponentType applicationComponentType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    Application application;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Node node;
+
+    public void addApplication(Application application) {
+        this.application = application;
+    }
 
     @Override
     public URI getEndpoint() {

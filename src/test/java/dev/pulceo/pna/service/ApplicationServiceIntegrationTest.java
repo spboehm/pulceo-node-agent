@@ -59,6 +59,8 @@ public class ApplicationServiceIntegrationTest {
                 .applicationComponents(List.of(applicationComponent))
                 .build();
 
+        applicationComponent.addApplication(application);
+
         // when
         Application createdApplication = this.applicationService.createApplication(application);
 

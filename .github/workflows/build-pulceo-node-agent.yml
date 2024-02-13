@@ -16,6 +16,7 @@ jobs:
       - name: Copy k3s.yaml
         run: cp /home/$USER/.kube/config $GITHUB_WORKSPACE/.k3s.yaml
   build:
+    needs: prepare
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3

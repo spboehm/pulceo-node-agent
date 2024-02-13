@@ -1,5 +1,8 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.model.application.Application;
+import dev.pulceo.pna.repository.ApplicationComponentRepository;
+import dev.pulceo.pna.repository.ApplicationRepository;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
@@ -8,16 +11,35 @@ import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1ServiceList;
 import io.kubernetes.client.util.Config;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 @Service
-public class DeploymentService {
+public class ApplicationService {
 
     @Value("${k3s.config.path}")
     private String k3sConfigPath;
+
+    private ApplicationRepository applicationRepository;
+    private ApplicationComponentRepository applicationComponentRepository;
+
+    @Autowired
+    public ApplicationService(ApplicationRepository applicationRepository, ApplicationComponentRepository applicationComponentRepository) {
+        this.applicationRepository = applicationRepository;
+        this.applicationComponentRepository = applicationComponentRepository;
+    }
+
+    // TODO: create service / application
+    public Application createApplication(Application application) {
+        // TODO: do validation for all components
+        return this.applicationRepository.save(application);
+    }
+
+
+
 
     @PostConstruct
     private void init() throws IOException, ApiException {

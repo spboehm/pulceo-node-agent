@@ -87,7 +87,8 @@ public class CloudRegistrationService {
             if (localNode.isEmpty()) {
                 throw new CloudRegistrationException("Local node does not exist!");
             }
-            return this.cloudRegistrationRepository.save(new CloudRegistration(localNode.get().getUuid().toString(), this.pnaId, prmUUID, prmEndpoint, pnaToken));
+            // TODO: replace with pnaInitToken.getToken() with pnaToken in later use cases
+            return this.cloudRegistrationRepository.save(new CloudRegistration(localNode.get().getUuid().toString(), this.pnaId, prmUUID, prmEndpoint, pnaInitToken.getToken()));
         } else {
             throw new CloudRegistrationException("pnaInitToken does not exist!");
         }

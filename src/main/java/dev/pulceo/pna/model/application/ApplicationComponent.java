@@ -2,6 +2,7 @@ package dev.pulceo.pna.model.application;
 
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.node.Node;
+import io.kubernetes.client.openapi.models.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,7 +19,7 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicationComponent extends Resource implements HasEndpoint, Kubernetes {
+public class ApplicationComponent extends Resource implements HasEndpoint, KubernetesDeployable {
 
     private String name;
     private String image;
@@ -44,8 +47,27 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
     }
 
     @Override
-    public String getPod() {
-        return null;
+    public V1Deployment getDeployment() {
+        V1DeploymentBuilder v1DeploymentBuilder = new V1DeploymentBuilder()
+                .withApiVersion("apps/v1")
+                .withKind("Deployment")
+                .withMetadata(new V1ObjectMeta().name(name))
+                .withSpec(
+                        new V1DeploymentSpec()
+                                .replicas(1)
+                                .selector(new V1LabelSelector().putMatchLabelsItem("name", name))
+                                .template(
+                                        new V1PodTemplateSpec()
+                                                .metadata(new V1ObjectMeta().putLabelsItem("name", name))
+                                                .spec(
+                                                        new V1PodSpec()
+                                                                .containers(
+                                                                        Collections.singletonList(
+                                                                                new V1Container()
+                                                                                        .name(name)
+                                                                                        .image(image)
+                                                                                        .ports(List.of(new V1ContainerPort().containerPort(port))))))));
+        return v1DeploymentBuilder.build();
     }
 
     @Override

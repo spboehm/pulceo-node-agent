@@ -23,7 +23,7 @@ public class DeploymentServiceUnitTests {
 //        V1Pod pod2 = api.createNamespacedPod("pulceo", pod, null, null, null, null);
 
         // service
-//        File file2 = new File("/home/sebastian.boehm/git/dissertation/pulceo-node-agent/src/test/java/dev/pulceo/pna/resources/k8s/test-svc.yaml");
+//        File file2 = new File("/home/sebastian.boehm/git/dissertation/pulceo-node-agent/src/test/java/dev/pulceo/pna/resources/k8s/nginx-test-svc.yaml");
 //        V1Service svc = (V1Service) Yaml.load(file2);
 //        V1Service svc2 = api.createNamespacedService("pulceo", svc, null, null, null, null);
 //

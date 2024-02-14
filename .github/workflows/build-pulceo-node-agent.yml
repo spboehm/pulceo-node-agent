@@ -15,6 +15,10 @@ jobs:
         run: k3d cluster create pna-test --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer
   build:
     needs: prepare
+    env:
+      PNA_USERNAME: ${{ secrets.PNA_USERNAME }}
+      PNA_PASSWORD: ${{ secrets.PNA_PASSWORD }}
+      PNA_INIT_TOKEN: ${{ secrets.PNA_INIT_TOKEN }}
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3

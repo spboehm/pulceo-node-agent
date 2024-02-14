@@ -36,14 +36,31 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
         this.application = application;
     }
 
+    private String getKubernetesServiceProtocol() {
+        if ("UDP".equalsIgnoreCase(this.protocol)) {
+            return "UDP";
+        } else {
+           return "TCP";
+        }
+    }
+
     @Override
     public URI getEndpoint() {
         return URI.create(this.getProtocol().toLowerCase() + "://" + this.getNode().getHost() + ":" + this.getPort());
     }
 
     @Override
-    public String getService() {
-        return null;
+    public V1Service getService() {
+        V1ServiceBuilder v1ServiceBuilder = new V1ServiceBuilder()
+                .withApiVersion("v1")
+                .withKind("Service")
+                .withMetadata(new V1ObjectMeta().name(name).putLabelsItem("name", name))
+                .withSpec(
+                        new V1ServiceSpec()
+                                .addPortsItem(new V1ServicePort().port(this.port).protocol(this.getKubernetesServiceProtocol()))
+                                .putSelectorItem("name", name)
+                                .type("LoadBalancer"));
+        return v1ServiceBuilder.build();
     }
 
     @Override

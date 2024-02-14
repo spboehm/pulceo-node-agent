@@ -98,6 +98,40 @@ public class KubernetesService {
         }
     }
 
+    public void createService(KubernetesDeployable kubernetesDeployable) {
+        // TODO: check if service does already exist
+
+        try {
+            ApiClient client = Config.fromConfig(k3sConfigPath);
+            Configuration.setDefaultApiClient(client);
+            CoreV1Api api = new CoreV1Api();
+
+            V1Service v1Service = api.createNamespacedService(this.namespace, kubernetesDeployable.getService()).execute();
+
+            // Wait until service is ready
+            // TODO: replace with async callback
+            // TODO: care of NPE
+            Wait.poll(
+                    Duration.ofSeconds(3),
+                    Duration.ofSeconds(60),
+                    () -> {
+                        try {
+                            return api
+                                    .readNamespacedService(kubernetesDeployable.getService().getMetadata().getName(), namespace)
+                                    .execute()
+                                    .getStatus().getLoadBalancer().getIngress().get(0).getIp() != null;
+                        } catch (ApiException e) {
+                            return false;
+                        }
+                    });
+
+        } catch (ApiException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
     // TODO: simplify
     public boolean checkIfNamespaceAlreadyExists(String namespace) throws KubernetesServiceException {
         try {

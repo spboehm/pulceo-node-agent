@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -167,5 +168,29 @@ public class KubernetesServiceIntegrationTest {
         // then
         // TODO: replace with proper replacement - do not use the implementation in svc
         assertTrue(this.kubernetesService.isDeploymentExisting(this.namespace, "nginx"));
+    }
+
+    @Test
+    public void testServiceIfNotExists() throws KubernetesServiceException {
+        // given
+        Optional<Node> localnode = this.nodeService.readLocalNode();
+        this.kubernetesService.createNamespace(this.namespace);
+        ApplicationComponent applicationComponent = ApplicationComponent.builder()
+                .name("nginx")
+                .image("nginx")
+                .port(80)
+                .protocol("http")
+                .applicationComponentType(ApplicationComponentType.PUBLIC)
+                .node(localnode.get())
+                .build();
+        this.kubernetesService.createDeployment(applicationComponent);
+
+        // when
+        this.kubernetesService.createService(applicationComponent);
+
+        // then
+        WebTestClient webTestClient = WebTestClient.bindToServer().baseUrl("http://localhost:80").build();
+        webTestClient.get().exchange().expectStatus().is2xxSuccessful();
+
     }
 }

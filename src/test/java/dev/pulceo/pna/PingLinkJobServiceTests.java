@@ -155,7 +155,8 @@ public class PingLinkJobServiceTests {
 
         // when
         long scheduledPingJobId = this.jobService.schedulePingJob(pingJobId);
-        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        // TODO: rather a workaround instead of a solution
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(10);
         this.pingServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
         // initiate orderly shutdown
         this.jobService.cancelPingJob(scheduledPingJobId);

@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = { "pna.delay.tcp.port=10002", "pna.delay.udp.port=10003", "pna.mqtt.client.id=c5e48d11-e33e-47b2-b2c6-b4a01cc57a33"})
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class IperfControllerTests {
 
     @Autowired

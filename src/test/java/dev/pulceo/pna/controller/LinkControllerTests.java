@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = { "pna.delay.tcp.port=8002", "pna.delay.udp.port=8003", "pna.mqtt.client.id=551e8400-e29b-11d4-a716-446655440005"})
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class LinkControllerTests {
 
     @Autowired

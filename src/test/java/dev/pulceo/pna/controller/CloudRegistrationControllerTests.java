@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = { "pna.delay.tcp.port=7002", "pna.delay.udp.port=7003", "pna.mqtt.client.id=551e8400-e29b-11d4-a716-446655440004"})
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class CloudRegistrationControllerTests {
 
     @Autowired

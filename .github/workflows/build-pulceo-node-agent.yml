@@ -29,10 +29,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-        with:
-          arguments: build
+        run: ./gradlew build -DPNA_USERNAME=$PNA_USERNAME -DPNA_PASSWORD=$PNA_PASSWORD -DPNA_INIT_TOKEN=$PNA_INIT_TOKEN
   build-and-push-image:
     needs: build
     runs-on: self-hosted

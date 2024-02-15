@@ -14,6 +14,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class NetworkUtilizationMeasurement extends Resource {
+public class  NetworkUtilizationMeasurement extends Resource {
+
+    private String time;
+    private String iface;
+    private long rxBytes;
+    private long txBytes;
 
 }

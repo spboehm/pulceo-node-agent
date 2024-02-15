@@ -71,4 +71,28 @@ public class ResourceUtilizationServiceIntegrationTests {
         // then
         assertEquals(expectedMemoryUtilizationResult.getMemoryUtilizationMeasurement(), memoryUtilizationResult.getMemoryUtilizationMeasurement());
     }
+
+    @Test
+    public void testRetrieveNetworkUtilizationForPod() {
+        // given
+        String name = "my-nginx";
+        NetworkUtilizationResult expectedNetworkUtilizationResult = NetworkUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.POD)
+                .resourceName("my-nginx")
+                .time("2024-02-15T13:19:04Z")
+                .networkUtilizationMeasurement(NetworkUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:19:04Z")
+                        .iface("eth0")
+                        .rxBytes(850)
+                        .txBytes(892)
+                        .build())
+                .build();
+
+        // when
+        NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationForPod(ResourceUtilizationServiceIntegrationTests.jsonNode, name);
+
+        // then
+        assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
+    }
 }

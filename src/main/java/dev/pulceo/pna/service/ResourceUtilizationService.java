@@ -67,6 +67,28 @@ public class ResourceUtilizationService {
         return memoryUtilizationResult;
     }
 
+    public NetworkUtilizationResult retrieveNetworkUtilizationForPod(JsonNode jsonNode, String name) {
+        JsonNode pod = findPodJsonNode(jsonNode, name);
+        String time = pod.get("network").get("time").asText();
+        String iface = pod.get("network").get("name").asText();
+        long rxBytes = pod.get("network").get("rxBytes").asLong();
+        long txBytes = pod.get("network").get("txBytes").asLong();
+        NetworkUtilizationMeasurement networkUtilizationMeasurement = NetworkUtilizationMeasurement.builder()
+                .time(time)
+                .iface(iface)
+                .rxBytes(rxBytes)
+                .txBytes(txBytes)
+                .build();
+        NetworkUtilizationResult networkUtilizationResult = NetworkUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.POD)
+                .resourceName(name)
+                .time(time)
+                .networkUtilizationMeasurement(networkUtilizationMeasurement)
+                .build();
+        return networkUtilizationResult;
+    }
+
     private JsonNode findPodJsonNode(JsonNode jsonNode, String name) {
         JsonNode podsNode = jsonNode.get("pods");
         for (JsonNode podNode : podsNode) {

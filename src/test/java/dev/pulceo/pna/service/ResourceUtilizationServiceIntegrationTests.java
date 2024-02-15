@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -94,5 +95,29 @@ public class ResourceUtilizationServiceIntegrationTests {
 
         // then
         assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
+    }
+
+    @Test
+    public void testRetrieveDiskUtilizationForPod() {
+        // given
+        String name = "my-nginx";
+        StorageUtilizationResult expectedDiskUtilizationResult = StorageUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.POD)
+                .resourceName("my-nginx")
+                .time("2024-02-15T13:19:07Z")
+                .storageUtilizationMeasurement(StorageUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:19:07Z")
+                        .name("my-nginx-volumes")
+                        .usedBytes(BigInteger.valueOf(12288))
+                        .capacityBytes(new BigInteger("723957841920"))
+                        .build())
+                .build();
+
+        // when
+        StorageUtilizationResult diskUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationForFod(ResourceUtilizationServiceIntegrationTests.jsonNode, name);
+
+        // then
+        assertEquals(expectedDiskUtilizationResult.getStorageUtilizationMeasurement(), diskUtilizationResult.getStorageUtilizationMeasurement());
     }
 }

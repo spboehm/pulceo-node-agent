@@ -7,6 +7,8 @@ import io.swagger.v3.core.util.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+
 @Service
 public class ResourceUtilizationService {
 
@@ -17,16 +19,7 @@ public class ResourceUtilizationService {
         this.nodeService = nodeService;
     }
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    // Scope: node, application, for all application components automatically
-
-    // TODO: curl kubelet api and retrieve the json
-
-    private void retrieveStatsSummaryToken() {
-        // curl ...
-
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // Assumption, only one container per pod
     public CPUUtilizationResult retrieveCPUUtilizationForPod(JsonNode jsonNode, String name) {
@@ -87,6 +80,33 @@ public class ResourceUtilizationService {
                 .networkUtilizationMeasurement(networkUtilizationMeasurement)
                 .build();
         return networkUtilizationResult;
+    }
+
+    public StorageUtilizationResult retrieveStorageUtilizationForFod(JsonNode jsonNode, String name) {
+        JsonNode pod = findPodJsonNode(jsonNode, name);
+        BigInteger capacityBytes = pod.get("ephemeral-storage").get("capacityBytes").bigIntegerValue();
+        BigInteger usedBytes = new BigInteger("0");
+        JsonNode volumes = pod.get("volume");
+        for (JsonNode v : volumes) {
+            usedBytes = usedBytes.add(v.get("usedBytes").bigIntegerValue());
+        }
+
+        StorageUtilizationMeasurement storageUtilizationMeasurement = StorageUtilizationMeasurement.builder()
+                .time(pod.get("ephemeral-storage").get("time").asText())
+                .name(name + "-volumes")
+                .usedBytes(usedBytes)
+                .capacityBytes(capacityBytes)
+                .build();
+
+        StorageUtilizationResult storageUtilizationResult = StorageUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.POD)
+                .resourceName(name)
+                .time(pod.get("ephemeral-storage").get("time").asText())
+                .storageUtilizationMeasurement(storageUtilizationMeasurement)
+                .build();
+
+        return storageUtilizationResult;
     }
 
     private JsonNode findPodJsonNode(JsonNode jsonNode, String name) {

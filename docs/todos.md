@@ -22,6 +22,8 @@
 - [ ] Make sure defaults are set for all DTOs at one proper location
 - [ ] `ShortRequestDto` should be clear about the `UUID` and the mapping either to type `metric` or ``
 - [ ] add link `UUID` to all metrics
+- [ ] For metrics classes, consider using BigInteger or String for byte representation
+- [ ] Fix queue full bug in Bandwidth-related measurement tests
 
 ## Overall Issues
 

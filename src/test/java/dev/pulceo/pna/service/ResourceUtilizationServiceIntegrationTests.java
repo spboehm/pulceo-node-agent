@@ -1,9 +1,7 @@
 package dev.pulceo.pna.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import dev.pulceo.pna.model.resources.CPUUtilizationMeasurement;
-import dev.pulceo.pna.model.resources.CPUUtilizationResult;
-import dev.pulceo.pna.model.resources.K8sResourceType;
+import dev.pulceo.pna.model.resources.*;
 import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,20 +27,19 @@ public class ResourceUtilizationServiceIntegrationTests {
         ResourceUtilizationServiceIntegrationTests.jsonNode = Json.mapper().readTree(statsSummaryFile);
     }
 
-
     @Test
-    public void retrieveCPUUtilizationForPod() {
+    public void testRetrieveCPUUtilizationForPod() {
         // given
         String name = "my-nginx";
         CPUUtilizationResult expectedCPUUtilizationResult = CPUUtilizationResult.builder()
                 .srcHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName("my-nginx")
-                .time("2024-02-15T13:11:23Z")
+                .time("22024-02-15T13:18:56Z")
                 .cpuUtilizationMeasurement(CPUUtilizationMeasurement.builder()
-                        .time("2024-02-15T13:19:02Z")
+                        .time("2024-02-15T13:18:56Z")
                         .usageNanoCores(0)
-                        .usageCoreNanoSeconds(56525000)
+                        .usageCoreNanoSeconds(72698000)
                         .build())
                 .build();
 
@@ -53,4 +50,25 @@ public class ResourceUtilizationServiceIntegrationTests {
         assertEquals(expectedCPUUtilizationResult.getCpuUtilizationMeasurement(), cpuUtilizationResult.getCpuUtilizationMeasurement());
     }
 
+    @Test
+    public void testRetrieveMemoryUtilizationForPod() {
+        // given
+        String name = "my-nginx";
+        MemoryUtilizationResult expectedMemoryUtilizationResult = MemoryUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.POD)
+                .resourceName("my-nginx")
+                .time("2024-02-15T13:18:56Z")
+                .memoryUtilizationMeasurement(MemoryUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:18:56Z")
+                        .usageBytes(14315520)
+                        .build())
+                .build();
+
+        // when
+        MemoryUtilizationResult memoryUtilizationResult = this.resourceUtilizationService.retrieveMemoryUtilizationForPod(ResourceUtilizationServiceIntegrationTests.jsonNode, name);
+
+        // then
+        assertEquals(expectedMemoryUtilizationResult.getMemoryUtilizationMeasurement(), memoryUtilizationResult.getMemoryUtilizationMeasurement());
+    }
 }

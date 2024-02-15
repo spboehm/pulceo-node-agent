@@ -2,9 +2,7 @@ package dev.pulceo.pna.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.pulceo.pna.model.resources.CPUUtilizationMeasurement;
-import dev.pulceo.pna.model.resources.CPUUtilizationResult;
-import dev.pulceo.pna.model.resources.K8sResourceType;
+import dev.pulceo.pna.model.resources.*;
 import io.swagger.v3.core.util.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,10 +30,10 @@ public class ResourceUtilizationService {
 
     // Assumption, only one container per pod
     public CPUUtilizationResult retrieveCPUUtilizationForPod(JsonNode jsonNode, String name) {
-        JsonNode pod = findJsonNode(jsonNode, name);
-        String time = pod.get("containers").get(0).get("cpu").get("time").asText();
-        long usageNanoCores = pod.get("containers").get(0).get("cpu").get("usageNanoCores").asLong();
-        long usageCoreNanoSeconds = pod.get("containers").get(0).get("cpu").get("usageCoreNanoSeconds").asLong();
+        JsonNode pod = findPodJsonNode(jsonNode, name);
+        String time = pod.get("cpu").get("time").asText();
+        long usageNanoCores = pod.get("cpu").get("usageNanoCores").asLong();
+        long usageCoreNanoSeconds = pod.get("cpu").get("usageCoreNanoSeconds").asLong();
         CPUUtilizationMeasurement cpuUtilizationMeasurement  = CPUUtilizationMeasurement.builder()
                 .time(time)
                 .usageNanoCores(usageNanoCores)
@@ -51,7 +49,25 @@ public class ResourceUtilizationService {
         return cpuUtilizationResult;
     }
 
-    private JsonNode findJsonNode(JsonNode jsonNode, String name) {
+    public MemoryUtilizationResult retrieveMemoryUtilizationForPod(JsonNode jsonNode, String name) {
+        JsonNode pod = findPodJsonNode(jsonNode, name);
+        String time = pod.get("memory").get("time").asText();
+        long usageBytes = pod.get("memory").get("usageBytes").asLong();
+        MemoryUtilizationMeasurement memoryUtilizationMeasurement = MemoryUtilizationMeasurement.builder()
+                .time(time)
+                .usageBytes(usageBytes)
+                .build();
+        MemoryUtilizationResult memoryUtilizationResult = MemoryUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.POD)
+                .resourceName(name)
+                .time(time)
+                .memoryUtilizationMeasurement(memoryUtilizationMeasurement)
+                .build();
+        return memoryUtilizationResult;
+    }
+
+    private JsonNode findPodJsonNode(JsonNode jsonNode, String name) {
         JsonNode podsNode = jsonNode.get("pods");
         for (JsonNode podNode : podsNode) {
             JsonNode podRefNode = podNode.get("podRef");

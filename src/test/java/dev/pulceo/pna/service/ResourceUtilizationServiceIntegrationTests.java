@@ -120,4 +120,27 @@ public class ResourceUtilizationServiceIntegrationTests {
         // then
         assertEquals(expectedDiskUtilizationResult.getStorageUtilizationMeasurement(), diskUtilizationResult.getStorageUtilizationMeasurement());
     }
+
+    @Test
+    public void testRetrieveCPUUtilizationForNode() {
+        // given
+        String name = "k3d-pna-test-server-0";
+        CPUUtilizationResult expectedCPUUtilizationResult = CPUUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time("2024-02-15T13:18:57Z")
+                .cpuUtilizationMeasurement(CPUUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:18:57Z")
+                        .usageNanoCores(88914290)
+                        .usageCoreNanoSeconds(0)
+                        .build())
+                .build();
+
+        // when
+        CPUUtilizationResult cpuUtilizationResult = this.resourceUtilizationService.retrieveCPUUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNode);
+
+        // then
+        assertEquals(expectedCPUUtilizationResult.getCpuUtilizationMeasurement(), cpuUtilizationResult.getCpuUtilizationMeasurement());
+    }
 }

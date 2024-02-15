@@ -3,7 +3,6 @@ package dev.pulceo.pna.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.model.resources.*;
-import io.swagger.v3.core.util.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,6 +108,10 @@ public class ResourceUtilizationService {
         return storageUtilizationResult;
     }
 
+    private JsonNode findNodeJsonNode(JsonNode jsonNode) {
+        return jsonNode.get("node");
+    }
+
     private JsonNode findPodJsonNode(JsonNode jsonNode, String name) {
         JsonNode podsNode = jsonNode.get("pods");
         for (JsonNode podNode : podsNode) {
@@ -122,10 +125,27 @@ public class ResourceUtilizationService {
         throw new RuntimeException("Pod not found: " + name);
     }
 
-    public void retrieveCPUUtilizationForNode(Json json, String name) {
+    public CPUUtilizationResult retrieveCPUUtilizationForNode(JsonNode json) {
+        JsonNode node = findNodeJsonNode(json);
+        String name = node.get("nodeName").asText();
+        String time = node.get("cpu").get("time").asText();
+        long usageNanoCores = node.get("cpu").get("usageNanoCores").asLong();
+        long usageCoreNanoSeconds = 0; // TODO: fix because of overflow
 
+        CPUUtilizationMeasurement cpuUtilizationMeasurement  = CPUUtilizationMeasurement.builder()
+                .time(time)
+                .usageNanoCores(usageNanoCores)
+                .usageCoreNanoSeconds(usageCoreNanoSeconds)
+                .build();
+
+        CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time(time)
+                .cpuUtilizationMeasurement(cpuUtilizationMeasurement)
+                .build();
+        return cpuUtilizationResult;
     }
-
-
 
 }

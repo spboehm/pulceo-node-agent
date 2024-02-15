@@ -54,6 +54,7 @@ public class KubernetesServiceIntegrationTest {
         this.api = new CoreV1Api();
         this.appsV1Api = new AppsV1Api();
         this.deleteNamespace(this.namespace);
+
     }
 
     @AfterEach
@@ -192,5 +193,14 @@ public class KubernetesServiceIntegrationTest {
         WebTestClient webTestClient = WebTestClient.bindToServer().baseUrl("http://localhost:80").build();
         webTestClient.get().exchange().expectStatus().is2xxSuccessful();
 
+    }
+
+    @Test
+    public void getAccessTo() throws IOException, ApiException {
+        // given
+
+        // when
+
+        // then
     }
 }

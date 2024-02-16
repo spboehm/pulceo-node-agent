@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dev.pulceo.pna.model.resources.*;
 import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,11 @@ public class ResourceUtilizationServiceIntegrationTests {
     public static void setup() throws IOException {
         File statsSummaryFile = new File("src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary.json");
         ResourceUtilizationServiceIntegrationTests.jsonNode = Json.mapper().readTree(statsSummaryFile);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        ReflectionTestUtils.setField(resourceUtilizationService, "CPU_CORES", 12);
     }
 
     @Test

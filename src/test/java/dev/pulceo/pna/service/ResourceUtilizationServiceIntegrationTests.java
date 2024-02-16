@@ -201,4 +201,28 @@ public class ResourceUtilizationServiceIntegrationTests {
         assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
     }
 
+    @Test
+    public void testRetrieveDiskUtilizationForNode() {
+        // given
+        String name = "k3d-pna-test-server-0";
+        StorageUtilizationResult expectedDiskUtilizationResult = StorageUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time("2024-02-15T13:18:57Z")
+                .storageUtilizationMeasurement(StorageUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:18:57Z")
+                        .name(name + "-fs")
+                        .usedBytes(247234912256L)
+                        .capacityBytes(723957841920L)
+                        .usageStoragePercentage(34.15f)
+                        .build())
+                .build();
+
+        // when
+        StorageUtilizationResult diskUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNode);
+
+        // then
+        assertEquals(expectedDiskUtilizationResult.getStorageUtilizationMeasurement(), diskUtilizationResult.getStorageUtilizationMeasurement());
+    }
 }

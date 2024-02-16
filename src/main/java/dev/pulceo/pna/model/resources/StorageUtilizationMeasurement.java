@@ -20,5 +20,6 @@ public class StorageUtilizationMeasurement extends Resource {
     private String name;
     private long usedBytes;
     private long capacityBytes;
+    private float usageStoragePercentage;
 
 }

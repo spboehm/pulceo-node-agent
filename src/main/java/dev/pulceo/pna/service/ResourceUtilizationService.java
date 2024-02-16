@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResourceUtilizationService {
 
-    private NodeService nodeService;
+    private final NodeService nodeService;
     // TODO: fix potentially happening NPE
     private final int CPU_CORES;
     private final float MEMORY_CAPACITY;
@@ -204,5 +204,29 @@ public class ResourceUtilizationService {
     }
 
 
+    public StorageUtilizationResult retrieveStorageUtilizationForNode(JsonNode jsonNode) {
+        JsonNode node = findNodeJsonNode(jsonNode);
+        String name = node.get("nodeName").asText();
+        long capacityBytes = node.get("fs").get("capacityBytes").asLong();
+        long usedBytes = node.get("fs").get("usedBytes").asLong();
+        float usageMemoryPercentage = (float) Math.round(((float) usedBytes / capacityBytes) * 10000) / 10000 * 100;
 
+        StorageUtilizationMeasurement storageUtilizationMeasurement = StorageUtilizationMeasurement.builder()
+                .time(node.get("fs").get("time").asText())
+                .name(name + "-fs")
+                .usedBytes(usedBytes)
+                .capacityBytes(capacityBytes)
+                .usageStoragePercentage(usageMemoryPercentage)
+                .build();
+
+        StorageUtilizationResult storageUtilizationResult = StorageUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time(node.get("fs").get("time").asText())
+                .storageUtilizationMeasurement(storageUtilizationMeasurement)
+                .build();
+
+        return storageUtilizationResult;
+    }
 }

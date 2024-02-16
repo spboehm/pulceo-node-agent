@@ -11,11 +11,13 @@ public class ResourceUtilizationService {
     private NodeService nodeService;
     // TODO: fix potentially happening NPE
     private final int CPU_CORES;
+    private final float MEMORY_CAPACITY;
 
     @Autowired
     public ResourceUtilizationService(NodeService nodeService) {
         this.nodeService = nodeService;
         CPU_CORES = this.nodeService.readLocalNode().get().getCpuResource().getCpuCapacity().getCores();
+        MEMORY_CAPACITY = this.nodeService.readLocalNode().get().getMemoryResource().getMemoryCapacity().getSize();
     }
 
     // Assumption, only one container per pod
@@ -29,7 +31,7 @@ public class ResourceUtilizationService {
                 .time(time)
                 .usageNanoCores(usageNanoCores)
                 .usageCoreNanoSeconds(usageCoreNanoSeconds)
-                .usagePercentage(0.0f)
+                .usageCPUPercentage(0.0f)
                 .build();
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
                 .srcHost(this.nodeService.readLocalNode().get().getHost())
@@ -137,7 +139,7 @@ public class ResourceUtilizationService {
                 .time(time)
                 .usageNanoCores(usageNanoCores)
                 .usageCoreNanoSeconds(usageCoreNanoSeconds)
-                .usagePercentage(usagePercent)
+                .usageCPUPercentage(usagePercent)
                 .build();
 
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
@@ -150,4 +152,28 @@ public class ResourceUtilizationService {
         return cpuUtilizationResult;
     }
 
+    public MemoryUtilizationResult retrieveMemoryUtilizationForNode(JsonNode jsonNode) {
+        JsonNode node = findNodeJsonNode(jsonNode);
+        String name = node.get("nodeName").asText();
+        String time = node.get("memory").get("time").asText();
+        long usageBytes = node.get("memory").get("usageBytes").asLong();
+        long availableBytes = node.get("memory").get("availableBytes").asLong();
+        float usageMemoryPercentage = (float) Math.round(((float) usageBytes / availableBytes) * 10000) / 10000 * 100;
+
+        MemoryUtilizationMeasurement memoryUtilizationMeasurement = MemoryUtilizationMeasurement.builder()
+                .time(time)
+                .usageBytes(usageBytes)
+                .availableBytes(availableBytes)
+                .usageMemoryPercentage(usageMemoryPercentage)
+                .build();
+        MemoryUtilizationResult memoryUtilizationResult = MemoryUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time(time)
+                .memoryUtilizationMeasurement(memoryUtilizationMeasurement)
+                .build();
+
+        return memoryUtilizationResult;
+    }
 }

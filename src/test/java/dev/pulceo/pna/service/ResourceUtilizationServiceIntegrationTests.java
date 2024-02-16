@@ -32,6 +32,7 @@ public class ResourceUtilizationServiceIntegrationTests {
     @BeforeEach
     public void setUp() {
         ReflectionTestUtils.setField(resourceUtilizationService, "CPU_CORES", 12);
+        ReflectionTestUtils.setField(resourceUtilizationService, "MEMORY_CAPACITY", 15.322609f);
     }
 
     @Test
@@ -47,7 +48,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                         .time("2024-02-15T13:18:56Z")
                         .usageNanoCores(0)
                         .usageCoreNanoSeconds(72698000)
-                        .usagePercentage(0.00f)
+                        .usageCPUPercentage(0.00f)
                         .build())
                 .build();
 
@@ -141,7 +142,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                         .time("2024-02-15T13:18:57Z")
                         .usageNanoCores(88914290)
                         .usageCoreNanoSeconds(645628635000L)
-                        .usagePercentage(7.41f)
+                        .usageCPUPercentage(7.41f)
                         .build())
                 .build();
 
@@ -151,4 +152,29 @@ public class ResourceUtilizationServiceIntegrationTests {
         // then
         assertEquals(expectedCPUUtilizationResult.getCpuUtilizationMeasurement(), cpuUtilizationResult.getCpuUtilizationMeasurement());
     }
+
+    @Test
+    public void testRetrieveMemoryUtilizationForNode() {
+        // given
+        String name = "k3d-pna-test-server-0";
+        MemoryUtilizationResult expectedMemoryUtilizationResult = MemoryUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time("2024-02-15T13:18:57Z")
+                .memoryUtilizationMeasurement(MemoryUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:18:57Z")
+                        .usageBytes(626122752)
+                        .availableBytes(15880196096L)
+                        .usageMemoryPercentage(3.94f)
+                        .build())
+                .build();
+
+        // when
+        MemoryUtilizationResult memoryUtilizationResult = this.resourceUtilizationService.retrieveMemoryUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNode);
+
+        // then
+        assertEquals(expectedMemoryUtilizationResult.getMemoryUtilizationMeasurement(), memoryUtilizationResult.getMemoryUtilizationMeasurement());
+    }
+
 }

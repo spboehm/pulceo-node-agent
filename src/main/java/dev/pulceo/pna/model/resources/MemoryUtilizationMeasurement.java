@@ -18,5 +18,7 @@ public class MemoryUtilizationMeasurement extends Resource {
 
     private String time;
     private long usageBytes;
+    private long availableBytes;
+    private float usageMemoryPercentage;
 
 }

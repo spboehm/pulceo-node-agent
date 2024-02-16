@@ -177,4 +177,28 @@ public class ResourceUtilizationServiceIntegrationTests {
         assertEquals(expectedMemoryUtilizationResult.getMemoryUtilizationMeasurement(), memoryUtilizationResult.getMemoryUtilizationMeasurement());
     }
 
+    @Test
+    public void testRetrieveNetworkUtilizationForNode() {
+        // given
+        String name = "k3d-pna-test-server-0";
+        NetworkUtilizationResult expectedNetworkUtilizationResult = NetworkUtilizationResult.builder()
+                .srcHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time("2024-02-15T13:18:57Z")
+                .networkUtilizationMeasurement(NetworkUtilizationMeasurement.builder()
+                        .time("2024-02-15T13:18:57Z")
+                        .iface("eth0")
+                        .rxBytes(134048355)
+                        .txBytes(8865147)
+                        .build())
+                .build();
+
+        // when
+        NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNode);
+
+        // then
+        assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
+    }
+
 }

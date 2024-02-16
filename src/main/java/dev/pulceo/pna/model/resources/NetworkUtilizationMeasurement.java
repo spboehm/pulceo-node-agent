@@ -2,10 +2,7 @@ package dev.pulceo.pna.model.resources;
 
 import dev.pulceo.pna.model.Resource;
 import jakarta.persistence.Entity;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity

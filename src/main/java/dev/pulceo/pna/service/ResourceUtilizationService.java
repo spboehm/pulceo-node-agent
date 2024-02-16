@@ -176,4 +176,33 @@ public class ResourceUtilizationService {
 
         return memoryUtilizationResult;
     }
+
+    public NetworkUtilizationResult retrieveNetworkUtilizationForNode(JsonNode jsonNode) {
+        JsonNode node = findNodeJsonNode(jsonNode);
+        String name = node.get("nodeName").asText();
+        String time = node.get("network").get("time").asText();
+        String iface = node.get("network").get("name").asText();
+        long rxBytes = node.get("network").get("rxBytes").asLong();
+        long txBytes = node.get("network").get("txBytes").asLong();
+
+        NetworkUtilizationMeasurement networkUtilizationMeasurement = NetworkUtilizationMeasurement.builder()
+                .time(time)
+                .iface(iface)
+                .rxBytes(rxBytes)
+                .txBytes(txBytes)
+                .build();
+
+        NetworkUtilizationResult networkUtilizationResult = NetworkUtilizationResult.builder()
+                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time(time)
+                .networkUtilizationMeasurement(networkUtilizationMeasurement)
+                .build();
+
+        return networkUtilizationResult;
+    }
+
+
+
 }

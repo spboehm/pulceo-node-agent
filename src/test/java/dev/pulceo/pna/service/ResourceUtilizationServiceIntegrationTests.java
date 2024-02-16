@@ -40,6 +40,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                         .time("2024-02-15T13:18:56Z")
                         .usageNanoCores(0)
                         .usageCoreNanoSeconds(72698000)
+                        .usagePercentage(0.00f)
                         .build())
                 .build();
 

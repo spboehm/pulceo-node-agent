@@ -24,10 +24,12 @@ public class ResourceUtilizationService {
         String time = pod.get("cpu").get("time").asText();
         long usageNanoCores = pod.get("cpu").get("usageNanoCores").asLong();
         long usageCoreNanoSeconds = pod.get("cpu").get("usageCoreNanoSeconds").asLong();
+        float usagePercent = (float) Math.round(((double) usageNanoCores / (CPU_CORES * 1000000) * 100)) / 100;
         CPUUtilizationMeasurement cpuUtilizationMeasurement  = CPUUtilizationMeasurement.builder()
                 .time(time)
                 .usageNanoCores(usageNanoCores)
                 .usageCoreNanoSeconds(usageCoreNanoSeconds)
+                .usagePercentage(0.0f)
                 .build();
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
                 .srcHost(this.nodeService.readLocalNode().get().getHost())

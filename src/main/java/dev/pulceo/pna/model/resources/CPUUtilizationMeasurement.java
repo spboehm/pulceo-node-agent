@@ -19,5 +19,6 @@ public class CPUUtilizationMeasurement extends Resource {
     private String time;
     private long usageNanoCores;
     private long usageCoreNanoSeconds;
+    private float usagePercentage;
 
 }

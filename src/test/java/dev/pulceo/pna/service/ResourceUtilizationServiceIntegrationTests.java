@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -109,8 +108,8 @@ public class ResourceUtilizationServiceIntegrationTests {
                 .storageUtilizationMeasurement(StorageUtilizationMeasurement.builder()
                         .time("2024-02-15T13:19:07Z")
                         .name("my-nginx-volumes")
-                        .usedBytes(BigInteger.valueOf(12288))
-                        .capacityBytes(new BigInteger("723957841920"))
+                        .usedBytes(12288)
+                        .capacityBytes(723957841920L)
                         .build())
                 .build();
 
@@ -133,7 +132,8 @@ public class ResourceUtilizationServiceIntegrationTests {
                 .cpuUtilizationMeasurement(CPUUtilizationMeasurement.builder()
                         .time("2024-02-15T13:18:57Z")
                         .usageNanoCores(88914290)
-                        .usageCoreNanoSeconds(0)
+                        .usageCoreNanoSeconds(645628635000L)
+                        .usagePercentage(7.41f)
                         .build())
                 .build();
 

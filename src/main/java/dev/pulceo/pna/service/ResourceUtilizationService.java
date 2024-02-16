@@ -1,24 +1,22 @@
 package dev.pulceo.pna.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.model.resources.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigInteger;
 
 @Service
 public class ResourceUtilizationService {
 
     private NodeService nodeService;
+    // TODO: fix potentially happening NPE
+    private final int CPU_CORES;
 
     @Autowired
     public ResourceUtilizationService(NodeService nodeService) {
         this.nodeService = nodeService;
+        CPU_CORES = this.nodeService.readLocalNode().get().getCpuResource().getCpuCapacity().getCores();
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // Assumption, only one container per pod
     public CPUUtilizationResult retrieveCPUUtilizationForPod(JsonNode jsonNode, String name) {
@@ -83,11 +81,11 @@ public class ResourceUtilizationService {
 
     public StorageUtilizationResult retrieveStorageUtilizationForFod(JsonNode jsonNode, String name) {
         JsonNode pod = findPodJsonNode(jsonNode, name);
-        BigInteger capacityBytes = pod.get("ephemeral-storage").get("capacityBytes").bigIntegerValue();
-        BigInteger usedBytes = new BigInteger("0");
+        long capacityBytes = pod.get("ephemeral-storage").get("capacityBytes").asLong();
+        long usedBytes = 0;
         JsonNode volumes = pod.get("volume");
         for (JsonNode v : volumes) {
-            usedBytes = usedBytes.add(v.get("usedBytes").bigIntegerValue());
+            usedBytes += v.get("usedBytes").asLong();
         }
 
         StorageUtilizationMeasurement storageUtilizationMeasurement = StorageUtilizationMeasurement.builder()
@@ -130,12 +128,14 @@ public class ResourceUtilizationService {
         String name = node.get("nodeName").asText();
         String time = node.get("cpu").get("time").asText();
         long usageNanoCores = node.get("cpu").get("usageNanoCores").asLong();
-        long usageCoreNanoSeconds = 0; // TODO: fix because of overflow
+        long usageCoreNanoSeconds = node.get("cpu").get("usageCoreNanoSeconds").asLong();
+        float usagePercent = (float) Math.round(((double) usageNanoCores / (CPU_CORES * 1000000) * 100)) / 100;
 
         CPUUtilizationMeasurement cpuUtilizationMeasurement  = CPUUtilizationMeasurement.builder()
                 .time(time)
                 .usageNanoCores(usageNanoCores)
                 .usageCoreNanoSeconds(usageCoreNanoSeconds)
+                .usagePercentage(usagePercent)
                 .build();
 
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()

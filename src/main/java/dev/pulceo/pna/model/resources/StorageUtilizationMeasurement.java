@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigInteger;
-
 @Entity
 @Getter
 @Setter
@@ -20,7 +18,7 @@ public class StorageUtilizationMeasurement extends Resource {
 
     private String time;
     private String name;
-    private BigInteger usedBytes;
-    private BigInteger capacityBytes;
+    private long usedBytes;
+    private long capacityBytes;
 
 }

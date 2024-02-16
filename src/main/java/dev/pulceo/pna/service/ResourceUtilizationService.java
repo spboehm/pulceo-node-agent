@@ -1,23 +1,70 @@
 package dev.pulceo.pna.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.pulceo.pna.exception.ProcessException;
+import dev.pulceo.pna.exception.ResourceServiceUtilizationException;
 import dev.pulceo.pna.model.resources.*;
+import dev.pulceo.pna.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ResourceUtilizationService {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final NodeService nodeService;
     // TODO: fix potentially happening NPE
     private final int CPU_CORES;
     private final float MEMORY_CAPACITY;
 
+    @Value("${k3s.api.server.host}")
+    private String API_SERVER_HOST;
+    @Value("${k3s.api.server.port}")
+    private String API_SERVER_PORT;
+    @Value("${k3s.api.service.account.token.path}")
+    private String API_SERVICE_ACCOUNT_TOKEN_PATH;
+    @Value("${k3s.api.service.account.ca.crt.path}")
+    private String API_SERVICE_ACOUNT_CA_CERT_PATH;
+    @Value("${k3s.nodename}")
+    private String K3S_NODENAME;
+
     @Autowired
     public ResourceUtilizationService(NodeService nodeService) {
         this.nodeService = nodeService;
         CPU_CORES = this.nodeService.readLocalNode().get().getCpuResource().getCpuCapacity().getCores();
         MEMORY_CAPACITY = this.nodeService.readLocalNode().get().getMemoryResource().getMemoryCapacity().getSize();
+
+    }
+
+    public JsonNode readStatSummaryFromKubelet() throws ResourceServiceUtilizationException {
+        // TODO: read token
+        try {
+            String token = Files.readString(Path.of(API_SERVICE_ACCOUNT_TOKEN_PATH));
+            ProcessBuilder processBuilder = new ProcessBuilder("curl" , "--cacert", API_SERVICE_ACOUNT_CA_CERT_PATH, "--header", "Authorization: Bearer " + token, "-X", "GET", "https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/"+K3S_NODENAME+"/proxy/stats/summary");
+            Process process = processBuilder.start();
+            List<String> strings =  ProcessUtils.readProcessOutput(process.getInputStream());
+            return this.objectMapper.readTree(strings.stream().collect(Collectors.joining("\n")));
+        } catch (IOException | ProcessException e) {
+            throw new ResourceServiceUtilizationException("Could not read measurement from kubelet", e);
+        }
+    }
+
+    public CPUUtilizationResult retrieveCPUUtilizationForPod(String name) {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveCPUUtilizationForPod(jsonNode, name);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve CPU utilization for pod: " + name, e);
+        }
     }
 
     // Assumption, only one container per pod
@@ -43,6 +90,15 @@ public class ResourceUtilizationService {
         return cpuUtilizationResult;
     }
 
+    public MemoryUtilizationResult retrieveMemoryUtilizationForPod(String name) {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveMemoryUtilizationForPod(jsonNode, name);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve memory utilization for pod: " + name, e);
+        }
+    }
+
     public MemoryUtilizationResult retrieveMemoryUtilizationForPod(JsonNode jsonNode, String name) {
         JsonNode pod = findPodJsonNode(jsonNode, name);
         String time = pod.get("memory").get("time").asText();
@@ -59,6 +115,15 @@ public class ResourceUtilizationService {
                 .memoryUtilizationMeasurement(memoryUtilizationMeasurement)
                 .build();
         return memoryUtilizationResult;
+    }
+
+    public NetworkUtilizationResult retrieveNetworkUtilizationForPod(String name) {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveNetworkUtilizationForPod(jsonNode, name);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve network utilization for pod: " + name, e);
+        }
     }
 
     public NetworkUtilizationResult retrieveNetworkUtilizationForPod(JsonNode jsonNode, String name) {
@@ -81,6 +146,15 @@ public class ResourceUtilizationService {
                 .networkUtilizationMeasurement(networkUtilizationMeasurement)
                 .build();
         return networkUtilizationResult;
+    }
+
+    public StorageUtilizationResult retrieveStorageUtilizationForPod(String name) {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveStorageUtilizationForFod(jsonNode, name);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve storage utilization for pod: " + name, e);
+        }
     }
 
     public StorageUtilizationResult retrieveStorageUtilizationForFod(JsonNode jsonNode, String name) {
@@ -127,6 +201,15 @@ public class ResourceUtilizationService {
         throw new RuntimeException("Pod not found: " + name);
     }
 
+    public CPUUtilizationResult retrieveCPUUtilizationForNode() {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveCPUUtilizationForNode(jsonNode);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve CPU utilization for node", e);
+        }
+    }
+
     public CPUUtilizationResult retrieveCPUUtilizationForNode(JsonNode json) {
         JsonNode node = findNodeJsonNode(json);
         String name = node.get("nodeName").asText();
@@ -152,6 +235,15 @@ public class ResourceUtilizationService {
         return cpuUtilizationResult;
     }
 
+    public MemoryUtilizationResult retrieveMemoryUtilizationForNode() {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveMemoryUtilizationForNode(jsonNode);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve memory utilization for node", e);
+        }
+    }
+
     public MemoryUtilizationResult retrieveMemoryUtilizationForNode(JsonNode jsonNode) {
         JsonNode node = findNodeJsonNode(jsonNode);
         String name = node.get("nodeName").asText();
@@ -175,6 +267,15 @@ public class ResourceUtilizationService {
                 .build();
 
         return memoryUtilizationResult;
+    }
+
+    public NetworkUtilizationResult retrieveNetworkUtilizationForNode() {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveNetworkUtilizationForNode(jsonNode);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve network utilization for node", e);
+        }
     }
 
     public NetworkUtilizationResult retrieveNetworkUtilizationForNode(JsonNode jsonNode) {
@@ -203,6 +304,14 @@ public class ResourceUtilizationService {
         return networkUtilizationResult;
     }
 
+    public StorageUtilizationResult retrieveStorageUtilizationForNode() {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            return retrieveStorageUtilizationForNode(jsonNode);
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve storage utilization for node", e);
+        }
+    }
 
     public StorageUtilizationResult retrieveStorageUtilizationForNode(JsonNode jsonNode) {
         JsonNode node = findNodeJsonNode(jsonNode);
@@ -229,4 +338,5 @@ public class ResourceUtilizationService {
 
         return storageUtilizationResult;
     }
+
 }

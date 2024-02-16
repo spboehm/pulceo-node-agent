@@ -1,6 +1,7 @@
 package dev.pulceo.pna.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import dev.pulceo.pna.exception.ResourceServiceUtilizationException;
 import dev.pulceo.pna.model.resources.*;
 import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.BeforeAll;
@@ -224,5 +225,16 @@ public class ResourceUtilizationServiceIntegrationTests {
 
         // then
         assertEquals(expectedDiskUtilizationResult.getStorageUtilizationMeasurement(), diskUtilizationResult.getStorageUtilizationMeasurement());
+    }
+
+    @Test
+    public void testReadFromKubelet() throws ResourceServiceUtilizationException {
+        // given
+
+        // when
+        JsonNode jsonNode = this.resourceUtilizationService.readStatSummaryFromKubelet();
+
+        // then
+        assertEquals("k3d-pna-test-server-0", jsonNode.get("node").get("nodeName").asText());
     }
 }

@@ -44,6 +44,12 @@ public class JobService {
     private LinkJobRepository linkJobRepository;
 
     @Autowired
+    private NodeJobRepository nodeJobRepository;
+
+    @Autowired
+    private ResourceUtilizationJobRepository resourceUtilizationJobRepository;
+
+    @Autowired
     private JobRepository jobRepository;
 
     @Autowired
@@ -92,6 +98,19 @@ public class JobService {
 
     public Optional<Job> readJob(long id) {
         return this.jobRepository.findById(id);
+    }
+
+    public Optional<NodeJob> readNodeJob(long id) throws JobServiceException {
+        Optional<NodeJob> retrievedJob = this.nodeJobRepository.findById(id);
+        if (retrievedJob.isPresent()) {
+            return this.nodeJobRepository.findById(id);
+        } else {
+            throw new JobServiceException("Requested job was not found!");
+        }
+    }
+
+    public ResourceUtilizationJob createNodeJob(ResourceUtilizationJob resourceUtilizationJob) {
+        return this.resourceUtilizationJobRepository.save(resourceUtilizationJob);
     }
 
     public Optional<LinkJob> readLinkJob(long id) throws JobServiceException {

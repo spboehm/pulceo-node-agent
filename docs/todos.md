@@ -24,6 +24,7 @@
 - [ ] add link `UUID` to all metrics
 - [ ] For metrics classes, consider using BigInteger or String for byte representation
 - [ ] Fix queue full bug in Bandwidth-related measurement tests
+- [ ] Make sure that NodeName is properly set in `application.properties`. Check on start...
 
 ## CPU Utilization Service
 

@@ -101,7 +101,7 @@ public class NodeJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleResourceUtilizationJobForCPU(id);
-        BlockingQueue<Message> cpuUtilizationResult = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> cpuUtilizationResult = new ArrayBlockingQueue<>(10);
         this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> cpuUtilizationResult.add((Message) message.getPayload()));
 
         // initiate orderly shutdown

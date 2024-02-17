@@ -157,7 +157,7 @@ public class IperfLinkJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleIperfJob(id);
-        BlockingQueue<Message> iperfResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> iperfResultBlockingQueue = new ArrayBlockingQueue<>(10);
         this.bandwidthServiceMessageChannel.subscribe(message -> {
             iperfResultBlockingQueue.add((Message) message.getPayload());
         });

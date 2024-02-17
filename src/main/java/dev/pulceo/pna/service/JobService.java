@@ -123,6 +123,10 @@ public class JobService {
         return this.resourceUtilizationJobRepository.save(resourceUtilizationJob);
     }
 
+    public Optional<ResourceUtilizationJob> readNodeResourceUtilizationJob(Long id) {
+        return this.resourceUtilizationJobRepository.findById(id);
+    }
+
     public long scheduleResourceUtilizationJobForCPU(long id) {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();

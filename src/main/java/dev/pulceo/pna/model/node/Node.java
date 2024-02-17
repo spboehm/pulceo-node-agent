@@ -16,7 +16,8 @@ import java.util.List;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -87,4 +88,9 @@ public class Node extends Resource {
     @Builder.Default
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private MemoryResource memoryResource= MemoryResource.builder().build();
+
+    public void addJob(NodeJob nodeJob) {
+        this.nodeJobs.add(nodeJob);
+        nodeJob.setNode(this);
+    }
 }

@@ -1,15 +1,24 @@
 package dev.pulceo.pna.controller;
 
+import dev.pulceo.pna.dto.metricrequests.CreateNewResourceUtilizationDTO;
+import dev.pulceo.pna.dto.metricrequests.ShortNodeMetricResponseDTO;
 import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dto.node.NodeDTO;
 import dev.pulceo.pna.dto.node.cpu.CPUResourceDTO;
 import dev.pulceo.pna.dto.node.memory.MemoryResourceDTO;
+import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.model.jobs.ResourceUtilizationJob;
 import dev.pulceo.pna.model.node.CPU;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.resources.K8sResourceType;
+import dev.pulceo.pna.model.resources.ResourceUtilizationRequest;
+import dev.pulceo.pna.model.resources.ResourceUtilizationType;
+import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.NodeService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +32,16 @@ public class NodeController {
 
     private final NodeService nodeService;
     private final ModelMapper modelMapper;
+    private final JobService jobService;
+
+    @Value("${k3s.nodename}")
+    private String k3sNodeName;
 
     @Autowired
-    public NodeController(NodeService nodeService, ModelMapper modelMapper) {
+    public NodeController(NodeService nodeService, ModelMapper modelMapper, JobService jobService) {
         this.nodeService = nodeService;
         this.modelMapper = modelMapper;
+        this.jobService = jobService;
     }
 
     @GetMapping("/{uuid}")
@@ -67,6 +81,44 @@ public class NodeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/localNode/metric-requests")
+    public ResponseEntity<ShortNodeMetricResponseDTO> createMetricRequest(@Valid @RequestBody CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO) throws JobServiceException {
+        Optional<Node> retrievedNode = this.nodeService.readLocalNode();
+
+        if (retrievedNode.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Create Request
+        ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
+                .resourceUtilizationType(ResourceUtilizationType.CPU_UTIL)
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(this.k3sNodeName)
+                .build();
+        ResourceUtilizationJob resourceUtilizationJob = ResourceUtilizationJob.builder()
+                .resourceUtilizationType(ResourceUtilizationType.CPU_UTIL)
+                .resourceUtilizationRequest(resourceUtilizationRequest)
+                .recurrence(createNewResourceUtilizationDTO.getRecurrence())
+                .build();
+        ResourceUtilizationJob savedResourceUtilizationJob = this.jobService.createNodeResourceUtilizationJob(resourceUtilizationJob);
+        Node fullNode = this.nodeService.readNodeByUUID(retrievedNode.get().getUuid()).get();
+        fullNode.addJob(resourceUtilizationJob);
+        this.nodeService.updateNode(fullNode);
+
+        // if enabled
+        if (savedResourceUtilizationJob.isEnabled()) {
+            this.jobService.enableNpingJob(resourceUtilizationJob.getId());
+        }
+        long id = this.jobService.scheduleResourceUtilizationJobForCPU(savedResourceUtilizationJob.getId());
+        Optional<ResourceUtilizationJob> createdResourceUtilizationJob = this.jobService.readNodeResourceUtilizationJob(id);
+        if (createdResourceUtilizationJob.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        ShortNodeMetricResponseDTO createdShortNodeMetricResponseDTO = new ShortNodeMetricResponseDTO(createdResourceUtilizationJob.get().getUuid(), fullNode.getUuid(), createdResourceUtilizationJob.get().getResourceUtilizationType().toString(), String.valueOf(createdResourceUtilizationJob.get().getRecurrence()), createdResourceUtilizationJob.get().isEnabled());
+        return new ResponseEntity<>(createdShortNodeMetricResponseDTO, HttpStatus.CREATED);
+    }
+
 
     // TODO: add handler
     @PutMapping("/{uuid}/cpu")

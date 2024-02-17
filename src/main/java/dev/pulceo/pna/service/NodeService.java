@@ -40,6 +40,10 @@ public class NodeService {
         return this.nodeRepository.save(node);
     }
 
+    public Node updateNode(Node node) {
+        return this.nodeRepository.save(node);
+    }
+
     public Optional<Node> readNode(long id) {
         return this.nodeRepository.findById(id);
     }

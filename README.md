@@ -4,6 +4,7 @@
 
 * Install k3d on your system: `k3d cluster create pna-test --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer`
 * Make k3s.yaml available for pulceo-node-agent: `cp ~/.kube/config .k3s.yaml`
+* Run `chmod +x bootstrap-k3s-access.sh && ./bootstrap-k3s-access.sh` to install the necessary tools and create the namespace `pulceo-node-agent
 
 ## Requirements
 

@@ -13,8 +13,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ResourceUtilizationServiceIntegrationTests {
@@ -228,13 +234,58 @@ public class ResourceUtilizationServiceIntegrationTests {
     }
 
     @Test
-    public void testReadFromKubelet() throws ResourceServiceUtilizationException {
+    public void testReadFromKubelet() throws ResourceServiceUtilizationException, IOException, InterruptedException {
         // given
+        ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "./bootstrap-k3s-access.sh");
+        Process p = processBuilder.start();
+        p.waitFor();
 
         // when
         JsonNode jsonNode = this.resourceUtilizationService.readStatSummaryFromKubelet();
-
         // then
         assertEquals("k3d-pna-test-server-0", jsonNode.get("node").get("nodeName").asText());
+    }
+
+    @Test
+    public void testReadConcurrentlyFromKubelet() throws Exception {
+        // given
+        AtomicBoolean readingCompromised = new AtomicBoolean(false);
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+
+        // when
+        List<JsonNode> jsonNodeList = new ArrayList<>();
+        for (int i= 0; i < 100; i++) {
+            executorService.submit(() -> {
+                try {
+                    jsonNodeList.add(this.resourceUtilizationService.readStatSummaryFromKubelet());
+                } catch (ResourceServiceUtilizationException e) {
+                    readingCompromised.set(true);
+                }
+            });
+        }
+        executorService.shutdown();
+        shutdownAndAwaitTermination(executorService);
+
+        // then
+        assertFalse(readingCompromised.get());
+        assertTrue(jsonNodeList.stream().allMatch(jsonNode -> jsonNode.get("node").get("nodeName").asText().equals("k3d-pna-test-server-0")));
+    }
+
+    private static void shutdownAndAwaitTermination(ExecutorService pool) {
+        pool.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                pool.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            pool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
     }
 }

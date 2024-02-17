@@ -49,12 +49,15 @@ public class ResourceUtilizationService {
         // TODO: read token
         try {
             String token = Files.readString(Path.of(API_SERVICE_ACCOUNT_TOKEN_PATH));
-            ProcessBuilder processBuilder = new ProcessBuilder("curl" , "--cacert", API_SERVICE_ACOUNT_CA_CERT_PATH, "--header", "Authorization: Bearer " + token, "-X", "GET", "https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/"+K3S_NODENAME+"/proxy/stats/summary");
+            ProcessBuilder processBuilder = new ProcessBuilder("curl" , "--cacert", API_SERVICE_ACOUNT_CA_CERT_PATH, "--header", "Authorization: Bearer " + token, "-X", "GET", "https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/" + K3S_NODENAME + "/proxy/stats/summary");
             Process process = processBuilder.start();
+            process.waitFor();
             List<String> strings =  ProcessUtils.readProcessOutput(process.getInputStream());
             return this.objectMapper.readTree(strings.stream().collect(Collectors.joining("\n")));
         } catch (IOException | ProcessException e) {
             throw new ResourceServiceUtilizationException("Could not read measurement from kubelet", e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -12,6 +12,7 @@ import dev.pulceo.pna.model.nping.NpingClientProtocol;
 import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.nping.NpingUDPResult;
 import dev.pulceo.pna.model.ping.PingResult;
+import dev.pulceo.pna.model.resources.CPUUtilizationResult;
 import dev.pulceo.pna.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,9 @@ public class JobService {
     @Autowired
     private PingService pingService;
 
+    @Autowired
+    private ResourceUtilizationService resourceUtilizationService;
+
     // TODO: resolve that delayService and pingService is ambigious
     // TODO: consider renaming to job-related semantics
     @Autowired
@@ -78,6 +82,9 @@ public class JobService {
 
     @Autowired
     PublishSubscribeChannel pingServiceMessageChannel;
+
+    @Autowired
+    PublishSubscribeChannel resourceUtilizationCPUServiceMessageChannel;
 
     private final Map<Long, ScheduledFuture<?>> bandwidthJobHashMap = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> TCPDelayJobHashMap = new ConcurrentHashMap<>();
@@ -109,9 +116,30 @@ public class JobService {
         }
     }
 
-    public ResourceUtilizationJob createNodeJob(ResourceUtilizationJob resourceUtilizationJob) {
+    public ResourceUtilizationJob createNodeResourceUtilizationJob(ResourceUtilizationJob resourceUtilizationJob) {
         return this.resourceUtilizationJobRepository.save(resourceUtilizationJob);
     }
+
+    public long scheduleResourceUtilizationJobForCPU(long id) {
+        ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
+        long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            CPUUtilizationResult cpuUtilizationResult = this.resourceUtilizationService.retrieveCPUUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
+            NetworkMetric networkMetric = NetworkMetric.builder()
+                    .metricUUID(cpuUtilizationResult.getUuid())
+                    .metricType(cpuUtilizationResult.getMetricType())
+                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                    .metricResult(cpuUtilizationResult)
+                    .build();
+
+            Message message = new Message(deviceId, networkMetric);
+            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+        }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
+        this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
+        return retrievedResourceUtilizationJob.getId();
+    }
+
+    // TODO: do for memory, disk, network
 
     public Optional<LinkJob> readLinkJob(long id) throws JobServiceException {
         Optional<LinkJob> retrievedJob = this.linkJobRepository.findById(id);

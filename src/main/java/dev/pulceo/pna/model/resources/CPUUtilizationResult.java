@@ -39,13 +39,20 @@ public class CPUUtilizationResult extends Resource implements MetricResult {
     }
 
     @Override
+    @JsonIgnore
     public MetricType getMetricType() {
         return MetricType.CPU_UTIL;
     }
 
     @Override
+    @JsonIgnore
     public Map<String, Object> getResultData() {
-        return null;
+        return Map.of(
+                "sourceHost", srcHost,
+                "startTime", time,
+                "cpuUtilizationMeasurement", cpuUtilizationMeasurement
+        );
+
     }
 
 }

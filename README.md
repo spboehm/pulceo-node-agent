@@ -60,6 +60,32 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 #### Cloud
 
 
+#### CPU UTILIZATION
+
+```json
+{
+    "deviceId": "0247fea1-3ca3-401b-8fa2-b6f83a469680",
+    "metric": {
+        "metricUUID": "629620b5-e53e-4bed-83b7-77f4117c6690",
+        "jobUUID": "a61205f1-50c3-47e8-86dc-1e546745467d",
+        "metricType": "CPU_UTIL",
+        "metricResult": {
+            "srcHost": "127.0.0.1",
+            "k8sResourceType": "NODE",
+            "resourceName": "k3d-pna-test-server-0",
+            "time": "2024-02-17T16:30:32Z",
+            "cpuUtilizationMeasurement": {
+                "uuid": "bdbaab92-b451-4ea8-a633-2b9b89ab4cc3",
+                "time": "2024-02-17T16:30:32Z",
+                "usageNanoCores": 37271633,
+                "usageCoreNanoSeconds": 413578840000,
+                "usageCPUPercentage": 4.66
+            }
+        }
+    }
+}
+```
+
 
 #### ICMP RTT
 

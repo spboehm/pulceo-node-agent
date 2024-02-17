@@ -61,12 +61,16 @@ public class ResourceUtilizationService {
         }
     }
 
-    public CPUUtilizationResult retrieveCPUUtilizationForPod(String name) {
+    public CPUUtilizationResult retrieveCPUUtilization(ResourceUtilizationRequest resourceUtilizationRequest) {
         try {
             JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveCPUUtilizationForPod(jsonNode, name);
+            if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
+                return retrieveCPUUtilizationForNode(jsonNode);
+            } else {
+                return retrieveCPUUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+            }
         } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve CPU utilization for pod: " + name, e);
+            throw new RuntimeException("Could not retrieve CPU utilization for: " + resourceUtilizationRequest.getResourceName(), e);
         }
     }
 

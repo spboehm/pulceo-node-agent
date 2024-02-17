@@ -2,10 +2,7 @@ package dev.pulceo.pna.model.resources;
 
 import dev.pulceo.pna.model.Resource;
 import jakarta.persistence.Entity;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -14,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class MemoryUtilizationMeasurement extends Resource {
 
     private String time;

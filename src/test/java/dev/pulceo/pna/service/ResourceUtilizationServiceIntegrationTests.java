@@ -38,7 +38,7 @@ public class ResourceUtilizationServiceIntegrationTests {
 
     @BeforeEach
     public void setUp() {
-        ReflectionTestUtils.setField(resourceUtilizationService, "CPU_CORES", 12);
+        ReflectionTestUtils.setField(resourceUtilizationService, "LOGICAL_CPU_CORES", 12);
         ReflectionTestUtils.setField(resourceUtilizationService, "MEMORY_CAPACITY", 15.322609f);
     }
 
@@ -173,7 +173,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                         .time("2024-02-15T13:18:57Z")
                         .usageBytes(626122752)
                         .availableBytes(15880196096L)
-                        .usageMemoryPercentage(3.94f)
+                        .usageMemoryPercentage(3.81f)
                         .build())
                 .build();
 

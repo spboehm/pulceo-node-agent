@@ -23,7 +23,7 @@ public class ResourceUtilizationService {
 
     private final NodeService nodeService;
     // TODO: fix potentially happening NPE
-    private final int CPU_CORES;
+    private final int LOGICAL_CPU_CORES;
     private final float MEMORY_CAPACITY;
 
     @Value("${k3s.api.server.host}")
@@ -40,9 +40,8 @@ public class ResourceUtilizationService {
     @Autowired
     public ResourceUtilizationService(NodeService nodeService) {
         this.nodeService = nodeService;
-        CPU_CORES = this.nodeService.readLocalNode().get().getCpuResource().getCpuCapacity().getCores();
+        LOGICAL_CPU_CORES = this.nodeService.readLocalNode().get().getCpuResource().getCpuCapacity().getThreads();
         MEMORY_CAPACITY = this.nodeService.readLocalNode().get().getMemoryResource().getMemoryCapacity().getSize();
-
     }
 
     public JsonNode readStatSummaryFromKubelet() throws ResourceServiceUtilizationException {
@@ -80,12 +79,12 @@ public class ResourceUtilizationService {
         String time = pod.get("cpu").get("time").asText();
         long usageNanoCores = pod.get("cpu").get("usageNanoCores").asLong();
         long usageCoreNanoSeconds = pod.get("cpu").get("usageCoreNanoSeconds").asLong();
-        float usagePercent = (float) Math.round(((double) usageNanoCores / (CPU_CORES * 1000000) * 100)) / 100;
+        float usagePercent = (float) Math.round(((double) usageNanoCores / (LOGICAL_CPU_CORES * 1000000) * 100)) / 100;
         CPUUtilizationMeasurement cpuUtilizationMeasurement  = CPUUtilizationMeasurement.builder()
                 .time(time)
                 .usageNanoCores(usageNanoCores)
                 .usageCoreNanoSeconds(usageCoreNanoSeconds)
-                .usageCPUPercentage(0.0f)
+                .usageCPUPercentage(usagePercent)
                 .build();
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
                 .srcHost(this.nodeService.readLocalNode().get().getHost())
@@ -236,7 +235,7 @@ public class ResourceUtilizationService {
         String time = node.get("cpu").get("time").asText();
         long usageNanoCores = node.get("cpu").get("usageNanoCores").asLong();
         long usageCoreNanoSeconds = node.get("cpu").get("usageCoreNanoSeconds").asLong();
-        float usagePercent = (float) Math.round(((double) usageNanoCores / (CPU_CORES * 1000000) * 100)) / 100;
+        float usagePercent = (float) Math.round(((double) usageNanoCores / (LOGICAL_CPU_CORES * 1000000) * 100)) / 100;
 
         CPUUtilizationMeasurement cpuUtilizationMeasurement  = CPUUtilizationMeasurement.builder()
                 .time(time)
@@ -267,12 +266,13 @@ public class ResourceUtilizationService {
     }
 
     public MemoryUtilizationResult retrieveMemoryUtilizationForNode(JsonNode jsonNode) {
+        System.out.println(jsonNode.toPrettyString());
         JsonNode node = findNodeJsonNode(jsonNode);
         String name = node.get("nodeName").asText();
         String time = node.get("memory").get("time").asText();
         long usageBytes = node.get("memory").get("usageBytes").asLong();
         long availableBytes = node.get("memory").get("availableBytes").asLong();
-        float usageMemoryPercentage = (float) Math.round(((float) usageBytes / availableBytes) * 10000) / 10000 * 100;
+        float usageMemoryPercentage = (float) Math.round(((float) usageBytes / (MEMORY_CAPACITY * 1024 * 1024 * 1024)) * 10000) / 10000 * 100;
 
         MemoryUtilizationMeasurement memoryUtilizationMeasurement = MemoryUtilizationMeasurement.builder()
                 .time(time)

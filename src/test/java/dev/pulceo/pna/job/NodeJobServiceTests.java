@@ -5,10 +5,7 @@ import dev.pulceo.pna.model.jobs.NodeJob;
 import dev.pulceo.pna.model.jobs.ResourceUtilizationJob;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
-import dev.pulceo.pna.model.resources.CPUUtilizationMeasurement;
-import dev.pulceo.pna.model.resources.K8sResourceType;
-import dev.pulceo.pna.model.resources.ResourceUtilizationRequest;
-import dev.pulceo.pna.model.resources.ResourceUtilizationType;
+import dev.pulceo.pna.model.resources.*;
 import dev.pulceo.pna.repository.JobRepository;
 import dev.pulceo.pna.service.JobService;
 import dev.pulceo.pna.service.ResourceUtilizationService;
@@ -62,7 +59,7 @@ public class NodeJobServiceTests {
     }
 
     @Test
-    public void testCreateResourceUtilizationJob() {
+    public void testCreateResourceUtilizationJobTwithCPU() {
         // given
         ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
                 .resourceUtilizationType(ResourceUtilizationType.CPU_UTIL)
@@ -118,6 +115,44 @@ public class NodeJobServiceTests {
         assertTrue(cpuUtilizationMeasurement.getUsageCPUPercentage() >= 0.0f);
         assertTrue(cpuUtilizationMeasurement.getUsageNanoCores() >= 0.0f);
         assertTrue(cpuUtilizationMeasurement.getUsageCoreNanoSeconds() >= 0.0f);
+    }
+
+    @Test
+    public void testScheduleResourceUtilizationJobWithMem() throws JobServiceException, InterruptedException {
+        // given
+        ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
+                .resourceUtilizationType(ResourceUtilizationType.MEM_UTIL)
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(nodeName)
+                .build();
+
+        ResourceUtilizationJob resourceUtilizationJob = ResourceUtilizationJob.builder()
+                .resourceUtilizationType(ResourceUtilizationType.MEM_UTIL)
+                .resourceUtilizationRequest(resourceUtilizationRequest)
+                .recurrence(15)
+                .build();
+        long id = this.jobService.createNodeResourceUtilizationJob(resourceUtilizationJob).getId();
+
+        // when
+        long localJobId = this.jobService.scheduleResourceUtilizationJobForMEM(id);
+        BlockingQueue<Message> memoryUtilizationBlockingQueue = new ArrayBlockingQueue<>(10);
+        this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> memoryUtilizationBlockingQueue.add((Message) message.getPayload()));
+
+        // initiate orderly shutdown
+        this.jobService.cancelJob(localJobId);
+        Message message = memoryUtilizationBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        MemoryUtilizationMeasurement memoryUtilizationMeasurement = (MemoryUtilizationMeasurement) map.get("memoryUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+
+        assertTrue(memoryUtilizationMeasurement.getUsageMemoryPercentage() >= 0.0f);
+        assertTrue(memoryUtilizationMeasurement.getAvailableBytes() > 0);
+        assertTrue(memoryUtilizationMeasurement.getUsageMemoryPercentage() > 0);
     }
 
 }

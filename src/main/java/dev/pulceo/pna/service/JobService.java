@@ -13,6 +13,7 @@ import dev.pulceo.pna.model.nping.NpingTCPResult;
 import dev.pulceo.pna.model.nping.NpingUDPResult;
 import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.model.resources.CPUUtilizationResult;
+import dev.pulceo.pna.model.resources.MemoryUtilizationResult;
 import dev.pulceo.pna.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,25 @@ public class JobService {
                     .metricType(cpuUtilizationResult.getMetricType())
                     .jobUUID(retrievedResourceUtilizationJob.getUuid())
                     .metricResult(cpuUtilizationResult)
+                    .build();
+
+            Message message = new Message(deviceId, networkMetric);
+            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+        }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
+        this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
+        return retrievedResourceUtilizationJob.getId();
+    }
+
+    public long scheduleResourceUtilizationJobForMEM(long id) {
+        ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
+        long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            MemoryUtilizationResult memoryUtilizationResult = this.resourceUtilizationService.retrieveMemoryUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
+            NetworkMetric networkMetric = NetworkMetric.builder()
+                    .metricUUID(memoryUtilizationResult.getUuid())
+                    .metricType(memoryUtilizationResult.getMetricType())
+                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                    .metricResult(memoryUtilizationResult)
                     .build();
 
             Message message = new Message(deviceId, networkMetric);

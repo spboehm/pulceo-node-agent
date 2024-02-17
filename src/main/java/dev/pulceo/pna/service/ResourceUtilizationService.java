@@ -97,6 +97,19 @@ public class ResourceUtilizationService {
         return cpuUtilizationResult;
     }
 
+    public MemoryUtilizationResult retrieveMemoryUtilization(ResourceUtilizationRequest resourceUtilizationRequest) {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
+                return retrieveMemoryUtilizationForNode(jsonNode);
+            } else {
+                return retrieveMemoryUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+            }
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve memory utilization for: " + resourceUtilizationRequest.getResourceName(), e);
+        }
+    }
+
     public MemoryUtilizationResult retrieveMemoryUtilizationForPod(String name) {
         try {
             JsonNode jsonNode = readStatSummaryFromKubelet();
@@ -241,6 +254,8 @@ public class ResourceUtilizationService {
                 .build();
         return cpuUtilizationResult;
     }
+
+
 
     public MemoryUtilizationResult retrieveMemoryUtilizationForNode() {
         try {

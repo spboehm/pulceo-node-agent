@@ -86,6 +86,31 @@ libcap: yes, IDN: yes, NLS: yes, error.h: yes, getrandom(): yes, __fpending(): y
 }
 ```
 
+#### Memory Utilization
+
+```json
+{
+    "deviceId": "0247fea1-3ca3-401b-8fa2-b6f83a469680",
+    "metric": {
+        "metricUUID": "9d628f02-0888-4cdd-94de-f57d0a89bbb6",
+        "jobUUID": "c3cf0f41-bef8-4229-81bf-5f2d0669223f",
+        "metricType": "MEM_UTIL",
+        "metricResult": {
+            "srcHost": "127.0.0.1",
+            "k8sResourceType": "NODE",
+            "resourceName": "k3d-pna-test-server-0",
+            "time": "2024-02-17T17:32:46Z",
+            "memoryUtilizationMeasurement": {
+                "uuid": "79c68a59-a535-4025-acfd-1a4da95576b1",
+                "time": "2024-02-17T17:32:46Z",
+                "usageBytes": 1463914496,
+                "availableBytes": 66301313024,
+                "usageMemoryPercentage": 2.21
+            }
+        }
+    }
+}
+```
 
 #### ICMP RTT
 

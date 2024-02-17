@@ -1,5 +1,6 @@
 package dev.pulceo.pna.model.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.message.MetricResult;
 import dev.pulceo.pna.model.message.MetricType;
@@ -32,17 +33,24 @@ public class MemoryUtilizationResult extends Resource implements MetricResult {
     private MemoryUtilizationMeasurement memoryUtilizationMeasurement;
 
     @Override
+    @JsonIgnore
     public UUID getUUID() {
         return super.getUuid();
     }
 
     @Override
+    @JsonIgnore
     public MetricType getMetricType() {
         return MetricType.MEM_UTIL;
     }
 
     @Override
+    @JsonIgnore
     public Map<String, Object> getResultData() {
-        return null;
+        return Map.of(
+                "sourceHost", srcHost,
+                "startTime", time,
+                "memoryUtilizationMeasurement", memoryUtilizationMeasurement
+        );
     }
 }

@@ -109,15 +109,6 @@ public class ResourceUtilizationService {
         }
     }
 
-    public MemoryUtilizationResult retrieveMemoryUtilizationForPod(String name) {
-        try {
-            JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveMemoryUtilizationForPod(jsonNode, name);
-        } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve memory utilization for pod: " + name, e);
-        }
-    }
-
     public MemoryUtilizationResult retrieveMemoryUtilizationForPod(JsonNode jsonNode, String name) {
         JsonNode pod = findPodJsonNode(jsonNode, name);
         String time = pod.get("memory").get("time").asText();
@@ -134,15 +125,6 @@ public class ResourceUtilizationService {
                 .memoryUtilizationMeasurement(memoryUtilizationMeasurement)
                 .build();
         return memoryUtilizationResult;
-    }
-
-    public NetworkUtilizationResult retrieveNetworkUtilizationForPod(String name) {
-        try {
-            JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveNetworkUtilizationForPod(jsonNode, name);
-        } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve network utilization for pod: " + name, e);
-        }
     }
 
     public NetworkUtilizationResult retrieveNetworkUtilizationResult(ResourceUtilizationRequest resourceUtilizationRequest) {
@@ -180,7 +162,7 @@ public class ResourceUtilizationService {
         return networkUtilizationResult;
     }
 
-    public StorageUtilizationResult retrieveStorageUtilizationForFod(JsonNode jsonNode, String name) {
+    public StorageUtilizationResult retrieveStorageUtilizationForPod(JsonNode jsonNode, String name) {
         JsonNode pod = findPodJsonNode(jsonNode, name);
         long capacityBytes = pod.get("ephemeral-storage").get("capacityBytes").asLong();
         long usedBytes = 0;
@@ -224,15 +206,6 @@ public class ResourceUtilizationService {
         throw new RuntimeException("Pod not found: " + name);
     }
 
-    public CPUUtilizationResult retrieveCPUUtilizationForNode() {
-        try {
-            JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveCPUUtilizationForNode(jsonNode);
-        } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve CPU utilization for node", e);
-        }
-    }
-
     public CPUUtilizationResult retrieveCPUUtilizationForNode(JsonNode json) {
         JsonNode node = findNodeJsonNode(json);
         String name = node.get("nodeName").asText();
@@ -258,19 +231,7 @@ public class ResourceUtilizationService {
         return cpuUtilizationResult;
     }
 
-
-
-    public MemoryUtilizationResult retrieveMemoryUtilizationForNode() {
-        try {
-            JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveMemoryUtilizationForNode(jsonNode);
-        } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve memory utilization for node", e);
-        }
-    }
-
     public MemoryUtilizationResult retrieveMemoryUtilizationForNode(JsonNode jsonNode) {
-        System.out.println(jsonNode.toPrettyString());
         JsonNode node = findNodeJsonNode(jsonNode);
         String name = node.get("nodeName").asText();
         String time = node.get("memory").get("time").asText();
@@ -293,15 +254,6 @@ public class ResourceUtilizationService {
                 .build();
 
         return memoryUtilizationResult;
-    }
-
-    public NetworkUtilizationResult retrieveNetworkUtilizationForNode() {
-        try {
-            JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveNetworkUtilizationForNode(jsonNode);
-        } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve network utilization for node", e);
-        }
     }
 
     public NetworkUtilizationResult retrieveNetworkUtilizationForNode(JsonNode jsonNode) {
@@ -337,7 +289,7 @@ public class ResourceUtilizationService {
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
                 return retrieveStorageUtilizationForNode(jsonNode);
             } else {
-                return retrieveStorageUtilizationForFod(jsonNode, resourceUtilizationRequest.getResourceName());
+                return retrieveStorageUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
             }
         } catch (ResourceServiceUtilizationException e) {
             throw new RuntimeException("Could not retrieve network utilization for: " + resourceUtilizationRequest.getResourceName(), e);

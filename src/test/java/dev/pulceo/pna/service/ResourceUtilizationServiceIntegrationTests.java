@@ -130,7 +130,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                 .build();
 
         // when
-        StorageUtilizationResult diskUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationForFod(ResourceUtilizationServiceIntegrationTests.jsonNode, name);
+        StorageUtilizationResult diskUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationForPod(ResourceUtilizationServiceIntegrationTests.jsonNode, name);
 
         // then
         assertEquals(expectedDiskUtilizationResult.getStorageUtilizationMeasurement(), diskUtilizationResult.getStorageUtilizationMeasurement());

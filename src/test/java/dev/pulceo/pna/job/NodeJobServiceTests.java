@@ -155,4 +155,41 @@ public class NodeJobServiceTests {
         assertTrue(memoryUtilizationMeasurement.getUsageMemoryPercentage() > 0);
     }
 
+    @Test
+    public void testScheduleResourceUtilizationJobWithNetwork() throws JobServiceException, InterruptedException {
+        // given
+        ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
+                .resourceUtilizationType(ResourceUtilizationType.NET_UTIL)
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(nodeName)
+                .build();
+
+        ResourceUtilizationJob resourceUtilizationJob = ResourceUtilizationJob.builder()
+                .resourceUtilizationType(ResourceUtilizationType.NET_UTIL)
+                .resourceUtilizationRequest(resourceUtilizationRequest)
+                .recurrence(15)
+                .build();
+        long id = this.jobService.createNodeResourceUtilizationJob(resourceUtilizationJob).getId();
+
+        // when
+        long localJobId = this.jobService.scheduleResourceUtilizationJobForNetwork(id);
+        BlockingQueue<Message> networkUtilizationBlockingQueue = new ArrayBlockingQueue<>(10);
+        this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> networkUtilizationBlockingQueue.add((Message) message.getPayload()));
+
+        // initiate orderly shutdown
+        this.jobService.cancelJob(localJobId);
+        Message message = networkUtilizationBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        NetworkUtilizationMeasurement networkUtilizationMeasurement = (NetworkUtilizationMeasurement) map.get("networkUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+
+        assertTrue(networkUtilizationMeasurement.getRxBytes() > 0);
+        assertTrue(networkUtilizationMeasurement.getTxBytes() > 0);
+    }
+
 }

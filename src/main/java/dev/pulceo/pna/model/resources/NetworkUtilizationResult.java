@@ -36,12 +36,18 @@ public class NetworkUtilizationResult extends Resource implements MetricResult {
     }
 
     @Override
+    @JsonIgnore
     public MetricType getMetricType() {
         return MetricType.NET_UTIL;
     }
 
     @Override
+    @JsonIgnore
     public Map<String, Object> getResultData() {
-        return null;
+        return Map.of(
+                "sourceHost", srcHost,
+                "startTime", time,
+                "networkUtilizationMeasurement", networkUtilizationMeasurement
+        );
     }
 }

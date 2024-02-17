@@ -145,6 +145,19 @@ public class ResourceUtilizationService {
         }
     }
 
+    public NetworkUtilizationResult retrieveNetworkUtilizationResult(ResourceUtilizationRequest resourceUtilizationRequest) {
+        try {
+            JsonNode jsonNode = readStatSummaryFromKubelet();
+            if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
+                return retrieveNetworkUtilizationForNode(jsonNode);
+            } else {
+                return retrieveNetworkUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+            }
+        } catch (ResourceServiceUtilizationException e) {
+            throw new RuntimeException("Could not retrieve network utilization for: " + resourceUtilizationRequest.getResourceName(), e);
+        }
+    }
+
     public NetworkUtilizationResult retrieveNetworkUtilizationForPod(JsonNode jsonNode, String name) {
         JsonNode pod = findPodJsonNode(jsonNode, name);
         String time = pod.get("network").get("time").asText();

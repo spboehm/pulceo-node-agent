@@ -78,6 +78,8 @@ public class ResourceUtilizationServiceIntegrationTests {
                 .memoryUtilizationMeasurement(MemoryUtilizationMeasurement.builder()
                         .time("2024-02-15T13:18:56Z")
                         .usageBytes(14315520)
+                        .usageMemoryPercentage(0.089999996f)
+                        .availableBytes(2147483647)
                         .build())
                 .build();
 

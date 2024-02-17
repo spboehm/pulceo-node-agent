@@ -225,6 +225,17 @@ public class JobService {
         }
     }
 
+    public ResourceUtilizationJob enableResourceUtilizationJob(long id) throws JobServiceException {
+        Optional<ResourceUtilizationJob> retrievedResourceUtilizationJob = this.readNodeResourceUtilizationJob(id);
+        if (retrievedResourceUtilizationJob.isPresent()) {
+            if (!retrievedResourceUtilizationJob.get().isEnabled()) {
+                retrievedResourceUtilizationJob.get().setEnabled(true);
+                return this.resourceUtilizationJobRepository.save(retrievedResourceUtilizationJob.get());
+            }
+        }
+        throw new JobServiceException("Requested job was not found!");
+    }
+
     public NpingJob enableNpingJob(long id) throws JobServiceException {
         NpingJob retrievedNpingJob = this.readNpingJob(id);
         if (!retrievedNpingJob.isEnabled()) {

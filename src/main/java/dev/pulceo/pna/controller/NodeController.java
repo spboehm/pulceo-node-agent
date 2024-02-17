@@ -107,15 +107,15 @@ public class NodeController {
         this.nodeService.updateNode(fullNode);
 
         // if enabled
-        if (savedResourceUtilizationJob.isEnabled()) {
-            this.jobService.enableNpingJob(resourceUtilizationJob.getId());
+        if (createNewResourceUtilizationDTO.isEnabled()) {
+            this.jobService.enableResourceUtilizationJob(resourceUtilizationJob.getId());
         }
         long id = this.jobService.scheduleResourceUtilizationJobForCPU(savedResourceUtilizationJob.getId());
         Optional<ResourceUtilizationJob> createdResourceUtilizationJob = this.jobService.readNodeResourceUtilizationJob(id);
         if (createdResourceUtilizationJob.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        ShortNodeMetricResponseDTO createdShortNodeMetricResponseDTO = new ShortNodeMetricResponseDTO(createdResourceUtilizationJob.get().getUuid(), fullNode.getUuid(), createdResourceUtilizationJob.get().getResourceUtilizationType().toString(), String.valueOf(createdResourceUtilizationJob.get().getRecurrence()), createdResourceUtilizationJob.get().isEnabled());
+        ShortNodeMetricResponseDTO createdShortNodeMetricResponseDTO = new ShortNodeMetricResponseDTO(createdResourceUtilizationJob.get().getUuid(), fullNode.getUuid(), ResourceUtilizationType.getName(createdResourceUtilizationJob.get().getResourceUtilizationType()), String.valueOf(createdResourceUtilizationJob.get().getRecurrence()), createdResourceUtilizationJob.get().isEnabled());
         return new ResponseEntity<>(createdShortNodeMetricResponseDTO, HttpStatus.CREATED);
     }
 

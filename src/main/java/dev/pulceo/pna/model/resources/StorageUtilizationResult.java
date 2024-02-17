@@ -39,12 +39,18 @@ public class StorageUtilizationResult extends Resource implements MetricResult {
     }
 
     @Override
+    @JsonIgnore
     public MetricType getMetricType() {
-        return null;
+        return MetricType.STORAGE_UTIL;
     }
 
     @Override
+    @JsonIgnore
     public Map<String, Object> getResultData() {
-        return null;
+        return Map.of(
+                "sourceHost", srcHost,
+                "startTime", time,
+                "storageUtilizationMeasurement", storageUtilizationMeasurement
+        );
     }
 }

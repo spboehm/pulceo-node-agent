@@ -15,6 +15,7 @@ import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.model.resources.CPUUtilizationResult;
 import dev.pulceo.pna.model.resources.MemoryUtilizationResult;
 import dev.pulceo.pna.model.resources.NetworkUtilizationResult;
+import dev.pulceo.pna.model.resources.StorageUtilizationResult;
 import dev.pulceo.pna.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +180,24 @@ public class JobService {
         return retrievedResourceUtilizationJob.getId();
     }
 
-    // TODO: do for memory, disk, network
+    public long scheduleResourceUtilizationJobForStorage(long id) {
+        ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
+        long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
+        ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            StorageUtilizationResult storageUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
+            NetworkMetric networkMetric = NetworkMetric.builder()
+                    .metricUUID(storageUtilizationResult.getUuid())
+                    .metricType(storageUtilizationResult.getMetricType())
+                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                    .metricResult(storageUtilizationResult)
+                    .build();
+
+            Message message = new Message(deviceId, networkMetric);
+            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+        }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
+        this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
+        return retrievedResourceUtilizationJob.getId();
+    }
 
     public Optional<LinkJob> readLinkJob(long id) throws JobServiceException {
         Optional<LinkJob> retrievedJob = this.linkJobRepository.findById(id);

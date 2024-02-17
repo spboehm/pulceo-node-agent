@@ -180,15 +180,6 @@ public class ResourceUtilizationService {
         return networkUtilizationResult;
     }
 
-    public StorageUtilizationResult retrieveStorageUtilizationForPod(String name) {
-        try {
-            JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveStorageUtilizationForFod(jsonNode, name);
-        } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve storage utilization for pod: " + name, e);
-        }
-    }
-
     public StorageUtilizationResult retrieveStorageUtilizationForFod(JsonNode jsonNode, String name) {
         JsonNode pod = findPodJsonNode(jsonNode, name);
         long capacityBytes = pod.get("ephemeral-storage").get("capacityBytes").asLong();
@@ -339,12 +330,17 @@ public class ResourceUtilizationService {
         return networkUtilizationResult;
     }
 
-    public StorageUtilizationResult retrieveStorageUtilizationForNode() {
+
+    public StorageUtilizationResult retrieveStorageUtilizationResult(ResourceUtilizationRequest resourceUtilizationRequest) {
         try {
             JsonNode jsonNode = readStatSummaryFromKubelet();
-            return retrieveStorageUtilizationForNode(jsonNode);
+            if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
+                return retrieveStorageUtilizationForNode(jsonNode);
+            } else {
+                return retrieveStorageUtilizationForFod(jsonNode, resourceUtilizationRequest.getResourceName());
+            }
         } catch (ResourceServiceUtilizationException e) {
-            throw new RuntimeException("Could not retrieve storage utilization for node", e);
+            throw new RuntimeException("Could not retrieve network utilization for: " + resourceUtilizationRequest.getResourceName(), e);
         }
     }
 

@@ -192,4 +192,39 @@ public class NodeJobServiceTests {
         assertTrue(networkUtilizationMeasurement.getTxBytes() > 0);
     }
 
+    @Test
+    public void testScheduleResourceUtilizationJobWithStorage() throws JobServiceException, InterruptedException {
+        // given
+        ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
+                .resourceUtilizationType(ResourceUtilizationType.STORAGE_UTIL)
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(nodeName)
+                .build();
+
+        ResourceUtilizationJob resourceUtilizationJob = ResourceUtilizationJob.builder()
+                .resourceUtilizationType(ResourceUtilizationType.STORAGE_UTIL)
+                .resourceUtilizationRequest(resourceUtilizationRequest)
+                .recurrence(15)
+                .build();
+        long id = this.jobService.createNodeResourceUtilizationJob(resourceUtilizationJob).getId();
+
+        // when
+        long localJobId = this.jobService.scheduleResourceUtilizationJobForStorage(id);
+        BlockingQueue<Message> storageUtilizationBlockingQueue = new ArrayBlockingQueue<>(10);
+        this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> storageUtilizationBlockingQueue.add((Message) message.getPayload()));
+
+        // initiate orderly shutdown
+        this.jobService.cancelJob(localJobId);
+        Message message = storageUtilizationBlockingQueue.take();
+
+        NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
+        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
+        StorageUtilizationMeasurement storageUtilizationMeasurement = (StorageUtilizationMeasurement) map.get("storageUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+        assert(storageUtilizationMeasurement.getUsageStoragePercentage() > 0.0f);
+    }
+
 }

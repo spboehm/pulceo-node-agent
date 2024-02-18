@@ -47,7 +47,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "my-nginx";
         CPUUtilizationResult expectedCPUUtilizationResult = CPUUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName("my-nginx")
                 .time("22024-02-15T13:18:56Z")
@@ -71,7 +71,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "my-nginx";
         MemoryUtilizationResult expectedMemoryUtilizationResult = MemoryUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName("my-nginx")
                 .time("2024-02-15T13:18:56Z")
@@ -95,7 +95,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "my-nginx";
         NetworkUtilizationResult expectedNetworkUtilizationResult = NetworkUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName("my-nginx")
                 .time("2024-02-15T13:19:04Z")
@@ -119,7 +119,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "my-nginx";
         StorageUtilizationResult expectedDiskUtilizationResult = StorageUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName("my-nginx")
                 .time("2024-02-15T13:19:07Z")
@@ -143,7 +143,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "k3d-pna-test-server-0";
         CPUUtilizationResult expectedCPUUtilizationResult = CPUUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time("2024-02-15T13:18:57Z")
@@ -167,7 +167,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "k3d-pna-test-server-0";
         MemoryUtilizationResult expectedMemoryUtilizationResult = MemoryUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time("2024-02-15T13:18:57Z")
@@ -191,7 +191,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "k3d-pna-test-server-0";
         NetworkUtilizationResult expectedNetworkUtilizationResult = NetworkUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time("2024-02-15T13:18:57Z")
@@ -215,7 +215,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         // given
         String name = "k3d-pna-test-server-0";
         StorageUtilizationResult expectedDiskUtilizationResult = StorageUtilizationResult.builder()
-                .srcHost("127.0.0.1")
+                .sourceHost("127.0.0.1")
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time("2024-02-15T13:18:57Z")

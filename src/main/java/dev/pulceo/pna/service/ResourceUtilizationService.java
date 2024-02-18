@@ -89,7 +89,7 @@ public class ResourceUtilizationService {
                 .build();
 
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time(time)
@@ -112,7 +112,7 @@ public class ResourceUtilizationService {
                 .usageCPUPercentage(usagePercent)
                 .build();
         CPUUtilizationResult cpuUtilizationResult = CPUUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName(name)
                 .time(time)
@@ -149,7 +149,7 @@ public class ResourceUtilizationService {
                 .usageMemoryPercentage(usageMemoryPercentage)
                 .build();
         MemoryUtilizationResult memoryUtilizationResult = MemoryUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time(time)
@@ -172,7 +172,7 @@ public class ResourceUtilizationService {
                 .usageMemoryPercentage(usageMemoryPercentage)
                 .build();
         MemoryUtilizationResult memoryUtilizationResult = MemoryUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName(name)
                 .time(time)
@@ -210,7 +210,7 @@ public class ResourceUtilizationService {
                 .build();
 
         NetworkUtilizationResult networkUtilizationResult = NetworkUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time(time)
@@ -233,7 +233,7 @@ public class ResourceUtilizationService {
                 .txBytes(txBytes)
                 .build();
         NetworkUtilizationResult networkUtilizationResult = NetworkUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName(name)
                 .time(time)
@@ -271,7 +271,7 @@ public class ResourceUtilizationService {
                 .build();
 
         StorageUtilizationResult storageUtilizationResult = StorageUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(name)
                 .time(node.get("fs").get("time").asText())
@@ -298,7 +298,7 @@ public class ResourceUtilizationService {
                 .build();
 
         StorageUtilizationResult storageUtilizationResult = StorageUtilizationResult.builder()
-                .srcHost(this.nodeService.readLocalNode().get().getHost())
+                .sourceHost(this.nodeService.readLocalNode().get().getHost())
                 .k8sResourceType(K8sResourceType.POD)
                 .resourceName(name)
                 .time(pod.get("ephemeral-storage").get("time").asText())

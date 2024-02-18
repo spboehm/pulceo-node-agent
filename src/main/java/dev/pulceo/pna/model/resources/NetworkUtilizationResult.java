@@ -21,7 +21,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false)
 public class NetworkUtilizationResult extends Resource implements MetricResult {
 
-    private String srcHost;
+    private String sourceHost;
     private K8sResourceType k8sResourceType;
     private String resourceName;
     private String time;
@@ -45,7 +45,7 @@ public class NetworkUtilizationResult extends Resource implements MetricResult {
     @JsonIgnore
     public Map<String, Object> getResultData() {
         return Map.of(
-                "sourceHost", srcHost,
+                "sourceHost", sourceHost,
                 "startTime", time,
                 "networkUtilizationMeasurement", networkUtilizationMeasurement
         );

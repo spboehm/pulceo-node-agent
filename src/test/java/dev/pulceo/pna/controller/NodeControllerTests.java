@@ -7,6 +7,9 @@ import dev.pulceo.pna.dtos.NodeDTOUtil;
 import dev.pulceo.pna.model.message.Message;
 import dev.pulceo.pna.model.message.NetworkMetric;
 import dev.pulceo.pna.model.resources.CPUUtilizationMeasurement;
+import dev.pulceo.pna.model.resources.MemoryUtilizationMeasurement;
+import dev.pulceo.pna.model.resources.NetworkUtilizationMeasurement;
+import dev.pulceo.pna.model.resources.StorageUtilizationMeasurement;
 import dev.pulceo.pna.repository.NodeRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,9 +93,70 @@ public class NodeControllerTests {
     @Test
     public void testNewCPUMetricRequest() throws Exception {
         // given
+        CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO = new CreateNewResourceUtilizationDTO("cpu-util", 15, true);
 
         // when
-        CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO = new CreateNewResourceUtilizationDTO("cpu-util", 15, true);
+        Map<String, Object> map = testNewMetricRequest(createNewResourceUtilizationDTO);
+        CPUUtilizationMeasurement cpuUtilizationMeasurement = (CPUUtilizationMeasurement) map.get("cpuUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+        assertTrue(cpuUtilizationMeasurement.getUsageCPUPercentage() >= 0.0f);
+        assertTrue(cpuUtilizationMeasurement.getUsageNanoCores() >= 0.0f);
+        assertTrue(cpuUtilizationMeasurement.getUsageCoreNanoSeconds() >= 0.0f);
+    }
+
+    @Test
+    public void testNewMemMetricRequest() throws Exception {
+        // given
+        CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO = new CreateNewResourceUtilizationDTO("mem-util", 15, true);
+
+        // when
+        Map<String, Object> map = testNewMetricRequest(createNewResourceUtilizationDTO);
+        MemoryUtilizationMeasurement memoryUtilizationMeasurement = (MemoryUtilizationMeasurement) map.get("memoryUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+
+        assertTrue(memoryUtilizationMeasurement.getUsageMemoryPercentage() >= 0.0f);
+        assertTrue(memoryUtilizationMeasurement.getAvailableBytes() > 0);
+        assertTrue(memoryUtilizationMeasurement.getUsageMemoryPercentage() > 0);
+    }
+
+    @Test
+    public void testNewNetworkMetricRequest() throws Exception {
+        // given
+        CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO = new CreateNewResourceUtilizationDTO("net-util", 15, true);
+
+        // when
+        Map<String, Object> map = testNewMetricRequest(createNewResourceUtilizationDTO);
+        NetworkUtilizationMeasurement networkUtilizationMeasurement = (NetworkUtilizationMeasurement) map.get("networkUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+        assertTrue(networkUtilizationMeasurement.getRxBytes() > 0);
+        assertTrue(networkUtilizationMeasurement.getTxBytes() > 0);
+    }
+
+    @Test
+    public void testStorageMetricRequest() throws Exception {
+        // given
+        CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO = new CreateNewResourceUtilizationDTO("storage-util", 15, true);
+
+        // when
+        Map<String, Object> map = testNewMetricRequest(createNewResourceUtilizationDTO);
+        StorageUtilizationMeasurement storageUtilizationMeasurement = (StorageUtilizationMeasurement) map.get("storageUtilizationMeasurement");
+
+        // then
+        assertNotNull(map);
+        assert("127.0.0.1".equals(map.get("sourceHost")));
+        assert(storageUtilizationMeasurement.getUsageStoragePercentage() > 0.0f);
+    }
+
+    private Map<String, Object> testNewMetricRequest(CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO) throws Exception {
         String createNewResourceUtilizationDTOAsJson = objectMapper.writeValueAsString(createNewResourceUtilizationDTO);
         MvcResult mvcResult = this.mockMvc.perform(post("/api/v1/nodes/localNode/metric-requests")
                         .contentType("application/json")
@@ -101,8 +165,8 @@ public class NodeControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.remoteMetricRequestUUID").isNotEmpty())
                 .andExpect(jsonPath("$.remoteNodeUUID").isNotEmpty())
-                .andExpect(jsonPath("$.type").value("cpu-util"))
-                .andExpect(jsonPath("$.recurrence").value("15"))
+                .andExpect(jsonPath("$.type").value(createNewResourceUtilizationDTO.getType()))
+                .andExpect(jsonPath("$.recurrence").value(createNewResourceUtilizationDTO.getRecurrence()))
                 .andExpect(jsonPath("$.enabled").value("true"))
                 .andReturn();
         String metricRequestUuid = objectMapper.readTree(mvcResult.getResponse().getContentAsString()).get("remoteMetricRequestUUID").asText();
@@ -114,15 +178,7 @@ public class NodeControllerTests {
         Message message = cpuUtilizationResult.take();
 
         NetworkMetric networkMetric = (NetworkMetric) message.getMetric();
-        Map<String, Object> map = networkMetric.getMetricResult().getResultData();
-        CPUUtilizationMeasurement cpuUtilizationMeasurement = (CPUUtilizationMeasurement) map.get("cpuUtilizationMeasurement");
-
-        // then
-        assertNotNull(map);
-        assert("127.0.0.1".equals(map.get("sourceHost")));
-        assertTrue(cpuUtilizationMeasurement.getUsageCPUPercentage() >= 0.0f);
-        assertTrue(cpuUtilizationMeasurement.getUsageNanoCores() >= 0.0f);
-        assertTrue(cpuUtilizationMeasurement.getUsageCoreNanoSeconds() >= 0.0f);
+        return networkMetric.getMetricResult().getResultData();
     }
 
 }

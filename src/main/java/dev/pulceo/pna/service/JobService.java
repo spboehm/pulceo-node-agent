@@ -127,6 +127,22 @@ public class JobService {
         return this.resourceUtilizationJobRepository.findById(id);
     }
 
+    public long scheduleResourceUtilizationJob(long id) {
+        ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
+        switch (retrievedResourceUtilizationJob.getResourceUtilizationType()) {
+            case CPU_UTIL:
+                return scheduleResourceUtilizationJobForCPU(id);
+            case MEM_UTIL:
+                return scheduleResourceUtilizationJobForMEM(id);
+            case NET_UTIL:
+                return scheduleResourceUtilizationJobForNetwork(id);
+            case STORAGE_UTIL:
+                return scheduleResourceUtilizationJobForStorage(id);
+            default:
+                return 0L;
+        }
+    }
+
     public long scheduleResourceUtilizationJobForCPU(long id) {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();

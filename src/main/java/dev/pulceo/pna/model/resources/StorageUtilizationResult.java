@@ -1,17 +1,14 @@
 package dev.pulceo.pna.model.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.message.MetricResult;
 import dev.pulceo.pna.model.message.MetricType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.Map;
 import java.util.UUID;

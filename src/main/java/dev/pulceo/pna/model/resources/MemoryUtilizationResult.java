@@ -45,7 +45,7 @@ public class MemoryUtilizationResult extends Resource implements MetricResult {
     }
 
     @Override
-    @JsonIgnore
+    @net.minidev.json.annotate.JsonIgnore
     public Map<String, Object> getResultData() {
         return Map.of(
                 "sourceHost", srcHost,

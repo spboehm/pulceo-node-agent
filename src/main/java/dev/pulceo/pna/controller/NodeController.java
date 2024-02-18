@@ -92,12 +92,12 @@ public class NodeController {
 
         // Create Request
         ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
-                .resourceUtilizationType(ResourceUtilizationType.CPU_UTIL)
+                .resourceUtilizationType(ResourceUtilizationType.getTypeFromString(createNewResourceUtilizationDTO.getType()))
                 .k8sResourceType(K8sResourceType.NODE)
                 .resourceName(this.k3sNodeName)
                 .build();
         ResourceUtilizationJob resourceUtilizationJob = ResourceUtilizationJob.builder()
-                .resourceUtilizationType(ResourceUtilizationType.CPU_UTIL)
+                .resourceUtilizationType(ResourceUtilizationType.getTypeFromString(createNewResourceUtilizationDTO.getType()))
                 .resourceUtilizationRequest(resourceUtilizationRequest)
                 .recurrence(createNewResourceUtilizationDTO.getRecurrence())
                 .build();
@@ -110,7 +110,7 @@ public class NodeController {
         if (createNewResourceUtilizationDTO.isEnabled()) {
             this.jobService.enableResourceUtilizationJob(resourceUtilizationJob.getId());
         }
-        long id = this.jobService.scheduleResourceUtilizationJobForCPU(savedResourceUtilizationJob.getId());
+        long id = this.jobService.scheduleResourceUtilizationJob(savedResourceUtilizationJob.getId());
         Optional<ResourceUtilizationJob> createdResourceUtilizationJob = this.jobService.readNodeResourceUtilizationJob(id);
         if (createdResourceUtilizationJob.isEmpty()) {
             return ResponseEntity.notFound().build();

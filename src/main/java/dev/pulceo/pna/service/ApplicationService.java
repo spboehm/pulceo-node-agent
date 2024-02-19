@@ -10,19 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApplicationService {
 
-
-
-    private ApplicationRepository applicationRepository;
-    private ApplicationComponentRepository applicationComponentRepository;
+    private final ApplicationRepository applicationRepository;
+    private final ApplicationComponentRepository applicationComponentRepository;
+    private final KubernetesService kubernetesService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, ApplicationComponentRepository applicationComponentRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, ApplicationComponentRepository applicationComponentRepository, KubernetesService kubernetesService) {
         this.applicationRepository = applicationRepository;
         this.applicationComponentRepository = applicationComponentRepository;
+        this.kubernetesService = kubernetesService;
     }
 
     // TODO: create service / application
     public Application createApplication(Application application) {
+        //
+
         // TODO: do validation for all components
         return this.applicationRepository.save(application);
     }
@@ -30,10 +32,5 @@ public class ApplicationService {
     public ApplicationComponent createApplicationComponent(Application application, ApplicationComponent applicationComponent) {
         return this.applicationComponentRepository.save(applicationComponent);
     }
-
-
-
-
-
 
 }

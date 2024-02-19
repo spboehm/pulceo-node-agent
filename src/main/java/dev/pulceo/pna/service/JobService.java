@@ -486,7 +486,17 @@ public class JobService {
             }
         });
 
-        // TODO: add node job
-
+        Iterable<NodeJob> nodeJobs = this.nodeJobRepository.findByEnabled(true);
+        nodeJobs.forEach(nodeJob -> {
+            try {
+                if (nodeJob instanceof ResourceUtilizationJob) {
+                    this.scheduleResourceUtilizationJob(nodeJob.getId());
+                } else {
+                    throw new JobServiceException("Job type unknown!");
+                }
+            } catch (JobServiceException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

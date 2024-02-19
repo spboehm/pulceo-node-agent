@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NodeJobRepository extends CrudRepository<NodeJob, Long> {
 
+    Iterable<NodeJob> findByEnabled(boolean enabled);
 }

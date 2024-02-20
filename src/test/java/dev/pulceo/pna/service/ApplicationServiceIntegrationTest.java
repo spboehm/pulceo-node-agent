@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,6 +53,9 @@ public class ApplicationServiceIntegrationTest {
                 .port(80)
                 .node(node)
                 .applicationComponentType(ApplicationComponentType.PUBLIC)
+                .environmentVariables(Map.ofEntries(
+                        Map.entry("TEST", "TEST")
+                ))
                 .build();
 
         Application application = Application.builder()

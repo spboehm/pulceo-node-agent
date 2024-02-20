@@ -5,14 +5,13 @@ import dev.pulceo.pna.model.node.Node;
 import io.kubernetes.client.openapi.models.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Getter
@@ -31,6 +30,12 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
     Application application;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Node node;
+    @ElementCollection
+    @MapKeyColumn(name="envKey")
+    @Column(name="envValue")
+    @CollectionTable(name = "application_component_environment_variables", joinColumns = @JoinColumn(name = "application_component_id"))
+    @Builder.Default
+    private Map<String, String> environmentVariables = new HashMap<>();
 
     public void addApplication(Application application) {
         this.application = application;

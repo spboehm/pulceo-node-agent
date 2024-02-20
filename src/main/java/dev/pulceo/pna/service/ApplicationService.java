@@ -23,7 +23,11 @@ public class ApplicationService {
 
     // TODO: create service / application
     public Application createApplication(Application application) {
-        //
+        // TOOD: look at the application components and create the k8s resources
+
+
+        System.out.println(application);
+
 
         // TODO: do validation for all components
         return this.applicationRepository.save(application);

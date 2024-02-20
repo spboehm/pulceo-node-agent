@@ -1,10 +1,8 @@
 package dev.pulceo.pna.dto.application;
 
 import dev.pulceo.pna.model.application.ApplicationComponentType;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 public class CreateNewApplicationComponentDTO {
 
     private String name;
@@ -20,6 +19,7 @@ public class CreateNewApplicationComponentDTO {
     private int port;
     private String protocol;
     private ApplicationComponentType applicationComponentType;
+    @Builder.Default
     private Map<String, String> environmentVariables = new HashMap<>();
 
 }

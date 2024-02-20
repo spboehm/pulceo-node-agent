@@ -15,6 +15,6 @@ public class CreateNewApplicationDTO {
 
     private String name;
     @Builder.Default
-    private List<ApplicationComponentDTO> applicationComponents = new ArrayList<>();
+    private List<CreateNewApplicationComponentDTO> applicationComponents = new ArrayList<>();
 
 }

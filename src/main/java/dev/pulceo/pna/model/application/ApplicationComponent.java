@@ -1,6 +1,7 @@
 package dev.pulceo.pna.model.application;
 
 import dev.pulceo.pna.dto.application.ApplicationComponentDTO;
+import dev.pulceo.pna.dto.application.CreateNewApplicationComponentDTO;
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.node.Node;
 import io.kubernetes.client.openapi.models.*;
@@ -49,6 +50,18 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
                 .applicationComponentType(applicationComponentDTO.getApplicationComponentType())
                 .environmentVariables(applicationComponentDTO.getEnvironmentVariables())
                 .build();
+    }
+
+    public static ApplicationComponent fromCreateNewApplicationComponentDTO(CreateNewApplicationComponentDTO createNewApplicationComponentDTO) {
+        return ApplicationComponent.builder()
+                .name(createNewApplicationComponentDTO.getName())
+                .image(createNewApplicationComponentDTO.getImage())
+                .port(createNewApplicationComponentDTO.getPort())
+                .protocol(createNewApplicationComponentDTO.getProtocol())
+                .applicationComponentType(createNewApplicationComponentDTO.getApplicationComponentType())
+                .environmentVariables(createNewApplicationComponentDTO.getEnvironmentVariables())
+                .build();
+
     }
 
     private String getKubernetesServiceProtocol() {
@@ -134,15 +147,4 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
         return result;
     }
 
-
-    public static ApplicationComponent fromCreateNewApplicationComponentDTO(ApplicationComponentDTO applicationComponentDTO) {
-        return ApplicationComponent.builder()
-                .name(applicationComponentDTO.getName())
-                .image(applicationComponentDTO.getImage())
-                .port(applicationComponentDTO.getPort())
-                .protocol(applicationComponentDTO.getProtocol())
-                .applicationComponentType(applicationComponentDTO.getApplicationComponentType())
-                .environmentVariables(applicationComponentDTO.getEnvironmentVariables())
-                .build();
-    }
 }

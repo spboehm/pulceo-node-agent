@@ -2,6 +2,10 @@ package dev.pulceo.pna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.application.ApplicationDTO;
+import dev.pulceo.pna.dto.application.CreateNewApplicationComponentDTO;
+import dev.pulceo.pna.dto.application.CreateNewApplicationDTO;
+import dev.pulceo.pna.model.application.ApplicationComponentProtocol;
+import dev.pulceo.pna.model.application.ApplicationComponentType;
 import dev.pulceo.pna.repository.ApplicationComponentRepository;
 import dev.pulceo.pna.repository.ApplicationRepository;
 import dev.pulceo.pna.service.KubernetesService;
@@ -11,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -56,10 +63,37 @@ public class ApplicationControllerTests {
                         .content(applicationDTOAsString))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("test-application"));
-
     }
 
+    @Test
+    public void testCreateNewApplicationWithOneApplicationComponent() throws Exception {
+        // given
+        CreateNewApplicationComponentDTO createNewApplicationComponentDTO = CreateNewApplicationComponentDTO.builder()
+                .name("component-nginx")
+                .image("nginx")
+                .protocol(String.valueOf(ApplicationComponentProtocol.HTTP))
+                .port(80)
+                .applicationComponentType(ApplicationComponentType.PUBLIC)
+                .environmentVariables(Map.ofEntries(
+                        Map.entry("TEST", "TEST")
+                ))
+                .build();
 
+        CreateNewApplicationDTO createNewApplicationDTO = CreateNewApplicationDTO.builder()
+                .name("app-nginx")
+                .applicationComponents(List.of(createNewApplicationComponentDTO))
+                .build();
+
+        String applicationAsString = objectMapper.writeValueAsString(createNewApplicationDTO);
+
+        // when and then
+        this.mockMvc.perform(post("/api/v1/applications")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(applicationAsString))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("app-nginx"));
+    }
 
 
 

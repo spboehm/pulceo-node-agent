@@ -99,7 +99,7 @@ public class KubernetesService {
             ApiClient client = Config.fromConfig(k3sConfigPath);
             Configuration.setDefaultApiClient(client);
             AppsV1Api appsV1Api = new AppsV1Api(client);
-
+            this.createNameSpaceIfNotExists();
             V1Deployment v1Deployment = appsV1Api.createNamespacedDeployment(this.namespace, kubernetesDeployable.getDeployment(applicationName)).execute();
 
             // Wait until example deployment is ready
@@ -130,7 +130,7 @@ public class KubernetesService {
             ApiClient client = Config.fromConfig(k3sConfigPath);
             Configuration.setDefaultApiClient(client);
             CoreV1Api api = new CoreV1Api();
-
+            this.createNameSpaceIfNotExists();
             V1Service v1Service = api.createNamespacedService(this.namespace, kubernetesDeployable.getService(applicationName)).execute();
 
             // Wait until service is ready
@@ -151,6 +151,8 @@ public class KubernetesService {
                     });
 
         } catch (ApiException | IOException e) {
+            throw new RuntimeException(e);
+        } catch (KubernetesServiceException e) {
             throw new RuntimeException(e);
         }
 
@@ -202,12 +204,16 @@ public class KubernetesService {
             CoreV1Api api = new CoreV1Api();
 
             // TODO: create namespace if not exists
-            if (!checkIfNamespaceAlreadyExists(this.namespace)) {
-                this.createNamespace(this.namespace);
-            }
+            createNameSpaceIfNotExists();
 
         } catch (Exception e) {
             throw new KubernetesServiceException("Could not init KubernetesService!", e);
+        }
+    }
+
+    private void createNameSpaceIfNotExists() throws KubernetesServiceException {
+        if (!checkIfNamespaceAlreadyExists(this.namespace)) {
+            this.createNamespace(this.namespace);
         }
     }
 }

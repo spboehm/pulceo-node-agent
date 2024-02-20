@@ -48,7 +48,7 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
                 .port(applicationComponentDTO.getPort())
                 .protocol(applicationComponentDTO.getProtocol())
                 .applicationComponentType(applicationComponentDTO.getApplicationComponentType())
-                .environmentVariables(applicationComponentDTO.getEnvironmentVariables())
+                //.environmentVariables(applicationComponentDTO.getEnvironmentVariables())
                 .build();
     }
 

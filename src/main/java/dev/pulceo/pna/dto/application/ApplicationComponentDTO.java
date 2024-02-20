@@ -2,11 +2,11 @@ package dev.pulceo.pna.dto.application;
 
 import dev.pulceo.pna.model.application.ApplicationComponent;
 import dev.pulceo.pna.model.application.ApplicationComponentType;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @Getter
@@ -21,8 +21,8 @@ public class ApplicationComponentDTO {
     private int port;
     private String protocol;
     private ApplicationComponentType applicationComponentType;
-    @Builder.Default
-    private Map<String, String> environmentVariables = new HashMap<>();
+    //@Builder.Default
+    //private Map<String, String> environmentVariables = new HashMap<>();
 
     public static ApplicationComponentDTO fromApplicationComponent(ApplicationComponent applicationComponent) {
         return ApplicationComponentDTO.builder()
@@ -32,7 +32,7 @@ public class ApplicationComponentDTO {
                 .port(applicationComponent.getPort())
                 .protocol(applicationComponent.getProtocol())
                 .applicationComponentType(applicationComponent.getApplicationComponentType())
-                .environmentVariables(applicationComponent.getEnvironmentVariables())
+                //.environmentVariables(applicationComponent.getEnvironmentVariables())
                 .build();
     }
 }

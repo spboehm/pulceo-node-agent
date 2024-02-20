@@ -1,6 +1,5 @@
 package dev.pulceo.pna.controller;
 
-import dev.pulceo.pna.dto.application.ApplicationComponentDTO;
 import dev.pulceo.pna.dto.application.ApplicationDTO;
 import dev.pulceo.pna.dto.application.CreateNewApplicationDTO;
 import dev.pulceo.pna.exception.ApplicationServiceException;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,20 +25,19 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<ApplicationDTO>> readAllApplications() {
-        return null;
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ApplicationDTO> readApplicationByUUID(@Valid @PathVariable UUID uuid) throws ApplicationServiceException {
+        Optional<Application> application = this.applicationService.findApplicationByUUID(uuid);
+        if (application.isEmpty()) {
+            throw new ApplicationServiceException(String.format("Application with UUID %s not found", uuid));
+        }
+        return new ResponseEntity<>(ApplicationDTO.fromApplication(application.get()), HttpStatus.OK);
     }
 
     @PostMapping("")
     public ResponseEntity<ApplicationDTO> createNewApplication(@Valid @RequestBody CreateNewApplicationDTO createNewApplicationDTO) throws ApplicationServiceException {
         Application application = this.applicationService.createApplication(Application.fromCreateNewApplicationDTO(createNewApplicationDTO));
         return new ResponseEntity<>(ApplicationDTO.fromApplication(application), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/{uuid}/application-components")
-    public ResponseEntity<ApplicationComponentDTO> createNewApplicationComponent(@PathVariable UUID applicationUuid, @Valid @RequestBody ApplicationComponentDTO applicationComponentDTO) {
-        return null;
     }
 
     @DeleteMapping("/{uuid}")

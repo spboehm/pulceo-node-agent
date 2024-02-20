@@ -52,8 +52,8 @@ public class ApplicationServiceIntegrationTest {
 
     @AfterAll
     public void tearDown() {
-        applicationRepository.deleteAll();
-        kubernetesService.deleteNamespace("pulceo");
+//        applicationRepository.deleteAll();
+//        kubernetesService.deleteNamespace("pulceo");
     }
 
     @Test

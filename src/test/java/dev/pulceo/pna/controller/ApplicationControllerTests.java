@@ -54,6 +54,7 @@ public class ApplicationControllerTests {
     @Test
     public void testCreateNewApplicationWithoutApplicationComponents() throws Exception {
         // given
+        // TODO: add nodeUUID
         ApplicationDTO applicationDTO = ApplicationDTO.builder()
                 .name("test-application")
                 .build();
@@ -71,6 +72,7 @@ public class ApplicationControllerTests {
     @Test
     public void testCreateNewApplicationWithOneApplicationComponent() throws Exception {
         // given
+        // TODO: add nodeUUID
         CreateNewApplicationComponentDTO createNewApplicationComponentDTO = CreateNewApplicationComponentDTO.builder()
                 .name("component-nginx")
                 .image("nginx")

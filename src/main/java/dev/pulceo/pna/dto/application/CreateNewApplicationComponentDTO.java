@@ -14,6 +14,7 @@ import java.util.Map;
 @SuperBuilder
 public class CreateNewApplicationComponentDTO {
 
+
     private String name;
     private String image;
     private int port;

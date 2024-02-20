@@ -1,5 +1,6 @@
 package dev.pulceo.pna.model.application;
 
+import dev.pulceo.pna.dto.application.ApplicationComponentDTO;
 import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.node.Node;
 import io.kubernetes.client.openapi.models.*;
@@ -37,6 +38,17 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
 
     public void addApplication(Application application) {
         this.application = application;
+    }
+
+    public static ApplicationComponent fromApplicationComponentDTO(ApplicationComponentDTO applicationComponentDTO) {
+        return ApplicationComponent.builder()
+                .name(applicationComponentDTO.getName())
+                .image(applicationComponentDTO.getImage())
+                .port(applicationComponentDTO.getPort())
+                .protocol(applicationComponentDTO.getProtocol())
+                .applicationComponentType(applicationComponentDTO.getApplicationComponentType())
+                .environmentVariables(applicationComponentDTO.getEnvironmentVariables())
+                .build();
     }
 
     private String getKubernetesServiceProtocol() {
@@ -122,17 +134,15 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "ApplicationComponent{" +
-                "name='" + name + '\'' +
-                ", image='" + image + '\'' +
-                ", port=" + port +
-                ", protocol='" + protocol + '\'' +
-                ", applicationComponentType=" + applicationComponentType +
-                ", application=" + application.getName() +
-                ", node=" + node +
-                ", environmentVariables=" + environmentVariables +
-                "} " + super.toString();
+
+    public static ApplicationComponent fromCreateNewApplicationComponentDTO(ApplicationComponentDTO applicationComponentDTO) {
+        return ApplicationComponent.builder()
+                .name(applicationComponentDTO.getName())
+                .image(applicationComponentDTO.getImage())
+                .port(applicationComponentDTO.getPort())
+                .protocol(applicationComponentDTO.getProtocol())
+                .applicationComponentType(applicationComponentDTO.getApplicationComponentType())
+                .environmentVariables(applicationComponentDTO.getEnvironmentVariables())
+                .build();
     }
 }

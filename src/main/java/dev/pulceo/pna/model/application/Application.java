@@ -1,5 +1,6 @@
 package dev.pulceo.pna.model.application;
 
+import dev.pulceo.pna.dto.application.CreateNewApplicationDTO;
 import dev.pulceo.pna.model.Resource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,14 @@ public class Application extends Resource {
     private String name;
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "application")
     private List<ApplicationComponent> applicationComponents;
+
+    public static Application fromCreateNewApplicationDTO(CreateNewApplicationDTO createNewApplicationDTO) {
+        return Application.builder()
+                .name(createNewApplicationDTO.getName())
+                .applicationComponents(createNewApplicationDTO.getApplicationComponents().stream().map(ApplicationComponent::fromCreateNewApplicationComponentDTO).toList())
+                .build();
+    }
+
 
     @Override
     public boolean equals(Object o) {

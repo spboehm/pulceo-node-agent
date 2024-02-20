@@ -1,8 +1,14 @@
 package dev.pulceo.pna.controller;
 
+import dev.pulceo.pna.dto.application.ApplicationComponentDTO;
 import dev.pulceo.pna.dto.application.ApplicationDTO;
+import dev.pulceo.pna.dto.application.CreateNewApplicationDTO;
+import dev.pulceo.pna.exception.ApplicationServiceException;
+import dev.pulceo.pna.model.application.Application;
 import dev.pulceo.pna.service.ApplicationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +31,16 @@ public class ApplicationController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ApplicationDTO> createNewApplication() {
+    public ResponseEntity<ApplicationDTO> createNewApplication(@Valid @RequestBody CreateNewApplicationDTO createNewApplicationDTO) throws ApplicationServiceException {
+        Application application = this.applicationService.createApplication(Application.fromCreateNewApplicationDTO(createNewApplicationDTO));
+        return new ResponseEntity<>(ApplicationDTO.fromApplication(application), HttpStatus.CREATED);
+    }
 
-        // TODO:
-        // Application: name
-        // List of Application components
-        // application component: name, image, port, protocol, applicationComponentType
-        // the application
-        // and the node which is the local node
+    @PostMapping("/{uuid}/application-components")
+    public ResponseEntity<ApplicationComponentDTO> createNewApplicationComponent(@PathVariable String uuid, @Valid @RequestBody ApplicationComponentDTO applicationComponentDTO) {
+
+
+
 
         return null;
     }
@@ -41,5 +49,7 @@ public class ApplicationController {
     public void deleteApplication(@PathVariable String uuid) {
 
     }
+
+    // TODO: add exception handler
 
 }

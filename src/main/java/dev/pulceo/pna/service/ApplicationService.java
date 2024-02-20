@@ -26,23 +26,21 @@ public class ApplicationService {
     }
 
     public Application createApplication(Application application) throws ApplicationServiceException {
+        if (this.isApplicationAlreadyExisting(application.getName())) {
+            throw new ApplicationServiceException(String.format("Application %s already exists", application.getName()));
+        }
 
-
-        // TODO: check for duplicates
-        // TODO: check for port collisions
-
-        Application persistedApplication = this.applicationRepository.save(application);
-
+        Application persistedApplicationWithoutServices = this.applicationRepository.save(application);
         // then add the components
-        for (ApplicationComponent applicationComponent : persistedApplication.getApplicationComponents()) {
+        for (ApplicationComponent applicationComponent : application.getApplicationComponents()) {
             try {
-                this.createApplicationComponent(persistedApplication, applicationComponent);
+                this.createApplicationComponent(persistedApplicationWithoutServices, applicationComponent);
             } catch (ApplicationServiceException e) {
                 throw new ApplicationServiceException("Could not create application!", e);
             }
         }
         // TODO: do validation for all components
-        return persistedApplication;
+        return persistedApplicationWithoutServices;
     }
 
     public ApplicationComponent createApplicationComponent(Application application, ApplicationComponent applicationComponent) throws ApplicationServiceException {
@@ -50,13 +48,35 @@ public class ApplicationService {
         if (persistedApplication.isEmpty()) {
             throw new ApplicationServiceException(String.format("Application %s not found", application.getName()));
         }
+
+        if (this.isApplicationComponentAlreadyExisting(applicationComponent.getName()) || isPortAlreadyInUse(applicationComponent.getPort())) {
+            throw new ApplicationServiceException(String.format("ApplicationComponent %s already exists", applicationComponent.getName()));
+        }
+
         try {
             this.kubernetesService.createDeployment(persistedApplication.get().getName(), applicationComponent);
             this.kubernetesService.createService(persistedApplication.get().getName(), applicationComponent);
         } catch (KubernetesServiceException e) {
             throw new ApplicationServiceException(e);
         }
-        return this.applicationComponentRepository.save(applicationComponent);
+
+        // persis
+        ApplicationComponent savedApplicationComponent = this.applicationComponentRepository.save(applicationComponent);
+        persistedApplication.get().getApplicationComponents().add(savedApplicationComponent);
+
+        return savedApplicationComponent;
+    }
+
+    private boolean isApplicationAlreadyExisting(String name) {
+        return this.applicationRepository.findByName(name).isPresent();
+    }
+
+    private boolean isApplicationComponentAlreadyExisting(String name) {
+        return this.applicationComponentRepository.findByName(name).isPresent();
+    }
+
+    private boolean isPortAlreadyInUse(int port) {
+        return this.applicationComponentRepository.findByPort(port).isPresent();
     }
 
 }

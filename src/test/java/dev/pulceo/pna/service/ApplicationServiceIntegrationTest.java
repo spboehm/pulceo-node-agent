@@ -107,6 +107,7 @@ public class ApplicationServiceIntegrationTest {
 
         // then
         assertEquals(application, createdApplication);
+
         assertEquals("http://127.0.0.1:80", createdApplication.getApplicationComponents().get(0).getEndpoint().toString());
     }
 

@@ -4,10 +4,7 @@ import dev.pulceo.pna.model.Resource;
 import dev.pulceo.pna.model.node.Node;
 import io.kubernetes.client.openapi.models.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.net.URI;
@@ -15,6 +12,7 @@ import java.util.*;
 
 @Entity
 @Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -105,7 +103,9 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
         if (!Objects.equals(image, that.image)) return false;
         if (!Objects.equals(protocol, that.protocol)) return false;
         if (applicationComponentType != that.applicationComponentType) return false;
-        return Objects.equals(node, that.node);
+        if (!Objects.equals(application, that.application)) return false;
+        if (!Objects.equals(node, that.node)) return false;
+        return Objects.equals(environmentVariables, that.environmentVariables);
     }
 
     @Override
@@ -116,7 +116,23 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
         result = 31 * result + port;
         result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
         result = 31 * result + (applicationComponentType != null ? applicationComponentType.hashCode() : 0);
+        result = 31 * result + (application != null ? application.hashCode() : 0);
         result = 31 * result + (node != null ? node.hashCode() : 0);
+        result = 31 * result + (environmentVariables != null ? environmentVariables.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ApplicationComponent{" +
+                "name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", port=" + port +
+                ", protocol='" + protocol + '\'' +
+                ", applicationComponentType=" + applicationComponentType +
+                ", application=" + application.getName() +
+                ", node=" + node +
+                ", environmentVariables=" + environmentVariables +
+                "} " + super.toString();
     }
 }

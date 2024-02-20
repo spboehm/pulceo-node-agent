@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -16,11 +15,16 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@NamedEntityGraph(
+        name = "graph.Application.applicationComponents",
+        attributeNodes = {
+                @NamedAttributeNode("applicationComponents")
+        }
+)
 public class Application extends Resource {
 
     private String name;
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "application")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.REMOVE }, mappedBy = "application")
     private List<ApplicationComponent> applicationComponents;
 
     @Override
@@ -42,4 +46,5 @@ public class Application extends Resource {
         result = 31 * result + (applicationComponents != null ? applicationComponents.hashCode() : 0);
         return result;
     }
+
 }

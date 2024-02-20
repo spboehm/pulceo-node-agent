@@ -164,11 +164,11 @@ public class KubernetesServiceIntegrationTest {
                 .build();
 
         // when
-        this.kubernetesService.createDeployment(applicationComponent);
+        this.kubernetesService.createDeployment("test", applicationComponent);
 
         // then
         // TODO: replace with proper replacement - do not use the implementation in svc
-        assertTrue(this.kubernetesService.isDeploymentExisting(this.namespace, "nginx"));
+        assertTrue(this.kubernetesService.isDeploymentExisting(this.namespace, "test-nginx"));
     }
 
     @Test
@@ -184,10 +184,10 @@ public class KubernetesServiceIntegrationTest {
                 .applicationComponentType(ApplicationComponentType.PUBLIC)
                 .node(localnode.get())
                 .build();
-        this.kubernetesService.createDeployment(applicationComponent);
+        this.kubernetesService.createDeployment("test", applicationComponent);
 
         // when
-        this.kubernetesService.createService(applicationComponent);
+        this.kubernetesService.createService("test", applicationComponent);
 
         // then
         WebTestClient webTestClient = WebTestClient.bindToServer().baseUrl("http://localhost:80").build();

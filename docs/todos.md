@@ -26,6 +26,10 @@
 - [ ] Fix queue full bug in Bandwidth-related measurement tests
 - [ ] Make sure that NodeName is properly set in `application.properties`. Check on start...
 
+## KubernetesService 
+
+- [ ] add labels with the application name to all deployments and services (KubernetesService)
+
 ## CPU Utilization Service
 
 - [ ] Fix storage / volume allocation for local kubernetes volumes!!!

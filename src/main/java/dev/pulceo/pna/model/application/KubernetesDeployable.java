@@ -5,7 +5,7 @@ import io.kubernetes.client.openapi.models.V1Service;
 
 public interface KubernetesDeployable {
 
-    V1Service getService();
-    V1Deployment getDeployment();
+    V1Service getService(String applicationName);
+    V1Deployment getDeployment(String applicationName);
 
 }

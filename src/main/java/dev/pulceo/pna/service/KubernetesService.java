@@ -67,7 +67,32 @@ public class KubernetesService {
         }
     }
 
-    public void createDeployment(KubernetesDeployable kubernetesDeployable) throws KubernetesServiceException {
+    public void deleteNamespace(String namespace) {
+        try {
+            ApiClient client = Config.fromConfig(k3sConfigPath);
+            Configuration.setDefaultApiClient(client);
+            CoreV1Api api = new CoreV1Api();
+            api.deleteNamespace(namespace).execute();
+            // TODO: replace with async call
+            try (Watch<V1Namespace> watch = Watch.createWatch(
+                    // TODO: set timeout
+                    api.getApiClient(),
+                    api.listNamespace()
+                            .watch(true)
+                            .buildCall(null),
+                    new TypeToken<Watch.Response<V1Namespace>>() {}.getType())) {
+                for (Watch.Response<V1Namespace> item : watch) {
+                    if (Objects.equals(item.object.getMetadata().getName(), namespace) && Objects.equals(item.type, "DELETED")) {
+                        break;
+                    }
+                }
+            }
+        } catch (ApiException | IOException e) {
+            // swallow in case of namespace does not exist
+        }
+    }
+
+    public void createDeployment(String applicationName, KubernetesDeployable kubernetesDeployable) throws KubernetesServiceException {
         // TODO: check if deployment does already exist!
 
         try {
@@ -75,7 +100,7 @@ public class KubernetesService {
             Configuration.setDefaultApiClient(client);
             AppsV1Api appsV1Api = new AppsV1Api(client);
 
-            V1Deployment v1Deployment = appsV1Api.createNamespacedDeployment(this.namespace, kubernetesDeployable.getDeployment()).execute();
+            V1Deployment v1Deployment = appsV1Api.createNamespacedDeployment(this.namespace, kubernetesDeployable.getDeployment(applicationName)).execute();
 
             // Wait until example deployment is ready
             // TODO: replace with async callback
@@ -85,7 +110,7 @@ public class KubernetesService {
                     () -> {
                         try {
                             return appsV1Api
-                                    .readNamespacedDeployment(kubernetesDeployable.getDeployment().getMetadata().getName(), namespace)
+                                    .readNamespacedDeployment(kubernetesDeployable.getDeployment(applicationName).getMetadata().getName(), namespace)
                                     .execute()
                                     .getStatus()
                                     .getReadyReplicas() > 0;
@@ -98,7 +123,7 @@ public class KubernetesService {
         }
     }
 
-    public void createService(KubernetesDeployable kubernetesDeployable) {
+    public void createService(String applicationName, KubernetesDeployable kubernetesDeployable) {
         // TODO: check if service does already exist
 
         try {
@@ -106,7 +131,7 @@ public class KubernetesService {
             Configuration.setDefaultApiClient(client);
             CoreV1Api api = new CoreV1Api();
 
-            V1Service v1Service = api.createNamespacedService(this.namespace, kubernetesDeployable.getService()).execute();
+            V1Service v1Service = api.createNamespacedService(this.namespace, kubernetesDeployable.getService(applicationName)).execute();
 
             // Wait until service is ready
             // TODO: replace with async callback
@@ -117,7 +142,7 @@ public class KubernetesService {
                     () -> {
                         try {
                             return api
-                                    .readNamespacedService(kubernetesDeployable.getService().getMetadata().getName(), namespace)
+                                    .readNamespacedService(kubernetesDeployable.getService(applicationName).getMetadata().getName(), namespace)
                                     .execute()
                                     .getStatus().getLoadBalancer().getIngress().get(0).getIp() != null;
                         } catch (ApiException e) {
@@ -165,6 +190,8 @@ public class KubernetesService {
             return false;
         }
     }
+
+
 
     @PostConstruct
     private void init() throws KubernetesServiceException {

@@ -31,9 +31,12 @@ public class ResourceUtilizationServiceIntegrationTests {
     private static JsonNode jsonNode;
 
     @BeforeAll
-    public static void setup() throws IOException {
+    public static void setup() throws IOException, InterruptedException {
         File statsSummaryFile = new File("src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary.json");
         ResourceUtilizationServiceIntegrationTests.jsonNode = Json.mapper().readTree(statsSummaryFile);
+        ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "./bootstrap-k3s-access.sh");
+        Process p = processBuilder.start();
+        p.waitFor();
     }
 
     @BeforeEach

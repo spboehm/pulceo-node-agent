@@ -55,32 +55,32 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
     }
 
     @Override
-    public V1Service getService() {
+    public V1Service getService(String applicationName) {
         V1ServiceBuilder v1ServiceBuilder = new V1ServiceBuilder()
                 .withApiVersion("v1")
                 .withKind("Service")
-                .withMetadata(new V1ObjectMeta().name(name).putLabelsItem("name", name))
+                .withMetadata(new V1ObjectMeta().name(applicationName + "-" + name).putLabelsItem("name", applicationName + "-" + name))
                 .withSpec(
                         new V1ServiceSpec()
                                 .addPortsItem(new V1ServicePort().port(this.port).protocol(this.getKubernetesServiceProtocol()))
-                                .putSelectorItem("name", name)
+                                .putSelectorItem("name", applicationName + "-" + name)
                                 .type("LoadBalancer"));
         return v1ServiceBuilder.build();
     }
 
     @Override
-    public V1Deployment getDeployment() {
+    public V1Deployment getDeployment(String applicationName) {
         V1DeploymentBuilder v1DeploymentBuilder = new V1DeploymentBuilder()
                 .withApiVersion("apps/v1")
                 .withKind("Deployment")
-                .withMetadata(new V1ObjectMeta().name(name))
+                .withMetadata(new V1ObjectMeta().name(applicationName + "-" + name))
                 .withSpec(
                         new V1DeploymentSpec()
                                 .replicas(1)
-                                .selector(new V1LabelSelector().putMatchLabelsItem("name", name))
+                                .selector(new V1LabelSelector().putMatchLabelsItem("name", applicationName + "-" + name))
                                 .template(
                                         new V1PodTemplateSpec()
-                                                .metadata(new V1ObjectMeta().putLabelsItem("name", name))
+                                                .metadata(new V1ObjectMeta().putLabelsItem("name", applicationName + "-" + name))
                                                 .spec(
                                                         new V1PodSpec()
                                                                 .containers(

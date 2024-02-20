@@ -11,6 +11,7 @@ import dev.pulceo.pna.model.resources.MemoryUtilizationMeasurement;
 import dev.pulceo.pna.model.resources.NetworkUtilizationMeasurement;
 import dev.pulceo.pna.model.resources.StorageUtilizationMeasurement;
 import dev.pulceo.pna.repository.NodeRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -48,6 +50,14 @@ public class NodeControllerTests {
 
     @Value("${pna.local.address}")
     private String localAddress;
+
+    @BeforeAll
+    public static void setUp() throws IOException, InterruptedException {
+        // given
+        ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "./bootstrap-k3s-access.sh");
+        Process p = processBuilder.start();
+        p.waitFor();
+    }
 
     @Test
     public void testCreateNode() throws Exception {
@@ -172,7 +182,7 @@ public class NodeControllerTests {
         String metricRequestUuid = objectMapper.readTree(mvcResult.getResponse().getContentAsString()).get("remoteMetricRequestUUID").asText();
         // TODO: cancel
 
-        BlockingQueue<Message> cpuUtilizationResult = new ArrayBlockingQueue<>(10);
+        BlockingQueue<Message> cpuUtilizationResult = new ArrayBlockingQueue<>(100);
         this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> cpuUtilizationResult.add((Message) message.getPayload()));
         // initiate orderly shutdown
         Message message = cpuUtilizationResult.take();

@@ -295,7 +295,7 @@ public class LinkControllerTests {
         // TODO: do validation here of MetricRequestDTO
 
         // wait for udp-bw value
-        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> messageBlockingQueue = new ArrayBlockingQueue<>(100);
         this.bandwidthServiceMessageChannel.subscribe(message -> messageBlockingQueue.add((Message) message.getPayload()));
             Message message = messageBlockingQueue.take();
             NetworkMetric networkMetric = (NetworkMetric) message.getMetric();

@@ -193,7 +193,42 @@ public class KubernetesService {
         }
     }
 
+    public void deleteService(String applicationName, String applicationComponentName) throws IOException, ApiException {
+        ApiClient client = Config.fromConfig(k3sConfigPath);
+        Configuration.setDefaultApiClient(client);
+        CoreV1Api api = new CoreV1Api();
+        api.deleteNamespacedService(applicationName + "-" + applicationComponentName, this.namespace).execute();
 
+        Wait.poll(
+                Duration.ofSeconds(3),
+                Duration.ofSeconds(60),
+                () -> {
+                    try {
+                        return api.readNamespacedService(applicationName + "-" + applicationComponentName, namespace).execute().getStatus() == null;
+                    } catch (ApiException e) {
+                        return true;
+                    }
+                });
+    }
+
+    public void deleteDeployment(String applicationName, String applicationComponentName) throws IOException, ApiException {
+        ApiClient client = Config.fromConfig(k3sConfigPath);
+        Configuration.setDefaultApiClient(client);
+        AppsV1Api appsV1Api = new AppsV1Api();
+
+        appsV1Api.deleteNamespacedDeployment(applicationName + "-" + applicationComponentName, this.namespace).execute();
+
+        Wait.poll(
+                Duration.ofSeconds(3),
+                Duration.ofSeconds(60),
+                () -> {
+                    try {
+                        return appsV1Api.readNamespacedDeployment(applicationName + "-" + applicationComponentName, namespace).execute() == null;
+                    } catch (ApiException e) {
+                        return true;
+                    }
+                });
+    }
 
     @PostConstruct
     private void init() throws KubernetesServiceException {
@@ -216,4 +251,5 @@ public class KubernetesService {
             this.createNamespace(this.namespace);
         }
     }
+
 }

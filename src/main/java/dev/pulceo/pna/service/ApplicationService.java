@@ -6,10 +6,13 @@ import dev.pulceo.pna.model.application.Application;
 import dev.pulceo.pna.model.application.ApplicationComponent;
 import dev.pulceo.pna.repository.ApplicationComponentRepository;
 import dev.pulceo.pna.repository.ApplicationRepository;
+import io.kubernetes.client.openapi.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ApplicationService {
@@ -17,12 +20,14 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationComponentRepository applicationComponentRepository;
     private final KubernetesService kubernetesService;
+    private final NodeService nodeService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, ApplicationComponentRepository applicationComponentRepository, KubernetesService kubernetesService) {
+    public ApplicationService(ApplicationRepository applicationRepository, ApplicationComponentRepository applicationComponentRepository, KubernetesService kubernetesService, NodeService nodeService) {
         this.applicationRepository = applicationRepository;
         this.applicationComponentRepository = applicationComponentRepository;
         this.kubernetesService = kubernetesService;
+        this.nodeService = nodeService;
     }
 
     public Application createApplication(Application application) throws ApplicationServiceException {
@@ -61,10 +66,15 @@ public class ApplicationService {
         }
 
         // persis
+        applicationComponent.setApplication(persistedApplication.get());
+        applicationComponent.setNode(this.nodeService.readLocalNode().get());
         ApplicationComponent savedApplicationComponent = this.applicationComponentRepository.save(applicationComponent);
         persistedApplication.get().getApplicationComponents().add(savedApplicationComponent);
-
         return savedApplicationComponent;
+    }
+
+    public Application readApplicationByName(String applicationName) {
+        return this.applicationRepository.findByName(applicationName).orElse(null);
     }
 
     private boolean isApplicationAlreadyExisting(String name) {
@@ -79,4 +89,23 @@ public class ApplicationService {
         return this.applicationComponentRepository.findByPort(port).isPresent();
     }
 
+    public void deleteApplication(String applicationName) {
+        // find services and delete them
+        Application application = this.readApplicationByName(applicationName);
+        for (ApplicationComponent applicationComponent : application.getApplicationComponents()) {
+            try {
+                this.kubernetesService.deleteService(applicationName, applicationComponent.getName());
+                this.kubernetesService.deleteDeployment(applicationName, applicationComponent.getName());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ApiException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        this.applicationRepository.delete(application);
+    }
+
+    public Optional<Application> findApplicationByUUID(UUID applicationUUID) {
+        return this.applicationRepository.findByUuid(applicationUUID);
+    }
 }

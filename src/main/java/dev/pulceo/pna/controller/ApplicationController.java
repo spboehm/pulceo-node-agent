@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/applications")
@@ -37,17 +39,18 @@ public class ApplicationController {
     }
 
     @PostMapping("/{uuid}/application-components")
-    public ResponseEntity<ApplicationComponentDTO> createNewApplicationComponent(@PathVariable String uuid, @Valid @RequestBody ApplicationComponentDTO applicationComponentDTO) {
-
-
-
-
+    public ResponseEntity<ApplicationComponentDTO> createNewApplicationComponent(@PathVariable UUID applicationUuid, @Valid @RequestBody ApplicationComponentDTO applicationComponentDTO) {
         return null;
     }
 
     @DeleteMapping("/{uuid}")
-    public void deleteApplication(@PathVariable String uuid) {
-
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteApplication(@PathVariable UUID uuid) throws ApplicationServiceException {
+        Optional<Application> application = this.applicationService.findApplicationByUUID(uuid);
+        if (application.isEmpty()) {
+            throw new ApplicationServiceException(String.format("Application with UUID %s not found", uuid));
+        }
+        this.applicationService.deleteApplication(application.get().getName());
     }
 
     // TODO: add exception handler

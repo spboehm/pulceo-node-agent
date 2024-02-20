@@ -1,5 +1,6 @@
 package dev.pulceo.pna.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.dto.application.ApplicationDTO;
 import dev.pulceo.pna.dto.application.CreateNewApplicationComponentDTO;
@@ -15,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -93,6 +96,43 @@ public class ApplicationControllerTests {
                         .content(applicationAsString))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("app-nginx"));
+    }
+
+    @Test
+    public void testDeleteApplicationWithOneComponent() throws Exception {
+        // given
+        CreateNewApplicationComponentDTO createNewApplicationComponentDTO = CreateNewApplicationComponentDTO.builder()
+                .name("component-nginx")
+                .image("nginx")
+                .protocol(String.valueOf(ApplicationComponentProtocol.HTTP))
+                .port(80)
+                .applicationComponentType(ApplicationComponentType.PUBLIC)
+                .environmentVariables(Map.ofEntries(
+                        Map.entry("TEST", "TEST")
+                ))
+                .build();
+
+        CreateNewApplicationDTO createNewApplicationDTO = CreateNewApplicationDTO.builder()
+                .name("app-nginx")
+                .applicationComponents(List.of(createNewApplicationComponentDTO))
+                .build();
+
+        String applicationAsString = objectMapper.writeValueAsString(createNewApplicationDTO);
+
+        MvcResult mvcResult = this.mockMvc.perform(post("/api/v1/applications")
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(applicationAsString))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("app-nginx")).andReturn();
+        JsonNode jsonNode = this.objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+        String applicationUUID = jsonNode.get("applicationUUID").asText();
+
+        // when and then
+        this.mockMvc.perform(delete("/api/v1/applications/" + applicationUUID)
+                        .contentType("application/json")
+                        .accept("application/json"))
+                .andExpect(status().isNoContent());
     }
 
 

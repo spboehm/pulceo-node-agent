@@ -65,7 +65,7 @@ public class NodeController {
     public ResponseEntity<CPUResourceDTO> readCPUResources() {
         Optional<Node> node = this.nodeService.readLocalNode();
         if (node.isPresent()) {
-            // TODO: remove modelMapper and use builder instead
+            // TODO: remove modelMapper and use builder instead, values are missing...
             return new ResponseEntity<>(this.modelMapper.map(node.get().getCpuResource(), CPUResourceDTO.class), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

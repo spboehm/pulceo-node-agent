@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 7676
+    - protocol: TCP
+      name: websecure
+      port: 443
+  selector:
+    app: traefik
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pulceo-node-agent
+
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 7676
+  selector:
+    app: pulceo-node-agent

@@ -75,6 +75,42 @@ spec:
           env:
             - name: PNA_LOCAL_ADDRESS
               value: "0.0.0.0"
+            - name: PNA_DELAY_INTERFACE
+              value: "eth0"
+            - name: K3S_API_SERVER_PORT
+              value: "443"
+            - name: K3S_API_SERVER_HOST
+              value: "10.43.0.1"
+            - name: PNA_MQTT_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_MQTT_BROKER_URL
+            - name: PNA_MQTT_CLIENT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_MQTT_CLIENT_USERNAME
+            - name: PNA_MQTT_CLIENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_MQTT_CLIENT_PASSWORD
+            - name: PNA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_USERNAME
+            - name: PNA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_PASSWORD
+            - name: PNA_INIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_INIT_TOKEN
           ports:
             - containerPort: 7676
               name: web

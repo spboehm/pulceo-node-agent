@@ -36,6 +36,7 @@ spec:
     certResolver: myresolver
     domains:
     - main: localhost.localdomain
+
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

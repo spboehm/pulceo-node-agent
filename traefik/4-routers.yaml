@@ -34,7 +34,8 @@ spec:
           port: 7676
   tls:
     certResolver: myresolver
-
+    domains:
+    - main: localhost.localdomain
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

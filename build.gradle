@@ -35,7 +35,7 @@ dependencies {
 	implementation 'io.kubernetes:client-java-extended:20.0.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2:2.2.224'
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'

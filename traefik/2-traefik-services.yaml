@@ -28,3 +28,111 @@ spec:
       port: 7676
   selector:
     app: pulceo-node-agent
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pulceo-node-agent-link-checks
+
+spec:
+  ports:
+  - protocol: UDP
+    name: iperf-5000-udp
+    port: 5000
+  - protocol: TCP
+    name: iperf-5000-tcp
+    port: 5000
+  - protocol: UDP
+    name: iperf-5001-udp
+    port: 5001
+  - protocol: TCP
+    name: iperf-5001-tcp
+    port: 5001
+  - protocol: UDP
+    name: iperf-5002-udp
+    port: 5002
+  - protocol: TCP
+    name: iperf-5002-tcp
+    port: 5002
+  - protocol: UDP
+    name: iperf-5003-udp
+    port: 5003
+  - protocol: TCP
+    name: iperf-5003-tcp
+    port: 5003
+  - protocol: UDP
+    name: iperf-5004-udp
+    port: 5004
+  - protocol: TCP
+    name: iperf-5004-tcp
+    port: 5004
+  - protocol: UDP
+    name: iperf-5005-udp
+    port: 5005
+  - protocol: TCP
+    name: iperf-5005-tcp
+    port: 5005
+  - protocol: UDP
+    name: iperf-5006-udp
+    port: 5006
+  - protocol: TCP
+    name: iperf-5006-tcp
+    port: 5006
+  - protocol: UDP
+    name: iperf-5007-udp
+    port: 5007
+  - protocol: TCP
+    name: iperf-5007-tcp
+    port: 5007
+  - protocol: UDP
+    name: iperf-5008-udp
+    port: 5008
+  - protocol: TCP
+    name: iperf-5008-tcp
+    port: 5008
+  - protocol: UDP
+    name: iperf-5009-udp
+    port: 5009
+  - protocol: TCP
+    name: iperf-5009-tcp
+    port: 5009
+  - protocol: UDP
+    name: iperf-5010-udp
+    port: 5010
+  - protocol: TCP
+    name: iperf-5010-tcp
+    port: 5010
+  - protocol: UDP
+    name: iperf-5011-udp
+    port: 5011
+  - protocol: TCP
+    name: iperf-5011-tcp
+    port: 5011
+  - protocol: UDP
+    name: iperf-5012-udp
+    port: 5012
+  - protocol: TCP
+    name: iperf-5012-tcp
+    port: 5012
+  - protocol: UDP
+    name: iperf-5013-udp
+    port: 5013
+  - protocol: TCP
+    name: iperf-5013-tcp
+    port: 5013
+  - protocol: UDP
+    name: iperf-5014-udp
+    port: 5014
+  - protocol: TCP
+    name: iperf-5014-tcp
+    port: 5014
+  - protocol: UDP
+    name: iperf-5015-udp
+    port: 5015
+  - protocol: TCP
+    name: iperf-5015-tcp
+    port: 5015
+  selector:
+    app: pulceo-node-agent
+  type: LoadBalancer

@@ -1,0 +1,35 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: simpleingressroute
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: HostRegexp(`{any:.+}`)
+      kind: Rule
+      services:
+        - name: pulceo-node-agent
+          port: 7676
+
+#---
+#apiVersion: traefik.io/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: ingressroutetls
+#  namespace: default
+#spec:
+#  entryPoints:
+#    - web
+#    - websecure
+#  routes:
+#    - match: HostRegexp(`{any:.+}`)
+#      kind: Rule
+#      services:
+#        - name: pulceo-node-agent
+#          port: 7676
+#  tls:
+#    certResolver: myresolver
+#    domains:
+#    - main: localhost.localdomain

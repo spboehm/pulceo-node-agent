@@ -46,6 +46,27 @@ spec:
               containerPort: 443
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: cluster-admin
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin-manual
+subjects:
+  - kind: ServiceAccount
+    name: cluster-admin
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -64,6 +85,7 @@ spec:
       labels:
         app: pulceo-node-agent
     spec:
+      serviceAccountName: cluster-admin
       containers:
         - name: pulceo-node-agent
           image: ghcr.io/spboehm/pulceo-node-agent:main
@@ -81,6 +103,10 @@ spec:
               value: "443"
             - name: K3S_API_SERVER_HOST
               value: "10.43.0.1"
+            - name: K3S_API_SERVICE_ACCOUNT_TOKEN_PATH
+              value: "/var/run/secrets/kubernetes.io/serviceaccount"
+            - name: K3S_NODENAME
+              value: "pna-k8s-node"
             - name: PNA_MQTT_BROKER_URL
               valueFrom:
                 secretKeyRef:

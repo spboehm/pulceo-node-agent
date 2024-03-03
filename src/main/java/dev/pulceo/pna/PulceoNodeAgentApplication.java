@@ -15,7 +15,7 @@ public class PulceoNodeAgentApplication {
 			Process p = processBuilder.start();
 			p.waitFor();
 		} catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
+			System.out.println("Error while running bootstrap-k3s-access.sh");
         }
         SpringApplication.run(PulceoNodeAgentApplication.class, args);
 	}

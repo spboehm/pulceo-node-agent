@@ -103,7 +103,7 @@ spec:
               value: "443"
             - name: K3S_API_SERVER_HOST
               value: "10.43.0.1"
-            - name: K3S_API_SERVICE_ACCOUNT_TOKEN_PATH
+            - name: K3S_API_SERVICE_ACCOUNT_PATH
               value: "/var/run/secrets/kubernetes.io/serviceaccount"
             - name: K3S_NODENAME
               value: "pna-k8s-node"

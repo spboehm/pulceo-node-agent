@@ -19,7 +19,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(properties = { "pna.delay.interface=lo" })
+@SpringBootTest
 public class NpingServiceTests {
 
     @Autowired
@@ -71,7 +71,7 @@ public class NpingServiceTests {
         String destinationHost = localAddress;
 
         // when
-        NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost);
+        NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost, "lo");
 
         // then
         assertEquals(npingUDPResult.getSourceHost(), localAddress);
@@ -92,7 +92,7 @@ public class NpingServiceTests {
         int dataLength = 1024;
 
         // when
-        NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost, dataLength);
+        NpingUDPResult npingUDPResult = this.npingService.measureUDPDelay(destinationHost, dataLength, "lo");
 
         // then
         assertEquals(npingUDPResult.getSourceHost(), localAddress);
@@ -114,7 +114,7 @@ public class NpingServiceTests {
         String destinationHost = localAddress;
 
         // when
-        NpingTCPResult npingTCPResult = this.npingService.measureTCPDelay(destinationHost);
+        NpingTCPResult npingTCPResult = this.npingService.measureTCPDelay(destinationHost, "lo");
 
         // then
         assertEquals(npingTCPResult.getSourceHost(), localAddress);

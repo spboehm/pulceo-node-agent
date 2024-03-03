@@ -32,7 +32,7 @@ public class NodeService {
     @Value("${pna.node.endpoint}")
     private String nodeEndpoint;
 
-    @Value("${pna.host}")
+    @Value("${pna.host.fqdn}")
     private String host;
 
     public Node createNode(Node node) {

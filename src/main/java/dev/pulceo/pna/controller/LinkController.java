@@ -121,7 +121,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create PingRequest
-        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), createNewMetricRequestIcmpRttDTO.getIpVersion(), createNewMetricRequestIcmpRttDTO.getCount(), createNewMetricRequestIcmpRttDTO.getDataLength(), createNewMetricRequestIcmpRttDTO.getIface());
+        PingRequest pingRequest = new PingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), createNewMetricRequestIcmpRttDTO.getIpVersion(), createNewMetricRequestIcmpRttDTO.getCount(), createNewMetricRequestIcmpRttDTO.getDataLength(), this.iface);
         // Encapsulate PingRequest in PingJob
         PingJob pingJob = new PingJob(pingRequest, Integer.parseInt(createNewMetricRequestIcmpRttDTO.getRecurrence()));
         long id = this.jobService.createPingJob(pingJob);

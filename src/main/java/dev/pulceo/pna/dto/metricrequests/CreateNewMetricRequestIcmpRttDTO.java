@@ -20,6 +20,7 @@ public class CreateNewMetricRequestIcmpRttDTO {
     private int count = 10;
     @Builder.Default
     private int dataLength = 66;
+    // TODO: remove
     @Builder.Default
-    private String iface = "lo";
+    private String iface = "eth0";
 }

@@ -138,7 +138,7 @@ public class ResourceUtilizationService {
         JsonNode node = findNodeJsonNode(jsonNode);
         String name = node.get("nodeName").asText();
         String time = node.get("memory").get("time").asText();
-        long usageBytes = node.get("memory").get("usageBytes").asLong();
+        long usageBytes = node.get("memory").get("workingSetBytes").asLong();
         long availableBytes = node.get("memory").get("availableBytes").asLong();
         float usageMemoryPercentage = getUsageMemoryPercentage((float) usageBytes);
 
@@ -326,7 +326,7 @@ public class ResourceUtilizationService {
     }
 
     private float getUsagePercent(double usageNanoCores) {
-        return (float) Math.round((usageNanoCores / (LOGICAL_CPU_CORES * 1000000) * 100)) / 100;
+        return (float) Math.round((usageNanoCores / (LOGICAL_CPU_CORES * 1000000000) * 100)) / 100;
     }
 
     private float getUsageMemoryPercentage(float usageBytes) {

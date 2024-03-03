@@ -327,7 +327,7 @@ public class ResourceUtilizationService {
     }
 
     private float getUsagePercent(double usageNanoCores) {
-        return (float) (Math.round((usageNanoCores / (LOGICAL_CPU_CORES * 1000000000) * 100)) / 100) * 100;
+        return (float) Math.round((usageNanoCores / (LOGICAL_CPU_CORES * 10000000) * 100)) / 100;
     }
 
     private float getUsageMemoryPercentage(float usageBytes) {

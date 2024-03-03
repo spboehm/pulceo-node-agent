@@ -26,7 +26,7 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest (properties = {"pna.delay.interface=lo"})
+@SpringBootTest(properties = { "pna.delay.interface=lo" })
 public class NpingLinkJobServiceTests {
 
     @Autowired
@@ -164,7 +164,7 @@ public class NpingLinkJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleNpingJob(id);
-        BlockingQueue<Message> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<Message> npingTCPResultBlockingQueue = new ArrayBlockingQueue<>(10);
         this.npingTcpPubSubChannel.subscribe(message -> npingTCPResultBlockingQueue.add((Message) message.getPayload()));
         this.jobService.cancelNpingJob(localJobId);
         Message message = npingTCPResultBlockingQueue.take();

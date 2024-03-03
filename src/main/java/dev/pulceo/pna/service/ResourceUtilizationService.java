@@ -47,7 +47,6 @@ public class ResourceUtilizationService {
     public JsonNode readStatSummaryFromKubelet() throws ResourceServiceUtilizationException {
         // TODO: read token
         try {
-            System.out.println(API_SERVICE_ACCOUNT_TOKEN_PATH);
             String token = Files.readString(Path.of(API_SERVICE_ACCOUNT_TOKEN_PATH));
             ProcessBuilder processBuilder = new ProcessBuilder("curl" , "--cacert", API_SERVICE_ACOUNT_CA_CERT_PATH, "--header", "Authorization: Bearer " + token, "-X", "GET", "https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/" + K3S_NODENAME + "/proxy/stats/summary");
             Process process = processBuilder.start();

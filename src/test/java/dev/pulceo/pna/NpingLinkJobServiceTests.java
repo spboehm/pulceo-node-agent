@@ -26,9 +26,8 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-public class
-NpingLinkJobServiceTests {
+@SpringBootTest (properties = {"pna.delay.interface=lo"})
+public class NpingLinkJobServiceTests {
 
     @Autowired
     JobService jobService;

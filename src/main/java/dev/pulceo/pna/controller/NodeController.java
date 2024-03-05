@@ -7,6 +7,7 @@ import dev.pulceo.pna.dto.node.NodeDTO;
 import dev.pulceo.pna.dto.node.cpu.CPUResourceDTO;
 import dev.pulceo.pna.dto.node.memory.MemoryResourceDTO;
 import dev.pulceo.pna.exception.JobServiceException;
+import dev.pulceo.pna.exception.NodeServiceException;
 import dev.pulceo.pna.model.jobs.ResourceUtilizationJob;
 import dev.pulceo.pna.model.node.CPU;
 import dev.pulceo.pna.model.node.Node;
@@ -117,6 +118,16 @@ public class NodeController {
         }
         ShortNodeMetricResponseDTO createdShortNodeMetricResponseDTO = new ShortNodeMetricResponseDTO(createdResourceUtilizationJob.get().getUuid(), fullNode.getUuid(), ResourceUtilizationType.getName(createdResourceUtilizationJob.get().getResourceUtilizationType()), String.valueOf(createdResourceUtilizationJob.get().getRecurrence()), createdResourceUtilizationJob.get().isEnabled());
         return new ResponseEntity<>(createdShortNodeMetricResponseDTO, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/localNode/metric-requests/{metricRequestUUID}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteMetricRequest(@PathVariable UUID metricRequestUUID) throws NodeServiceException {
+        Optional<ResourceUtilizationJob> resourceUtilizationJob = this.jobService.readNodeResourceUtilizationJobByUUID(metricRequestUUID);
+        if (resourceUtilizationJob.isEmpty()) {
+           throw new NodeServiceException("ResourceUtilizationJob not found");
+        }
+        this.jobService.deleteJobByUUID(metricRequestUUID);
     }
 
 

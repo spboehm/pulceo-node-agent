@@ -47,14 +47,8 @@ public class LinkController {
     @Value("${pna.delay.tcp.port:4002}")
     private int npingDelayTCPPort;
 
-    @Value("${pna.delay.rounds:10}")
-    private int rounds;
-
     @Value("${pna.delay.interface:eth0}")
     private String iface;
-
-    @Value("${pna.delay.udp.data.length}")
-    private int dataLength;
 
     @Autowired
     public LinkController(NodeService nodeService, LinkService linkService, JobService jobService, ModelMapper modelMapper) {
@@ -146,7 +140,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create NpingRequest
-        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.UDP, this.rounds, this.iface);
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), this.npingDelayUDPPort, NpingClientProtocol.UDP, createNewMetricRequestUdpRttDto.getRounds(), this.iface);
         NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestUdpRttDto.getRecurrence()));
         long id = this.jobService.createNpingJob(npingJob);
 
@@ -170,7 +164,7 @@ public class LinkController {
         Link link = retrievedLink.get();
 
         // create NpingRequest
-        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), this.npingDelayTCPPort, NpingClientProtocol.TCP, this.rounds, this.iface);
+        NpingRequest npingRequest = new NpingRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), this.npingDelayTCPPort, NpingClientProtocol.TCP, createNewMetricRequestTcpRttDto.getRounds(), this.iface);
         NpingJob npingJob = new NpingJob(npingRequest, Integer.parseInt(createNewMetricRequestTcpRttDto.getRecurrence()));
         long id = this.jobService.createNpingJob(npingJob);
 

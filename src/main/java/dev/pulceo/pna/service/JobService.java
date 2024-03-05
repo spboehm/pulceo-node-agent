@@ -288,7 +288,7 @@ public class JobService {
     private void scheduleNpingUDPJob(NpingJob retrievedNpingJob, long retrievedNpingUDPJobId) {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                NpingUDPResult npingUDPResult = npingService.measureUDPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost(), Integer.parseInt(udpDataLength), retrievedNpingJob.getNpingRequest().getIface());
+                NpingUDPResult npingUDPResult = npingService.measureUDPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost(), Integer.parseInt(udpDataLength), retrievedNpingJob.getNpingRequest().getRounds(), retrievedNpingJob.getNpingRequest().getIface());
                 NetworkMetric networkMetric = NetworkMetric.builder()
                         .metricUUID(npingUDPResult.getUuid())
                         .metricType(npingUDPResult.getMetricType())
@@ -309,7 +309,7 @@ public class JobService {
     private void scheduleNpingTCPJob(NpingJob retrievedNpingJob, long retrievedNpingTCPJobId) {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
-                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost(), retrievedNpingJob.getNpingRequest().getIface());
+                NpingTCPResult npingTCPResult = npingService.measureTCPDelay(retrievedNpingJob.getNpingRequest().getDestinationHost(), retrievedNpingJob.getNpingRequest().getRounds(), retrievedNpingJob.getNpingRequest().getIface());
                 NetworkMetric networkMetric = NetworkMetric.builder()
                         .metricUUID(npingTCPResult.getUuid())
                         .metricType(npingTCPResult.getMetricType())

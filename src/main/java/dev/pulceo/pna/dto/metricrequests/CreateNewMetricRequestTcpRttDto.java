@@ -14,7 +14,6 @@ public class CreateNewMetricRequestTcpRttDto {
     private String type;
     private String recurrence;
     private boolean enabled;
-    private long port;
     // TODO: ipVersion
     @Builder.Default
     private int rounds = 10;

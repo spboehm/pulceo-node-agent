@@ -29,7 +29,6 @@ public class MetricRequestDTOUtil {
 
     public static CreateNewMetricRequestTcpRttDto createNewMetricRequestTcpRttDto(String type) {
         return CreateNewMetricRequestTcpRttDto.builder()
-                .port(5000)
                 .type(type)
                 .recurrence("15")
                 .rounds(1)
@@ -41,6 +40,7 @@ public class MetricRequestDTOUtil {
                 .type(type)
                 .recurrence("30")
                 .enabled(true)
+                .port(5000)
                 .bitrate(32)
                 .time(1)
                 .build();

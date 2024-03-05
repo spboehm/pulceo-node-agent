@@ -13,6 +13,7 @@ public class CreateNewMetricRequestUdpBwDto {
     private String type;
     private String recurrence;
     private boolean enabled;
+    private int port;
     @Builder.Default
     private int bitrate = 0;
     @Builder.Default

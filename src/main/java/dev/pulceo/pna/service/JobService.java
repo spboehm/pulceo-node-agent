@@ -463,6 +463,14 @@ public class JobService {
         }
     }
 
+    public void deleteJob(long id) {
+        Optional<Job> jobToBeDeleted = this.readJob(id);
+        if (jobToBeDeleted.isPresent()) {
+            this.jobHashMap.get(id).cancel(false);
+            this.jobRepository.delete(jobToBeDeleted.get());
+        }
+    }
+
     public boolean cancelPingJob(long id) {
         return this.jobHashMap.get(id).cancel(false);
     }

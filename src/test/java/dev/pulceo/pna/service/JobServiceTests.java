@@ -41,4 +41,20 @@ public class JobServiceTests {
             assertFalse(job.isEnabled());
         }
     }
+
+    @Test
+    public void testDeleteJob() throws JobServiceException, InterruptedException {
+        // given
+        PingRequest pingRequest = new PingRequest(localAddress, localAddress, IPVersion.IPv4, 1, 66, "lo");
+        PingJob pingJob = new PingJob(pingRequest, 5);
+        long pingJobId = this.jobService.createPingJob(pingJob);
+        this.jobService.schedulePingJob(pingJobId);
+
+        // when
+        this.jobService.deleteJob(pingJobId);
+
+        // then
+        Optional<Job> deletedJob = this.jobService.readJob(pingJobId);
+        assertFalse(deletedJob.isPresent());
+    }
 }

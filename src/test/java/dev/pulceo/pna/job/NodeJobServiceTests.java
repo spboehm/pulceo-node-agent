@@ -98,7 +98,7 @@ public class NodeJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleResourceUtilizationJobForCPU(id);
-        BlockingQueue<Message> cpuUtilizationResult = new ArrayBlockingQueue<>(10);
+        BlockingQueue<Message> cpuUtilizationResult = new ArrayBlockingQueue<>(100);
         this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> cpuUtilizationResult.add((Message) message.getPayload()));
 
         // initiate orderly shutdown
@@ -135,7 +135,7 @@ public class NodeJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleResourceUtilizationJobForMEM(id);
-        BlockingQueue<Message> memoryUtilizationBlockingQueue = new ArrayBlockingQueue<>(10);
+        BlockingQueue<Message> memoryUtilizationBlockingQueue = new ArrayBlockingQueue<>(100);
         this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> memoryUtilizationBlockingQueue.add((Message) message.getPayload()));
 
         // initiate orderly shutdown
@@ -173,7 +173,7 @@ public class NodeJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleResourceUtilizationJobForNetwork(id);
-        BlockingQueue<Message> networkUtilizationBlockingQueue = new ArrayBlockingQueue<>(10);
+        BlockingQueue<Message> networkUtilizationBlockingQueue = new ArrayBlockingQueue<>(100);
         this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> networkUtilizationBlockingQueue.add((Message) message.getPayload()));
 
         // initiate orderly shutdown
@@ -210,7 +210,7 @@ public class NodeJobServiceTests {
 
         // when
         long localJobId = this.jobService.scheduleResourceUtilizationJobForStorage(id);
-        BlockingQueue<Message> storageUtilizationBlockingQueue = new ArrayBlockingQueue<>(10);
+        BlockingQueue<Message> storageUtilizationBlockingQueue = new ArrayBlockingQueue<>(100);
         this.resourceUtilizationCPUServiceMessageChannel.subscribe(message -> storageUtilizationBlockingQueue.add((Message) message.getPayload()));
 
         // initiate orderly shutdown

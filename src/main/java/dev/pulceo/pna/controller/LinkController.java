@@ -196,7 +196,7 @@ public class LinkController {
         // create
         // ask for the next free port on the other node, now statically mocked
         // TODO: do this dynamically
-        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), 5000, createNewMetricRequestUdpBwDto.getBitrate(), createNewMetricRequestUdpBwDto.getTime(), IperfClientProtocol.UDP, "localhost");
+        IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), (int) createNewMetricRequestUdpBwDto.getPort(), createNewMetricRequestUdpBwDto.getBitrate(), createNewMetricRequestUdpBwDto.getTime(), IperfClientProtocol.UDP, "localhost");
         // Encapsulate PingRequest in PingJob
         IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestUdpBwDto.getRecurrence()));
         long id = this.jobService.createIperfJob(iperfJob);

@@ -18,6 +18,4 @@ public class CreateNewMetricRequestTcpBwDto {
         private int bitrate = 0;
         @Builder.Default
         private int time = 10;
-        @Builder.Default
-        private int rounds = 10;
 }

@@ -85,6 +85,17 @@ public class LinkController {
             return new ResponseEntity<>(linkDTO, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/{linkUUID}/metric-requests/{metricRequestUUID}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID) throws JobServiceException {
+        // find metric request by uuid
+        Optional<Link> retrievedLink = linkService.readLinkByUUID(linkUUID);
+        if (retrievedLink.isEmpty()) {
+            throw new JobServiceException("Link with id %s does not exist!".formatted(linkUUID));
+        }
+        this.linkService.deleteJobFromLink(metricRequestUUID);
+    }
+
     @PatchMapping("/{linkUUID}/metric-requests/{metricRequestUUID}")
     public ResponseEntity<ShortMetricResponseDTO> updateMetricRequest(@PathVariable UUID linkUUID, @PathVariable UUID metricRequestUUID, @Valid @NotNull @RequestBody PatchMetricDto patchMetricDto) throws JobServiceException {
         // find metric request by uuid

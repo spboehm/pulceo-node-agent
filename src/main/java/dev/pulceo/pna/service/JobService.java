@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
@@ -463,10 +464,10 @@ public class JobService {
         }
     }
 
-    public void deleteJob(long id) {
-        Optional<Job> jobToBeDeleted = this.readJob(id);
+    public void deleteJobByUUID(UUID uuid) {
+        Optional<Job> jobToBeDeleted = this.jobRepository.findByUuid(uuid);
         if (jobToBeDeleted.isPresent()) {
-            this.jobHashMap.get(id).cancel(false);
+            this.cancelJob(jobToBeDeleted.get().getId());
             this.jobRepository.delete(jobToBeDeleted.get());
         }
     }

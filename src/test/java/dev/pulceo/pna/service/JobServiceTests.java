@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,7 +52,8 @@ public class JobServiceTests {
         this.jobService.schedulePingJob(pingJobId);
 
         // when
-        this.jobService.deleteJob(pingJobId);
+        Optional<Job> job = this.jobService.readJob(pingJobId);
+        this.jobService.deleteJobByUUID(job.get().getUuid());
 
         // then
         Optional<Job> deletedJob = this.jobService.readJob(pingJobId);

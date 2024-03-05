@@ -131,6 +131,28 @@ public class LinkServiceIntegrationTests {
     }
 
     @Test
+    public void testDeletePingJobToExistingLink() throws JobServiceException, LinkServiceException, InterruptedException {
+        // given
+        Node srcNode = nodeService.createNode(NodeUtil.createTestSrcNode());
+        Node destNode = nodeService.createNode(NodeUtil.createTestDestNode());
+        Link testLink1 = new Link("testLink", ResourceType.NODE, srcNode, destNode);
+        long linkId = this.linkService.createLink(testLink1);
+
+        PingRequest pingRequest = new PingRequest("localhost", "localhost", IPVersion.IPv4, 1, 66, "lo");
+        PingJob pingJob = new PingJob(pingRequest, 15);
+        long pingJobId = this.jobService.createPingJob(pingJob);
+        this.jobService.schedulePingJob(pingJobId);
+        this.linkService.addJobToLink(linkId, pingJobId);
+
+        // then
+        PingJob actualPingJob = this.jobService.readPingJob(pingJobId);
+        this.linkService.deleteJobFromLink(actualPingJob.getUuid());
+
+        // then
+        assertFalse(this.linkService.readLink(linkId).get().getLinkJobs().contains(actualPingJob));
+    }
+
+    @Test
     // only the associated jobs are loaded from the db, PingRequest is not loaded
     public void testAddNPingJobToExistingLink() throws LinkServiceException, JobServiceException {
         // given

@@ -2,6 +2,7 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
+import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.jobs.LinkJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
@@ -53,6 +54,10 @@ public class LinkService {
     }
 
     public Optional<Link> readLinkByDestNode(Node node) { return this.linkRepository.findLinkByDestNode(node); }
+
+    public void deleteJobFromLink(UUID jobUUID) {
+        this.jobService.deleteJobByUUID(jobUUID);
+    }
 
     @Transactional
     public void addJobToLink(long linkId, long jobId) throws LinkServiceException, JobServiceException {

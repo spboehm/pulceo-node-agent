@@ -6,6 +6,7 @@ import dev.pulceo.pna.dto.node.CreateNewNodeDTO;
 import dev.pulceo.pna.dto.node.NodeDTO;
 import dev.pulceo.pna.dto.node.cpu.CPUResourceDTO;
 import dev.pulceo.pna.dto.node.memory.MemoryResourceDTO;
+import dev.pulceo.pna.dto.node.storage.StorageResourceDTO;
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.NodeServiceException;
 import dev.pulceo.pna.model.jobs.ResourceUtilizationJob;
@@ -78,6 +79,16 @@ public class NodeController {
         Optional<Node> node = this.nodeService.readLocalNode();
         if (node.isPresent()) {
             return new ResponseEntity<>(this.modelMapper.map(node.get().getMemoryResource(), MemoryResourceDTO.class), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/localNode/storage")
+    public ResponseEntity<StorageResourceDTO> readStorageResources() {
+        Optional<Node> node = this.nodeService.readLocalNode();
+        if (node.isPresent()) {
+            return new ResponseEntity<>(this.modelMapper.map(node.get().getStorageResource(), StorageResourceDTO.class), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

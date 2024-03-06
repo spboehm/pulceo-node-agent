@@ -1,0 +1,2 @@
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/cr_root  724G  258G  430G  38% /

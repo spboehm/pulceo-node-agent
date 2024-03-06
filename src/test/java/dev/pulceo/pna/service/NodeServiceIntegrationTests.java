@@ -1,10 +1,19 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.node.Node;
+import dev.pulceo.pna.model.node.Storage;
+import dev.pulceo.pna.util.ProcessUtils;
+import dev.pulceo.pna.util.StorageUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,6 +55,40 @@ public class NodeServiceIntegrationTests {
         assert(localNode.isPresent());
         assert (localNode.get().isLocalNode());
 
+    }
+
+    @Test
+    public void testObtainStorageInformationForDocker() throws IOException, ProcessException {
+        // given
+        File file = new File("src/test/java/dev/pulceo/pna/resources/storage/df_h_docker_output.txt");
+        List<String> resultList;
+        try(InputStream inputStream = new FileInputStream(file)) {
+            resultList = ProcessUtils.readProcessOutput(inputStream);
+        }
+
+        // when
+        Storage storage = StorageUtil.extractStorageInformation(resultList);
+
+        // then
+        assertEquals(674.20f, storage.getSize());
+        assertEquals(0, storage.getSlots());
+    }
+
+    @Test
+    public void testObtainStorageInformationForNotebook() throws IOException, ProcessException {
+        // given
+        File file = new File("src/test/java/dev/pulceo/pna/resources/storage/df_h_notebook_output.txt");
+        List<String> resultList;
+        try(InputStream inputStream = new FileInputStream(file)) {
+            resultList = ProcessUtils.readProcessOutput(inputStream);
+        }
+
+        // when
+        Storage storage = StorageUtil.extractStorageInformation(resultList);
+
+        // then
+        assertEquals(724.0f, storage.getSize());
+        assertEquals(0, storage.getSlots());
     }
 
     // TODO: add read node

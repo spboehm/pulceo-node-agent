@@ -7,6 +7,7 @@ import dev.pulceo.pna.repository.NodeRepository;
 import dev.pulceo.pna.util.CPUUtil;
 import dev.pulceo.pna.util.MemoryUtil;
 import dev.pulceo.pna.util.ProcessUtils;
+import dev.pulceo.pna.util.StorageUtil;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,6 +81,16 @@ public class NodeService {
         }
     }
 
+    public Storage obtainStorageInformation() throws NodeServiceException {
+        try {
+            Process storageInfoAsString = new ProcessBuilder("df", "-h", "/").start();
+            storageInfoAsString.waitFor();
+            return StorageUtil.extractStorageInformation(ProcessUtils.readProcessOutput(storageInfoAsString.getInputStream()));
+        } catch (IOException | InterruptedException | ProcessException e) {
+            throw new NodeServiceException("Could not obtain storage information", e);
+        }
+    }
+
     public Optional<CPUResource> readLocalCPUResource() {
         Optional<Node> localNode = this.readLocalNode();
         if (localNode.isPresent()) {
@@ -103,6 +114,7 @@ public class NodeService {
         CPU cpuCapacity = this.obtainCPUInformation();
         Memory memoryAllocatable = this.obtainMemoryInformation();
         Memory memoryCapacity = this.obtainMemoryInformation();
+        Storage storageCapacity = this.obtainStorageInformation();
 
         this.createNode(Node.builder()
                 .pnaUUID(pnaUUID)
@@ -112,6 +124,7 @@ public class NodeService {
                 .host(host)
                 .cpuResource(CPUResource.builder().cpuAllocatable(cpuAllocatable).cpuCapacity(cpuCapacity).build())
                 .memoryResource(MemoryResource.builder().memoryAllocatable(memoryAllocatable).memoryCapacity(memoryCapacity).build())
+                .storageResource(StorageResource.builder().storageCapacity(storageCapacity).build())
                 .build());
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs", "cpuResource", "memoryResource"})
+@EqualsAndHashCode(callSuper = true, exclude = {"nodeJobs", "cpuResource", "memoryResource", "storageResource"})
 @NamedEntityGraph(
         name = "graph.Node.jobs",
         attributeNodes = {
@@ -88,6 +88,10 @@ public class Node extends Resource {
     @Builder.Default
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private MemoryResource memoryResource= MemoryResource.builder().build();
+
+    @Builder.Default
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private StorageResource storageResource = StorageResource.builder().build();
 
     public void addJob(NodeJob nodeJob) {
         this.nodeJobs.add(nodeJob);

@@ -54,6 +54,10 @@ public class Node extends Resource {
 
     @Builder.Default
     @NotNull
+    private String nodeGroup = "";
+
+    @Builder.Default
+    @NotNull
     private String nodeLocationCountry = "";
 
     @Builder.Default

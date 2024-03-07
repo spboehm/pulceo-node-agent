@@ -50,6 +50,10 @@ public class NodeDTO {
 
     @Builder.Default
     @NotNull
+    private String nodeGroup = "";
+
+    @Builder.Default
+    @NotNull
     private String nodeLocationCountry = "";
 
     @Builder.Default

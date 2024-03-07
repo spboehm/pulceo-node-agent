@@ -87,4 +87,17 @@ public class LinkService {
     public void deleteJobFromLink(UUID metricRequestUUID) {
         this.jobService.deleteJobByUUID(metricRequestUUID);
     }
+
+    public void deleteLink(UUID linkUUID) throws LinkServiceException {
+        Optional<Link> link = this.readLinkByUUID(linkUUID);
+        if (link.isEmpty()) {
+            throw new LinkServiceException("Link with UUID " + linkUUID + " does not exist!");
+        }
+        List<LinkJob> linkJob = link.get().getLinkJobs();
+        for (LinkJob job : linkJob) {
+            this.jobService.deleteJobByUUID(job.getUuid());
+        }
+        this.linkRepository.delete(link.get());
+        // TODO: delete remote node
+    }
 }

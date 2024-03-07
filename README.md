@@ -35,6 +35,7 @@ k3d cluster create pna-test --api-port 40475 --k3s-arg "--disable=traefik@server
 - Copy kubeconfig to the newly created temporary folder
 ```bash
 cat ~/.kube/config > /tmp/pulceo-node-agent/.k3s.yaml
+cat cat ~/.kube/config > .k3s.yaml
 sed -i 's/https:\/\/0.0.0.0:40475/https:\/\/10.43.0.1:443/' /tmp/pulceo-node-agent/.k3s.yaml
 ```
 **[TODO]: Add a step to generate the secrets**

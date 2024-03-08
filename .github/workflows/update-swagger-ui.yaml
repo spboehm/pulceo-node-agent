@@ -25,6 +25,7 @@ jobs:
       - name: Spin up k3d cluster
         run: k3d cluster create pna-test --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer
   deploy:
+    needs: prepare
     runs-on: self-hosted
     env:
       PNA_USERNAME: ${{ secrets.PNA_USERNAME }}

@@ -1,3 +1,5 @@
+<img src="docs/assets/pulceo-logo-color.png" alt="pulceo-logo" width="25%" height="auto"/>
+
 # pulceo-node-agent
 
 [OpenAPI definition for pulceo-node-agent](https://spboehm.github.io/pulceo-node-agent/)

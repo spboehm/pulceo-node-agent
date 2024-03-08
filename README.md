@@ -1,5 +1,7 @@
 # pulceo-node-agent
 
+[OpenAPI definition for pulceo-node-agent](https://spboehm.github.io/pulceo-node-agent/)
+
 ## General Prerequisites
 
 - Make sure that the following ports are available on the local system:

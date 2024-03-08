@@ -17,7 +17,9 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/health").permitAll());
+                        .requestMatchers("/health").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll());
         return http.build();
     }
 

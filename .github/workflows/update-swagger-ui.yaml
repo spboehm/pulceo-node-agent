@@ -65,7 +65,7 @@ jobs:
         uses: actions/deploy-pages@v4
   teardown:
     if: ${{ always() }}
-    needs: [ prepare, build, build-and-push-image ]
+    needs: [ prepare, deploy ]
     runs-on: self-hosted
     steps:
       - name: Teardown k3d cluster

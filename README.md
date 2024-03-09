@@ -8,6 +8,7 @@
 
 - Make sure that the following ports are available on the local system:
   - `80/tcp` (for testing workloads)
+  - `443/tcp` (for let's encrypt)
   - `40475/tcp` (for k3d API server)
   - `1883/tcp` (for MQTT broker)
   - `7676/tcp` (for communication with Restful API of pulceo-node-agent)
@@ -17,12 +18,11 @@
   - `5000-5015/udp` (iperf3 bandwidth checks)
 - Any Linux distribution is recommended (tested on Ubuntu 20.04 and openSUSE Tumbleweed)
 
-## Quickstart (public deployment)
+## Quickstart (public deployment with Let's Encrypt)
 
 - First, deploy pulceo on another machine [pulceo-resource-manager#quickstart](https://github.com/spboehm/pulceo-resource-manager?tab=readme-ov-file#quickstart-try-locally)
 - The machine that is running the pulceo-node-agent must have a public IP address with a fully qualified domain name (FQDN)
-- Port `80/tcp` and `443/tcp` must be available on the local system
-- The script must be started as user `pulceo` having a home directory with `/home/pulceo`
+- Ports listed under General Prerequisites must be open on the machine
 
 Export the following environment variables
 ```bash

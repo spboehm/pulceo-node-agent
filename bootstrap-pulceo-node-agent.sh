@@ -79,7 +79,7 @@ validate_alphanumeric "PNA_PASSWORD" $PNA_PASSWORD
 
 
 if [ -z "$PNA_HOST_FQDN" ]; then
-  PNA_HOST_FQDN=$(read -p "Enter the PNA host fqdn: " PNA_HOST_FQDN)
+  read -p "Enter the PNA host fqdn: " PNA_HOST_FQDN
   if [ -z "$PNA_HOST_FQDN" ]; then
     exit 1
   fi

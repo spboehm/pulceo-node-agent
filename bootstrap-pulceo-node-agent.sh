@@ -28,7 +28,7 @@ validate_alphanumeric() {
 }
 
 echo ""
-echo "PULCEO - Bootstrapping tool. USE AT OWN RISK!!!"
+echo "PULCEO NODE AGENT - Bootstrapping tool. USE AT OWN RISK!!!"
 echo ""
 
 # PNA_MQTT_BROKER_URL
@@ -60,7 +60,7 @@ validate_alphanumeric "PNA_MQTT_CLIENT_PASSWORD" $PNA_MQTT_CLIENT_PASSWORD
 # PNA_USERNAME
 # 24 chars
 if [ -z "$PNA_USERNAME" ]; then
-  PNA_USERNAME=$(read -p "Enter the PNA username: ENTER TO ACCEPT" PNA_USERNAME)
+  PNA_USERNAME=$(read -p "Enter the PNA username: " PNA_USERNAME)
   if [ -z "$PNA_USERNAME" ]; then
     exit 1
   fi
@@ -70,7 +70,7 @@ validate_alphanumeric "PNA_USERNAME" $PNA_USERNAME
 # PNA_PASSWORD
 # 32 chars
 if [ -z "$PNA_PASSWORD" ]; then
-  PNA_PASSWORD=$(read -p "Enter the PNA password: ENTER TO ACCEPT" PNA_USERNAME)
+  PNA_PASSWORD=$(read -p "Enter the PNA password: " PNA_USERNAME)
   if [ -z "$PNA_PASSWORD" ]; then
     exit 1
   fi
@@ -79,7 +79,7 @@ validate_alphanumeric "PNA_PASSWORD" $PNA_PASSWORD
 
 
 if [ -z "$PNA_HOST_FQDN" ]; then
-  PNA_HOST_FQDN=$(read -p "Enter the PNA host fqdn: ENTER TO ACCEPT" PNA_HOST_FQDN)
+  PNA_HOST_FQDN=$(read -p "Enter the PNA host fqdn: " PNA_HOST_FQDN)
   if [ -z "$PNA_HOST_FQDN" ]; then
     exit 1
   fi
@@ -88,13 +88,13 @@ fi
 # PNA_INIT_TOKEN
 PNA_INIT_TOKEN=$(echo -n "${PNA_USERNAME}:${PNA_PASSWORD}" | base64)
 
-echo "PNA_MQTT_BROKER_URL=$PNA_MQTT_BROKER_URL" > .env
-echo "PNA_MQTT_CLIENT_USERNAME=$PNA_MQTT_CLIENT_USERNAME" >> .env
-echo "PNA_MQTT_CLIENT_PASSWORD=$PNA_MQTT_CLIENT_PASSWORD" >> .env
-echo "PNA_USERNAME=$PNA_USERNAME" >> .env
-echo "PNA_PASSWORD=$PNA_PASSWORD" >> .env
-echo "PNA_INIT_TOKEN=$PNA_INIT_TOKEN" >> .env
-echo "PNA_HOST_FQDN=$PNA_HOST_FQDN" >> .env
+echo "PNA_MQTT_BROKER_URL=$PNA_MQTT_BROKER_URL" > .env-pna
+echo "PNA_MQTT_CLIENT_USERNAME=$PNA_MQTT_CLIENT_USERNAME" >> .env-pna
+echo "PNA_MQTT_CLIENT_PASSWORD=$PNA_MQTT_CLIENT_PASSWORD" >> .env-pna
+echo "PNA_USERNAME=$PNA_USERNAME" >> .env-pna
+echo "PNA_PASSWORD=$PNA_PASSWORD" >> .env-pna
+echo "PNA_INIT_TOKEN=$PNA_INIT_TOKEN" >> .env-pna
+echo "PNA_HOST_FQDN=$PNA_HOST_FQDN" >> .env-pna
 
 echo "Successfully created .env file with all credentials...DO NOT SHARE THIS FILE WITH ANYONE!!!"
 

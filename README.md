@@ -37,8 +37,9 @@ export PNA_HOST_FQDN="<FQDN>"
 ```
 
 ```bash
-
+bash <(curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/bootstrap-pulceo-node-agent.sh)
 ```
+
 ## Create a free MQTT broker (recommended)
 
 - Create a basic MQTT broker on [HiveMQ](https://console.hivemq.cloud/?utm_source=HiveMQ+Pricing+Page&utm_medium=serverless+signup+CTA+Button&utm_campaign=HiveMQ+Cloud+PaaS&utm_content=serverless)

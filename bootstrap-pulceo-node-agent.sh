@@ -33,14 +33,14 @@ echo ""
 
 # PNA_MQTT_BROKER_URL
 if [ -z "$PNA_MQTT_BROKER_URL" ]; then
-  PNA_MQTT_BROKER_URL=$(read -p "Enter the MQTT broker URL (should be like ssl://be3147d06377478a8eee29fd8f09495d.s1.eu.hivemq.cloud:8883): " PNA_MQTT_BROKER_URL)
+  read -p "Enter the MQTT broker URL (should be like ssl://be3187d06377498a1eee29fd8f09495d.s1.eu.hivemq.cloud:8883): " PNA_MQTT_BROKER_URL
 fi
 validate_mqtt_broker_url $PNA_MQTT_BROKER_URL
 
 # PNA_MQTT_CLIENT_USERNAME
 if [ -z "$PNA_MQTT_CLIENT_USERNAME" ]; then
   EXAMPLE_MQTT_CLIENT_USERNAME=$(generate_password 8)
-  PNA_MQTT_CLIENT_USERNAME=$(read -p "Enter the MQTT client username (should be like $EXAMPLE_MQTT_CLIENT_USERNAME): ENTER TO ACCEPT" PNA_MQTT_CLIENT_USERNAME)
+  read -p "Enter the MQTT client username (should be like $EXAMPLE_MQTT_CLIENT_USERNAME): ENTER TO ACCEPT" PNA_MQTT_CLIENT_USERNAME
   if [ -z "$PNA_MQTT_CLIENT_USERNAME" ]; then
     PNA_MQTT_CLIENT_USERNAME=$EXAMPLE_MQTT_CLIENT_USERNAME
   fi
@@ -50,7 +50,7 @@ validate_alphanumeric "PNA_MQTT_CLIENT_USERNAME" $PNA_MQTT_CLIENT_USERNAME
 # PNA_MQTT_CLIENT_PASSWORD
 if [ -z "$PNA_MQTT_CLIENT_PASSWORD" ]; then
   EXAMPLE_MQTT_CLIENT_PNA_MQTT_CLIENT_PASSWORD=$(generate_password 8)
-  PNA_MQTT_CLIENT_PASSWORD=$(read -p "Enter the MQTT client password (should be like $EXAMPLE_MQTT_CLIENT_PNA_MQTT_CLIENT_PASSWORD): ENTER TO ACCEPT" PNA_MQTT_CLIENT_PASSWORD)
+  read -p "Enter the MQTT client password (should be like $EXAMPLE_MQTT_CLIENT_PNA_MQTT_CLIENT_PASSWORD): ENTER TO ACCEPT" PNA_MQTT_CLIENT_PASSWORD
   if [ -z "$PNA_MQTT_CLIENT_PASSWORD" ]; then
     PNA_MQTT_CLIENT_PASSWORD=$EXAMPLE_MQTT_CLIENT_PNA_MQTT_CLIENT_PASSWORD
   fi
@@ -60,7 +60,7 @@ validate_alphanumeric "PNA_MQTT_CLIENT_PASSWORD" $PNA_MQTT_CLIENT_PASSWORD
 # PNA_USERNAME
 # 24 chars
 if [ -z "$PNA_USERNAME" ]; then
-  PNA_USERNAME=$(read -p "Enter the PNA username: " PNA_USERNAME)
+  read -p "Enter the PNA username: " PNA_USERNAME
   if [ -z "$PNA_USERNAME" ]; then
     exit 1
   fi
@@ -70,7 +70,7 @@ validate_alphanumeric "PNA_USERNAME" $PNA_USERNAME
 # PNA_PASSWORD
 # 32 chars
 if [ -z "$PNA_PASSWORD" ]; then
-  PNA_PASSWORD=$(read -p "Enter the PNA password: " PNA_USERNAME)
+  read -p "Enter the PNA password: " PNA_USERNAME
   if [ -z "$PNA_PASSWORD" ]; then
     exit 1
   fi
@@ -96,7 +96,7 @@ echo "PNA_PASSWORD=$PNA_PASSWORD" >> .env-pna
 echo "PNA_INIT_TOKEN=$PNA_INIT_TOKEN" >> .env-pna
 echo "PNA_HOST_FQDN=$PNA_HOST_FQDN" >> .env-pna
 
-echo "Successfully created .env file with all credentials...DO NOT SHARE THIS FILE WITH ANYONE!!!"
+echo "Successfully created .env-pna file with all credentials...DO NOT SHARE THIS FILE WITH ANYONE!!!"
 
 DOMAIN=$PNA_HOST_FQDN
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node" sh -

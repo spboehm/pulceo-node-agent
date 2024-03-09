@@ -15,7 +15,30 @@
   - `4002/tcp` (nping latency checks)
   - `5000-5015/tcp` (iperf3 bandwidth checks)
   - `5000-5015/udp` (iperf3 bandwidth checks)
+- Any Linux distribution is recommended (tested on Ubuntu 20.04 and openSUSE Tumbleweed)
 
+## Quickstart (public deployment)
+
+- First, deploy pulceo on another machine [pulceo-resource-manager#quickstart](https://github.com/spboehm/pulceo-resource-manager?tab=readme-ov-file#quickstart-try-locally)
+- The machine that is running the pulceo-node-agent must have a public IP address with a fully qualified domain name (FQDN)
+- Port `80/tcp` and `443/tcp` must be available on the local system
+- The script must be started as user `pulceo` having a home directory with `/home/pulceo`
+
+Export the following environment variables
+```bash
+# OPTIONAL: if you want to skip the username and password generation tool 
+export PNA_MQTT_BROKER_URL="ssl://broker.hivemq.com:1883"
+export PNA_MQTT_CLIENT_USERNAME="<USERNAME>"
+export PNA_MQTT_CLIENT_PASSWORD="<PASSWORD>"
+export PNA_USERNAME="<USERNAME>"
+export PNA_PASSWORD="<PASSWORD>"
+export PNA_INIT_TOKEN="<INIT>"
+export PNA_HOST_FQDN="<FQDN>"
+```
+
+```bash
+
+```
 ## Create a free MQTT broker (recommended)
 
 - Create a basic MQTT broker on [HiveMQ](https://console.hivemq.cloud/?utm_source=HiveMQ+Pricing+Page&utm_medium=serverless+signup+CTA+Button&utm_campaign=HiveMQ+Cloud+PaaS&utm_content=serverless)

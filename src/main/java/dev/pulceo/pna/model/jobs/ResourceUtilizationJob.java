@@ -13,6 +13,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+// for node
 public class ResourceUtilizationJob extends NodeJob {
 
     private ResourceUtilizationType resourceUtilizationType;

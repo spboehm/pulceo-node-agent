@@ -108,4 +108,8 @@ public class ApplicationService {
     public Optional<Application> findApplicationByUUID(UUID applicationUUID) {
         return this.applicationRepository.findByUuid(applicationUUID);
     }
+
+    public void updateApplication(Application fullApplication) {
+        this.applicationRepository.save(fullApplication);
+    }
 }

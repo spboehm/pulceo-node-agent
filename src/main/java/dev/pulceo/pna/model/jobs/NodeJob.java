@@ -1,5 +1,6 @@
 package dev.pulceo.pna.model.jobs;
 
+import dev.pulceo.pna.model.application.Application;
 import dev.pulceo.pna.model.node.Node;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -15,5 +16,8 @@ public abstract class NodeJob extends Job {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Node node;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Application application;
 
 }

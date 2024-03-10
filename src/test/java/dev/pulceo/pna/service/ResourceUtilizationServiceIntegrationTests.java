@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Disabled
 public class ResourceUtilizationServiceIntegrationTests {
 
     @Autowired
@@ -156,7 +155,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                         .time("2024-02-15T13:18:57Z")
                         .usageNanoCores(88914290)
                         .usageCoreNanoSeconds(645628635000L)
-                        .usageCPUPercentage(7.41f)
+                        .usageCPUPercentage(0.74f)
                         .build())
                 .build();
 
@@ -178,9 +177,9 @@ public class ResourceUtilizationServiceIntegrationTests {
                 .time("2024-02-15T13:18:57Z")
                 .memoryUtilizationMeasurement(MemoryUtilizationMeasurement.builder()
                         .time("2024-02-15T13:18:57Z")
-                        .usageBytes(626122752)
+                        .usageBytes(572334080)
                         .availableBytes(15880196096L)
-                        .usageMemoryPercentage(3.81f)
+                        .usageMemoryPercentage(3.48f)
                         .build())
                 .build();
 

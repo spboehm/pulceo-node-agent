@@ -7,13 +7,12 @@ import dev.pulceo.pna.model.message.MetricType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity

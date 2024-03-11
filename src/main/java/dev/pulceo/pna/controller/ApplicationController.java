@@ -85,7 +85,7 @@ public class ApplicationController {
         }
 
         // Create Request
-        // TODO: for all pods in that application for using wildcard
+        // TODO: for all pods in that application for multi pod
         ResourceUtilizationRequest resourceUtilizationRequest = ResourceUtilizationRequest.builder()
                 .resourceUtilizationType(ResourceUtilizationType.getTypeFromString(createNewResourceUtilizationDTO.getType()))
                 .k8sResourceType(K8sResourceType.POD)

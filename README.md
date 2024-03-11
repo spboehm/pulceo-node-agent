@@ -28,11 +28,11 @@ Export the following environment variables
 ```bash
 # OPTIONAL: if you want to skip the username and password generation tool 
 export PNA_MQTT_BROKER_URL="ssl://broker.hivemq.com:1883"
-export PNA_MQTT_CLIENT_USERNAME="<USERNAME>"
-export PNA_MQTT_CLIENT_PASSWORD="<PASSWORD>"
-export PNA_USERNAME="<USERNAME>"
-export PNA_PASSWORD="<PASSWORD>"
-export PNA_INIT_TOKEN="<INIT>"
+export PNA_MQTT_CLIENT_USERNAME="<MQTT_USERNAME>"
+export PNA_MQTT_CLIENT_PASSWORD="<MQTT_PASSWORD>"
+export PNA_USERNAME="<PNA_USERNAME>"
+export PNA_PASSWORD="<PNA_PASSWORD>"
+export PNA_INIT_TOKEN="<PNA_INIT_TOKEN>"
 export PNA_HOST_FQDN="<FQDN>"
 ```
 

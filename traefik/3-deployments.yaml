@@ -137,6 +137,11 @@ spec:
                 secretKeyRef:
                   name: pna-credentials
                   key: PNA_INIT_TOKEN
+            - name: PNA_UUID
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_UUID
           ports:
             - containerPort: 7676
               name: web

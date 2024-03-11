@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,6 +56,16 @@ public class ApplicationController {
         return new ResponseEntity<>(ApplicationDTO.fromApplication(application), HttpStatus.CREATED);
     }
 
+    @GetMapping("")
+    public ResponseEntity<List<ApplicationDTO>> readAllApplications() {
+        List<Application> applications = this.applicationService.readAllApplications();
+        List<ApplicationDTO> applicationDTOs = new ArrayList<>();
+        for (Application application : applications) {
+            applicationDTOs.add(ApplicationDTO.fromApplication(application));
+        }
+        return new ResponseEntity<>(applicationDTOs, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{uuid}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteApplication(@PathVariable UUID uuid) throws ApplicationServiceException {
@@ -66,8 +78,8 @@ public class ApplicationController {
 
     @PostMapping("/{uuid}/metric-requests")
     // TODO: application node metric response dtp
-    public ResponseEntity<ShortNodeMetricResponseDTO> createNewMetricRequest(@Valid @PathVariable UUID uuid, @Valid @RequestBody CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO) throws ApplicationServiceException, JobServiceException {
-        Optional<Application> application = this.applicationService.findApplicationByUUID(uuid);
+    public ResponseEntity<ShortNodeMetricResponseDTO> createNewMetricRequest(@Valid @PathVariable String uuid, @Valid @RequestBody CreateNewResourceUtilizationDTO createNewResourceUtilizationDTO) throws ApplicationServiceException, JobServiceException {
+        Optional<Application> application = this.resolveApplication(uuid);
         if (application.isEmpty()) {
             throw new ApplicationServiceException(String.format("Application with UUID %s not found", uuid));
         }
@@ -101,6 +113,22 @@ public class ApplicationController {
         }
         ShortNodeMetricResponseDTO createdShortNodeMetricResponseDTO = new ShortNodeMetricResponseDTO(createdResourceUtilizationJob.get().getUuid(), fullNode.getUuid(), ResourceUtilizationType.getName(createdResourceUtilizationJob.get().getResourceUtilizationType()), String.valueOf(createdResourceUtilizationJob.get().getRecurrence()), createdResourceUtilizationJob.get().isEnabled());
         return new ResponseEntity<>(createdShortNodeMetricResponseDTO, HttpStatus.CREATED);
+    }
+
+    private Optional<Application> resolveApplication(String id) {
+        Application application;
+        // TODO: add resolve to name here, heck if UUID
+        if (checkIfUUID(id)) {
+            application = this.applicationService.readApplicationByUUID(UUID.fromString(id));
+        } else {
+            application = this.applicationService.readApplicationByName(id);
+        }
+        return Optional.of(application);
+    }
+
+    private static boolean checkIfUUID(String uuid)  {
+        String uuidRegex = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+        return uuid.matches(uuidRegex);
     }
 
     // TODO: add exception handler

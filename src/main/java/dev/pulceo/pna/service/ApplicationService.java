@@ -1,16 +1,21 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.controller.ApplicationController;
 import dev.pulceo.pna.exception.ApplicationServiceException;
 import dev.pulceo.pna.exception.KubernetesServiceException;
 import dev.pulceo.pna.model.application.Application;
 import dev.pulceo.pna.model.application.ApplicationComponent;
+import dev.pulceo.pna.model.application.ApplicationComponentType;
 import dev.pulceo.pna.repository.ApplicationComponentRepository;
 import dev.pulceo.pna.repository.ApplicationRepository;
 import io.kubernetes.client.openapi.ApiException;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +33,13 @@ public class ApplicationService {
         this.applicationComponentRepository = applicationComponentRepository;
         this.kubernetesService = kubernetesService;
         this.nodeService = nodeService;
+    }
+
+    public List<Application> readAllApplications() {
+        Iterable<Application> applications = this.applicationRepository.findAll();
+        List<Application> applicationList = new ArrayList<>();
+        applications.forEach(applicationList::add);
+        return applicationList;
     }
 
     public Application createApplication(Application application) throws ApplicationServiceException {
@@ -89,6 +101,10 @@ public class ApplicationService {
         return this.applicationComponentRepository.findByPort(port).isPresent();
     }
 
+    public Application readApplicationByUUID(UUID applicationUUID) {
+        return this.applicationRepository.findByUuid(applicationUUID).orElse(null);
+    }
+
     public void deleteApplication(String applicationName) {
         // find services and delete them
         Application application = this.readApplicationByName(applicationName);
@@ -112,4 +128,5 @@ public class ApplicationService {
     public void updateApplication(Application fullApplication) {
         this.applicationRepository.save(fullApplication);
     }
+
 }

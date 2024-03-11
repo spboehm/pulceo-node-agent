@@ -26,5 +26,4 @@ public class ApplicationDTO {
                 .applicationComponents(application.getApplicationComponents().stream().map(ApplicationComponentDTO::fromApplicationComponent).toList())
                 .build();
     }
-
 }

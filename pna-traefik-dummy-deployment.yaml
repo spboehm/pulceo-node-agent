@@ -7,22 +7,22 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: edge-0-pulceo-node-agent
+  name: pulceo-node-agent
   namespace: pulceo
   labels:
-    app: edge-0-pulceo-node-agent
+    app: pulceo-node-agent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: edge-0-pulceo-node-agent
+      app: pulceo-node-agent
   template:
     metadata:
       labels:
-        app: edge-0-pulceo-node-agent
+        app: pulceo-node-agent
     spec:
       containers:
-        - name: edge-0-pulceo-node-agent
+        - name: pulceo-node-agent
           image: nginx:1.14.2
           ports:
             - containerPort: 80
@@ -31,22 +31,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: edge-0-traefik
+  name: traefik
   namespace: pulceo
   labels:
-    app: edge-0-traefik
+    app: traefik
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: edge-0-traefik
+      app: traefik
   template:
     metadata:
       labels:
-        app: edge-0-traefik
+        app: traefik
     spec:
       containers:
-        - name: edge-0-traefik
+        - name: traefik
           image: nginx:1.14.2
           ports:
             - containerPort: 80

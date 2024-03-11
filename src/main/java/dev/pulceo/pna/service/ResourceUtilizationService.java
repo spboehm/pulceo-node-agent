@@ -66,7 +66,14 @@ public class ResourceUtilizationService {
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
                 return retrieveCPUUtilizationForNode(jsonNode);
             } else {
-                return retrieveCPUUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                // rewrite for pulceo node components
+                if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
+                    return retrieveCPUUtilizationForPod(jsonNode, "pulceo-node-agent");
+                } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
+                    return retrieveCPUUtilizationForPod(jsonNode, "traefik");
+                } else {
+                    return retrieveCPUUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                }
             }
         } catch (ResourceServiceUtilizationException e) {
             throw new RuntimeException("Could not retrieve CPU utilization for: " + resourceUtilizationRequest.getResourceName(), e);

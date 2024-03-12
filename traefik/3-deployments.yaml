@@ -142,6 +142,11 @@ spec:
                 secretKeyRef:
                   name: pna-credentials
                   key: PNA_UUID
+            - name: PNA_HOST_FQDN
+              valueFrom:
+                secretKeyRef:
+                  name: pna-credentials
+                  key: PNA_HOST_FQDN
           ports:
             - containerPort: 7676
               name: web

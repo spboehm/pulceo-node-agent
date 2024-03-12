@@ -134,7 +134,14 @@ public class ResourceUtilizationService {
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
                 return retrieveMemoryUtilizationForNode(jsonNode);
             } else {
-                return retrieveMemoryUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                // rewrite for pulceo node components
+                if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
+                    return retrieveMemoryUtilizationForPod(jsonNode, "pulceo-node-agent");
+                } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
+                    return retrieveMemoryUtilizationForPod(jsonNode, "traefik");
+                } else {
+                    return retrieveMemoryUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                }
             }
         } catch (ResourceServiceUtilizationException e) {
             throw new RuntimeException("Could not retrieve memory utilization for: " + resourceUtilizationRequest.getResourceName(), e);
@@ -195,7 +202,14 @@ public class ResourceUtilizationService {
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
                 return retrieveNetworkUtilizationForNode(jsonNode);
             } else {
-                return retrieveNetworkUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                // rewrite for pulceo node components
+                if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
+                    return retrieveNetworkUtilizationForPod(jsonNode, "pulceo-node-agent");
+                } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
+                    return retrieveNetworkUtilizationForPod(jsonNode, "traefik");
+                } else {
+                    return retrieveNetworkUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                }
             }
         } catch (ResourceServiceUtilizationException e) {
             throw new RuntimeException("Could not retrieve network utilization for: " + resourceUtilizationRequest.getResourceName(), e);
@@ -256,7 +270,14 @@ public class ResourceUtilizationService {
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
                 return retrieveStorageUtilizationForNode(jsonNode);
             } else {
-                return retrieveStorageUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                // rewrite for pulceo node components
+                if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
+                    return retrieveStorageUtilizationForPod(jsonNode, "pulceo-node-agent");
+                } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
+                    return retrieveStorageUtilizationForPod(jsonNode, "traefik");
+                } else {
+                    return retrieveStorageUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
+                }
             }
         } catch (ResourceServiceUtilizationException e) {
             throw new RuntimeException("Could not retrieve network utilization for: " + resourceUtilizationRequest.getResourceName(), e);

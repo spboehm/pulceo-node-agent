@@ -72,6 +72,17 @@ tasks.register("bootRun-pna-test2") {
 	finalizedBy("bootRun")
 }
 
+tasks.register("bootRun-pna-test3") {
+	group = "application"
+	description = "Runs pna with the test3 profile"
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "test3")
+		}
+	}
+	finalizedBy("bootRun")
+}
+
 test {
 	useJUnitPlatform()
 }

@@ -34,10 +34,10 @@ public class Link extends Resource  {
     @Builder.Default
     private LinkDirectionType linkDirectionType = LinkDirectionType.UNDIRECTED;
     // set cascade type
-    @OneToOne
+    @ManyToOne
     private Node srcNode;
     // set cascade type
-    @OneToOne
+    @ManyToOne
     private Node destNode;
 
     @Builder.Default

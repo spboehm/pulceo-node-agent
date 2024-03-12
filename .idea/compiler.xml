@@ -11,6 +11,6 @@
         <module name="dev.pulceo.pulceo-node-agent.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.6" />
+    <bytecodeTargetLevel target="17" />
   </component>
 </project>

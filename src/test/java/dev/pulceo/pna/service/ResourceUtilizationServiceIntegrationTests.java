@@ -6,7 +6,6 @@ import dev.pulceo.pna.model.resources.*;
 import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,7 +46,7 @@ public class ResourceUtilizationServiceIntegrationTests {
     }
 
     @Test
-    public void testRetrieveCPUUtilizationForPod() {
+    public void testRetrieveCPUUtilizationForPod() throws ResourceServiceUtilizationException {
         // given
         String name = "my-nginx";
         CPUUtilizationResult expectedCPUUtilizationResult = CPUUtilizationResult.builder()
@@ -71,7 +70,7 @@ public class ResourceUtilizationServiceIntegrationTests {
     }
 
     @Test
-    public void testRetrieveMemoryUtilizationForPod() {
+    public void testRetrieveMemoryUtilizationForPod() throws ResourceServiceUtilizationException {
         // given
         String name = "my-nginx";
         MemoryUtilizationResult expectedMemoryUtilizationResult = MemoryUtilizationResult.builder()
@@ -95,7 +94,7 @@ public class ResourceUtilizationServiceIntegrationTests {
     }
 
     @Test
-    public void testRetrieveNetworkUtilizationForPod() {
+    public void testRetrieveNetworkUtilizationForPod() throws ResourceServiceUtilizationException {
         // given
         String name = "my-nginx";
         NetworkUtilizationResult expectedNetworkUtilizationResult = NetworkUtilizationResult.builder()
@@ -119,7 +118,7 @@ public class ResourceUtilizationServiceIntegrationTests {
     }
 
     @Test
-    public void testRetrieveDiskUtilizationForPod() {
+    public void testRetrieveDiskUtilizationForPod() throws ResourceServiceUtilizationException {
         // given
         String name = "my-nginx";
         StorageUtilizationResult expectedDiskUtilizationResult = StorageUtilizationResult.builder()

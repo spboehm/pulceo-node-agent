@@ -1,9 +1,6 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.exception.BandwidthServiceException;
-import dev.pulceo.pna.exception.DelayServiceException;
-import dev.pulceo.pna.exception.JobServiceException;
-import dev.pulceo.pna.exception.PingServiceException;
+import dev.pulceo.pna.exception.*;
 import dev.pulceo.pna.model.iperf.IperfResult;
 import dev.pulceo.pna.model.jobs.*;
 import dev.pulceo.pna.model.message.Message;
@@ -18,6 +15,8 @@ import dev.pulceo.pna.model.resources.NetworkUtilizationResult;
 import dev.pulceo.pna.model.resources.StorageUtilizationResult;
 import dev.pulceo.pna.repository.*;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.integration.channel.PublishSubscribeChannel;
@@ -35,6 +34,8 @@ import java.util.concurrent.ScheduledFuture;
 
 @Service
 public class JobService {
+
+    Logger logger = LoggerFactory.getLogger(JobService.class);
 
     @Autowired
     private BandwidthJobRepository bandwidthJobRepository;
@@ -148,16 +149,21 @@ public class JobService {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
-            CPUUtilizationResult cpuUtilizationResult = this.resourceUtilizationService.retrieveCPUUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
-            NetworkMetric networkMetric = NetworkMetric.builder()
-                    .metricUUID(cpuUtilizationResult.getUuid())
-                    .metricType(cpuUtilizationResult.getMetricType())
-                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
-                    .metricResult(cpuUtilizationResult)
-                    .build();
+            try {
+                CPUUtilizationResult cpuUtilizationResult = this.resourceUtilizationService.retrieveCPUUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
 
-            Message message = new Message(deviceId, networkMetric);
-            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(cpuUtilizationResult.getUuid())
+                        .metricType(cpuUtilizationResult.getMetricType())
+                        .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                        .metricResult(cpuUtilizationResult)
+                        .build();
+
+                Message message = new Message(deviceId, networkMetric);
+                this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            } catch (ResourceServiceUtilizationException e) {
+                logger.error(e.getMessage());
+            }
         }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
         this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
         return retrievedResourceUtilizationJob.getId();
@@ -167,16 +173,21 @@ public class JobService {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
-            MemoryUtilizationResult memoryUtilizationResult = this.resourceUtilizationService.retrieveMemoryUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
-            NetworkMetric networkMetric = NetworkMetric.builder()
-                    .metricUUID(memoryUtilizationResult.getUuid())
-                    .metricType(memoryUtilizationResult.getMetricType())
-                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
-                    .metricResult(memoryUtilizationResult)
-                    .build();
+            try {
+                MemoryUtilizationResult memoryUtilizationResult = this.resourceUtilizationService.retrieveMemoryUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
 
-            Message message = new Message(deviceId, networkMetric);
-            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(memoryUtilizationResult.getUuid())
+                        .metricType(memoryUtilizationResult.getMetricType())
+                        .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                        .metricResult(memoryUtilizationResult)
+                        .build();
+
+                Message message = new Message(deviceId, networkMetric);
+                this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            } catch (ResourceServiceUtilizationException e) {
+                logger.error(e.getMessage());
+            }
         }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
         this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
         return retrievedResourceUtilizationJob.getId();
@@ -186,16 +197,21 @@ public class JobService {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
-            NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
-            NetworkMetric networkMetric = NetworkMetric.builder()
-                    .metricUUID(networkUtilizationResult.getUuid())
-                    .metricType(networkUtilizationResult.getMetricType())
-                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
-                    .metricResult(networkUtilizationResult)
-                    .build();
+            try {
+                NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
+
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(networkUtilizationResult.getUuid())
+                        .metricType(networkUtilizationResult.getMetricType())
+                        .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                        .metricResult(networkUtilizationResult)
+                        .build();
 
             Message message = new Message(deviceId, networkMetric);
             this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            } catch (ResourceServiceUtilizationException e) {
+               logger.error(e.getMessage());
+            }
         }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
         this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
         return retrievedResourceUtilizationJob.getId();
@@ -205,7 +221,9 @@ public class JobService {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
-            StorageUtilizationResult storageUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
+            try {
+                StorageUtilizationResult storageUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
+
             NetworkMetric networkMetric = NetworkMetric.builder()
                     .metricUUID(storageUtilizationResult.getUuid())
                     .metricType(storageUtilizationResult.getMetricType())
@@ -215,6 +233,9 @@ public class JobService {
 
             Message message = new Message(deviceId, networkMetric);
             this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            } catch (ResourceServiceUtilizationException e) {
+                logger.error(e.getMessage());
+            }
         }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
         this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
         return retrievedResourceUtilizationJob.getId();
@@ -300,7 +321,7 @@ public class JobService {
                 Message message = new Message(deviceId, networkMetric);
                 this.npingUdpPubSubChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (DelayServiceException e) {
-                throw new RuntimeException(e);
+                logger.error(e.getMessage());
             }
         }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
 
@@ -320,7 +341,7 @@ public class JobService {
                 Message message = new Message(deviceId, networkMetric);
                 this.npingTcpPubSubChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (DelayServiceException e) {
-                throw new RuntimeException(e);
+                logger.error(e.getMessage());
             }
         }, Duration.ofSeconds(retrievedNpingJob.getRecurrence()));
 
@@ -381,9 +402,8 @@ public class JobService {
                 Message message = new Message(deviceId, networkMetric);
                 this.bandwidthServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (BandwidthServiceException e) {
-                throw new RuntimeException(e);
+               logger.error(e.getMessage());
             }
-
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
         this.jobHashMap.put(retrievedIperfJobId, scheduledFuture);
         return retrievedIperfJobId;
@@ -448,7 +468,7 @@ public class JobService {
                 Message message = new Message(deviceId, networkMetric);
                 this.pingServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
             } catch (PingServiceException e) {
-                throw new RuntimeException(e);
+                logger.error(e.getMessage());
             }
         }, Duration.ofSeconds(retrievedPingJob.getRecurrence()));
         this.jobHashMap.put(retrievedPingJobId, scheduledFuture);
@@ -491,7 +511,8 @@ public class JobService {
                     throw new JobServiceException("Job type unknown!");
                 }
             } catch (JobServiceException e) {
-                throw new RuntimeException(e);
+                logger.error("Could not init link jobs!");
+                throw new RuntimeException("Could not init link jobs!", e);
             }
         });
 
@@ -504,7 +525,9 @@ public class JobService {
                     throw new JobServiceException("Job type unknown!");
                 }
             } catch (JobServiceException e) {
-                throw new RuntimeException(e);
+                logger.error("Could not init node jobs!");
+                throw new RuntimeException("Could not init node jobs!", e);
+
             }
         });
     }

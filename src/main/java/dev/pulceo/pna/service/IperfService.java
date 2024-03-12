@@ -52,7 +52,8 @@ public class IperfService {
             this.iperfServerRequestRepository.save(IperfServerRequest.builder().port(nextAvailablePort).build());
             return nextAvailablePort;
         } catch (IOException | InterruptedException | ProcessException e) {
-            throw new RuntimeException(e);
+            logger.error("Could not start Iperf3 server process!", e);
+            throw new BandwidthServiceException("Could not start Iperf3 server process!", e);
         }
     }
 
@@ -64,26 +65,34 @@ public class IperfService {
             return ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
             // TODO: persist iperf3 server process
         } catch (IOException | InterruptedException | ProcessException e) {
+            logger.error("Could not start Iperf3 server process!", e);
             throw new BandwidthServiceException("Could not start Iperf3 server process!", e);
         }
     }
 
     @PostConstruct
-    private void init() throws InterruptedException, IOException {
-        // kill all iperf processes
-        Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
-        p.waitFor();
-        // TODO: eventuall kill all iperf3 processes
-        Iterable<IperfServerRequest> iperfServerRequests = this.iperfServerRequestRepository.findAll();
-        for (IperfServerRequest iperfServerRequest : iperfServerRequests) {
-            try {
-                // TODO: refactor and streamline with startIperf3Server
-                Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(new IperfServerCmd(iperfServerRequest.getPort(), bind).getCmd())).start();
-                ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
-            } catch (IOException | InterruptedException e) {
-                logger.error("Could not start Iperf3 server process!", e);
+    private void init()  {
+        try {
+            // kill all iperf processes
+            Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
+            p.waitFor();
+            // TODO: eventuall kill all iperf3 processes
+            Iterable<IperfServerRequest> iperfServerRequests = this.iperfServerRequestRepository.findAll();
+            for (IperfServerRequest iperfServerRequest : iperfServerRequests) {
+                try {
+                    // TODO: refactor and streamline with startIperf3Server
+                    Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(new IperfServerCmd(iperfServerRequest.getPort(), bind).getCmd())).start();
+                    ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
+                } catch (IOException | InterruptedException e) {
+                    logger.error("Could not start Iperf3 server processes!", e);
+                    throw new RuntimeException("Could not start Iperf3 server processes!", e);
+                }
             }
+        } catch (IOException | InterruptedException e) {
+            logger.error("Could not start Iperf3 server processes!", e);
+            throw new RuntimeException("Could not start Iperf3 server processes!", e);
         }
+
     }
 
     // TODO: synchronization

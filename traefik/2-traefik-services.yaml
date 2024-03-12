@@ -38,6 +38,12 @@ metadata:
 spec:
   ports:
   - protocol: UDP
+    name: nping-4001-udp
+    port: 4001
+  - protocol: TCP
+    name: nping-4002-udp
+    port: 4002
+  - protocol: UDP
     name: iperf-5000-udp
     port: 5000
   - protocol: TCP

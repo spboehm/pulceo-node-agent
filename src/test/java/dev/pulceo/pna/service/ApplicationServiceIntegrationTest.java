@@ -57,6 +57,33 @@ public class ApplicationServiceIntegrationTest {
     }
 
     @Test
+    public void testCreateDummyApplications() throws ApplicationServiceException {
+        // given
+        Optional<Node> localNode = this.nodeService.readLocalNode();
+        if (localNode.isEmpty()) {
+            throw new RuntimeException("Local node not found");
+        }
+        Application pulceoNodeAgent = Application.builder()
+                .name("pulceo-node-agent")
+                .applicationComponents(new ArrayList<>())
+                .build();
+
+        Application traefik = Application.builder()
+                .name("traefik")
+                .applicationComponents(new ArrayList<>())
+                .build();
+
+
+        // when
+        Application createdApplicationPNA = this.applicationService.createApplication(pulceoNodeAgent);
+        Application createdApplicationTreafik = this.applicationService.createApplication(traefik);
+
+        // then
+        assertEquals(pulceoNodeAgent, createdApplicationPNA);
+        assertEquals(traefik, createdApplicationTreafik);
+    }
+
+    @Test
     public void testCreateApplication() throws ApplicationServiceException {
         // given
         Optional<Node> localNode = this.nodeService.readLocalNode();

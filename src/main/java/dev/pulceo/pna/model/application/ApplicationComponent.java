@@ -28,7 +28,7 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     Application application;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Node node;
     @ElementCollection
     @MapKeyColumn(name="envKey")

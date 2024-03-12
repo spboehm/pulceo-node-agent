@@ -6,10 +6,7 @@ import dev.pulceo.pna.util.CPUUtil;
 import dev.pulceo.pna.util.ProcessUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -128,6 +125,24 @@ public class CPUUtilTest {
         assertEquals(expectedCPU.getMaximalFrequency(), actualCPUInformation.getMaximalFrequency());
         assertEquals(expectedCPU.getAverageFrequency(), actualCPUInformation.getAverageFrequency());
         assertEquals(expectedCPU.getSlots(), actualCPUInformation.getSlots());
+    }
+
+    @Test
+    public void testParseCPUInformationProcCpuInfo() throws IOException, ProcessException {
+        // given
+        File file = new File("src/test/java/dev/pulceo/pna/resources/cpu/proc-cpu-info.txt");
+        List<String> procCpuInfoAsList;
+        try(InputStream inputStream = new FileInputStream(file)) {
+            procCpuInfoAsList = ProcessUtils.readProcessOutput(inputStream);
+        }
+        float expectedFrequency = 2593.904f;
+
+        // when
+        float actualFrequency = CPUUtil.extractFrequencyFromProcCpuInfo(procCpuInfoAsList);
+
+        // then
+        assertEquals(expectedFrequency, actualFrequency);
+
     }
 
 }

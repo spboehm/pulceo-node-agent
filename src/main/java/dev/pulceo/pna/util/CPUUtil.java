@@ -2,8 +2,10 @@ package dev.pulceo.pna.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.node.CPU;
 
+import java.io.IOException;
 import java.util.List;
 
 public class CPUUtil {
@@ -58,6 +60,20 @@ public class CPUUtil {
             maxFrequency = avgFrequency;
         }
 
+        // if no cpu frequency is available, fallback to /proc/cpuinfo
+        if (minFrequency == 0 || maxFrequency == 0) {
+            try {
+                Process lscpuProcess = new ProcessBuilder("cat", "/proc/cpuinfo").start();
+                lscpuProcess.waitFor();
+                float frequency = extractFrequencyFromProcCpuInfo(ProcessUtils.readProcessOutput(lscpuProcess.getInputStream()));
+                minFrequency = frequency;
+                maxFrequency = frequency;
+            } catch (IOException | ProcessException | InterruptedException e) {
+                System.err.println("Could not obtain CPU frequency from /proc/cpuinfo");
+            }
+
+        }
+
         return CPU.builder()
                 .modelName(modelName)
                 .cores(coresPerSocket * sockets)
@@ -71,6 +87,16 @@ public class CPUUtil {
                 .slots(slots)
                 .shares(threadsPerCore * coresPerSocket * sockets * 1000)
                 .build();
+    }
+
+    public static float extractFrequencyFromProcCpuInfo(List<String> procCpuInfoAsString) throws JsonProcessingException {
+        for (String line : procCpuInfoAsString) {
+            if (line.contains("cpu MHz")) {
+                String[] split = line.split(":");
+                return Float.parseFloat(split[1].trim());
+            }
+        }
+        return 0.0f;
     }
 
 }

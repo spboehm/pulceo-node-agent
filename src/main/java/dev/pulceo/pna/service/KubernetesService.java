@@ -13,6 +13,8 @@ import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.Watch;
 import io.kubernetes.client.util.wait.Wait;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ import java.util.Objects;
 
 @Service
 public class KubernetesService {
+
+    private final Logger logger = LoggerFactory.getLogger(KubernetesService.class);
 
     @Value("${k3s.config.path}")
     private String k3sConfigPath;
@@ -59,10 +63,11 @@ public class KubernetesService {
                     }
                 }
             } catch (ApiException | IOException e) {
-                System.err.println(e.getMessage());
+                logger.error("Could not create new namespace!", e);
             }
 
         } catch (IOException | ApiException e) {
+            logger.error("Could not create new namespace!", e);
             throw new KubernetesServiceException("Could not create new namespace!", e);
         }
     }
@@ -89,6 +94,7 @@ public class KubernetesService {
             }
         } catch (ApiException | IOException e) {
             // swallow in case of namespace does not exist
+            logger.info("Could not delete namespace!", e);
         }
     }
 
@@ -119,11 +125,12 @@ public class KubernetesService {
                         }
                     });
         } catch (IOException | ApiException e) {
+            logger.error("Could not create deployment!", e);
             throw new KubernetesServiceException("Could not create deployment!", e);
         }
     }
 
-    public void createService(String applicationName, KubernetesDeployable kubernetesDeployable) {
+    public void createService(String applicationName, KubernetesDeployable kubernetesDeployable) throws KubernetesServiceException {
         // TODO: check if service does already exist
 
         try {
@@ -150,10 +157,9 @@ public class KubernetesService {
                         }
                     });
 
-        } catch (ApiException | IOException e) {
-            throw new RuntimeException(e);
-        } catch (KubernetesServiceException e) {
-            throw new RuntimeException(e);
+        } catch (ApiException | IOException | KubernetesServiceException e) {
+            logger.error("Could not create service!", e);
+            throw new KubernetesServiceException(e);
         }
 
 
@@ -175,6 +181,7 @@ public class KubernetesService {
                     .toList();
             return !namespaces.isEmpty();
         } catch (ApiException | IOException e) {
+            logger.error("Could not check for already existing namespaces!", e);
             throw new KubernetesServiceException("Could not check for already existing namespaces!", e);
         }
     }
@@ -189,45 +196,56 @@ public class KubernetesService {
             return true;
         } catch (ApiException | IOException e) {
             // only for ApiException
+            logger.info("Deployment does not exist!", e);
             return false;
         }
     }
 
-    public void deleteService(String applicationName, String applicationComponentName) throws IOException, ApiException {
-        ApiClient client = Config.fromConfig(k3sConfigPath);
-        Configuration.setDefaultApiClient(client);
-        CoreV1Api api = new CoreV1Api();
-        api.deleteNamespacedService(applicationName + "-" + applicationComponentName, this.namespace).execute();
+    public void deleteService(String applicationName, String applicationComponentName) throws KubernetesServiceException {
+        try {
+            ApiClient client = Config.fromConfig(k3sConfigPath);
+            Configuration.setDefaultApiClient(client);
+            CoreV1Api api = new CoreV1Api();
+            api.deleteNamespacedService(applicationName + "-" + applicationComponentName, this.namespace).execute();
 
-        Wait.poll(
-                Duration.ofSeconds(3),
-                Duration.ofSeconds(60),
-                () -> {
-                    try {
-                        return api.readNamespacedService(applicationName + "-" + applicationComponentName, namespace).execute().getStatus() == null;
-                    } catch (ApiException e) {
-                        return true;
-                    }
-                });
+            Wait.poll(
+                    Duration.ofSeconds(3),
+                    Duration.ofSeconds(60),
+                    () -> {
+                        try {
+                            return api.readNamespacedService(applicationName + "-" + applicationComponentName, namespace).execute().getStatus() == null;
+                        } catch (ApiException e) {
+                            return true;
+                        }
+                    });
+        } catch (IOException | ApiException e) {
+            logger.error("Could not delete service!", e);
+            throw new KubernetesServiceException("Could not delete service!", e);
+        }
     }
 
-    public void deleteDeployment(String applicationName, String applicationComponentName) throws IOException, ApiException {
-        ApiClient client = Config.fromConfig(k3sConfigPath);
-        Configuration.setDefaultApiClient(client);
-        AppsV1Api appsV1Api = new AppsV1Api();
+    public void deleteDeployment(String applicationName, String applicationComponentName) throws KubernetesServiceException {
+        try {
+            ApiClient client = Config.fromConfig(k3sConfigPath);
+            Configuration.setDefaultApiClient(client);
+            AppsV1Api appsV1Api = new AppsV1Api();
 
-        appsV1Api.deleteNamespacedDeployment(applicationName + "-" + applicationComponentName, this.namespace).execute();
+            appsV1Api.deleteNamespacedDeployment(applicationName + "-" + applicationComponentName, this.namespace).execute();
 
-        Wait.poll(
-                Duration.ofSeconds(3),
-                Duration.ofSeconds(60),
-                () -> {
-                    try {
-                        return appsV1Api.readNamespacedDeployment(applicationName + "-" + applicationComponentName, namespace).execute() == null;
-                    } catch (ApiException e) {
-                        return true;
-                    }
-                });
+            Wait.poll(
+                    Duration.ofSeconds(3),
+                    Duration.ofSeconds(60),
+                    () -> {
+                        try {
+                            return appsV1Api.readNamespacedDeployment(applicationName + "-" + applicationComponentName, namespace).execute() == null;
+                        } catch (ApiException e) {
+                            return true;
+                        }
+                    });
+        } catch (IOException | ApiException e) {
+            logger.error("Could not delete deployment!", e);
+            throw new KubernetesServiceException("Could not delete deployment!", e);
+        }
     }
 
     @PostConstruct
@@ -242,6 +260,7 @@ public class KubernetesService {
             createNameSpaceIfNotExists();
 
         } catch (Exception e) {
+            logger.error("Could not init KubernetesService!", e);
             throw new KubernetesServiceException("Could not init KubernetesService!", e);
         }
     }

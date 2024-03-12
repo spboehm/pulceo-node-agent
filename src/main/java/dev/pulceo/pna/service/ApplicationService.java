@@ -1,19 +1,16 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.controller.ApplicationController;
 import dev.pulceo.pna.exception.ApplicationServiceException;
 import dev.pulceo.pna.exception.KubernetesServiceException;
 import dev.pulceo.pna.model.application.Application;
 import dev.pulceo.pna.model.application.ApplicationComponent;
-import dev.pulceo.pna.model.application.ApplicationComponentType;
 import dev.pulceo.pna.repository.ApplicationComponentRepository;
 import dev.pulceo.pna.repository.ApplicationRepository;
-import io.kubernetes.client.openapi.ApiException;
-import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +18,8 @@ import java.util.UUID;
 
 @Service
 public class ApplicationService {
+
+    private final Logger logger = LoggerFactory.getLogger(ApplicationService.class);
 
     private final ApplicationRepository applicationRepository;
     private final ApplicationComponentRepository applicationComponentRepository;
@@ -53,6 +52,7 @@ public class ApplicationService {
             try {
                 this.createApplicationComponent(persistedApplicationWithoutServices, applicationComponent);
             } catch (ApplicationServiceException e) {
+                logger.error("Could not create application component!", e);
                 throw new ApplicationServiceException("Could not create application!", e);
             }
         }
@@ -74,7 +74,8 @@ public class ApplicationService {
             this.kubernetesService.createDeployment(persistedApplication.get().getName(), applicationComponent);
             this.kubernetesService.createService(persistedApplication.get().getName(), applicationComponent);
         } catch (KubernetesServiceException e) {
-            throw new ApplicationServiceException(e);
+            logger.error("Could not create service or deployment!", e);
+            throw new ApplicationServiceException("Could not create application component!", e);
         }
 
         // persis
@@ -105,17 +106,16 @@ public class ApplicationService {
         return this.applicationRepository.findByUuid(applicationUUID).orElse(null);
     }
 
-    public void deleteApplication(String applicationName) {
+    public void deleteApplication(String applicationName) throws ApplicationServiceException {
         // find services and delete them
         Application application = this.readApplicationByName(applicationName);
         for (ApplicationComponent applicationComponent : application.getApplicationComponents()) {
             try {
                 this.kubernetesService.deleteService(applicationName, applicationComponent.getName());
                 this.kubernetesService.deleteDeployment(applicationName, applicationComponent.getName());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (ApiException e) {
-                throw new RuntimeException(e);
+            } catch (KubernetesServiceException e) {
+                logger.error("Could not delete service or deployment!", e);
+                throw new ApplicationServiceException("Could not delete application!", e);
             }
         }
         this.applicationRepository.delete(application);

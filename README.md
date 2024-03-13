@@ -58,12 +58,12 @@ mkdir -p /tmp/pulceo-node-agent
 ```
 - Create a test cluster with k3d
 ```bash
-k3d cluster create pna-test --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer --volume /tmp/pulceo-node-agent/:/home/pulceo
+k3d cluster create pna-k8s-node --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer --port 7676:7676@loadbalancer --volume /tmp/pulceo-node-agent/:/home/pulceo
 ```
 - Copy kubeconfig to the newly created temporary folder
 ```bash
 cat ~/.kube/config > /tmp/pulceo-node-agent/.k3s.yaml
-cat cat ~/.kube/config > .k3s.yaml
+cat ~/.kube/config > .k3s.yaml
 sed -i 's/https:\/\/0.0.0.0:40475/https:\/\/10.43.0.1:443/' /tmp/pulceo-node-agent/.k3s.yaml
 ```
 **[TODO]: Add a step to generate the secrets**
@@ -75,7 +75,9 @@ kubectl --kubeconfig=/home/$USER/.kube/config create secret generic pna-credenti
   --from-literal=PNA_MQTT_CLIENT_PASSWORD=${PNA_MQTT_CLIENT_PASSWORD} \
   --from-literal=PNA_USERNAME=${PNA_USERNAME} \
   --from-literal=PNA_PASSWORD=${PNA_PASSWORD} \
-  --from-literal=PNA_INIT_TOKEN=${PNA_INIT_TOKEN}
+  --from-literal=PNA_INIT_TOKEN=${PNA_INIT_TOKEN} \
+  --from-literal=PNA_HOST_FQDN=${PNA_HOST_FQDN} \
+  --from-literal=PNA_UUID=$(uuidgen)
 kubectl apply -f traefik/0-crd.yaml
 kubectl apply -f traefik/1-crd.yaml
 kubectl apply -f traefik/2-traefik-services.yaml
@@ -88,7 +90,7 @@ NAME                READY   UP-TO-DATE   AVAILABLE   AGE
 traefik             1/1     1            1           48m
 pulceo-node-agent   1/1     1            1           48m
 ```
-- Check the exposed services with: `k3d cluster list`
+- Check the exposed services with: `k3d get svc`
 ```
 NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AGE
 kubernetes                      ClusterIP      10.43.0.1       <none>        443/TCP                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           60m

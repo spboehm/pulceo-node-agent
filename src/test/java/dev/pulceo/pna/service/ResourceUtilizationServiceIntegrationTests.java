@@ -264,6 +264,7 @@ public class ResourceUtilizationServiceIntegrationTests {
                 try {
                     jsonNodeList.add(this.resourceUtilizationService.readStatSummaryFromKubelet());
                 } catch (ResourceServiceUtilizationException e) {
+                    System.err.println("Reading compromised!");
                     readingCompromised.set(true);
                 }
             });

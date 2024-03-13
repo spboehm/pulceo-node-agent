@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +43,8 @@ public class ResourceUtilizationService {
     @Value("${k3s.nodename}")
     private String K3S_NODENAME;
 
+    private final Object lock = new Object();
+
     @Autowired
     public ResourceUtilizationService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -50,24 +54,39 @@ public class ResourceUtilizationService {
 
     public JsonNode readStatSummaryFromKubelet() throws ResourceServiceUtilizationException {
         int retries = 0;
-        // TODO: read token
         while (retries < 3) {
             try {
                 String token = Files.readString(Path.of(API_SERVICE_ACCOUNT_TOKEN_PATH));
-                ProcessBuilder processBuilder = new ProcessBuilder("curl", "--cacert", API_SERVICE_ACOUNT_CA_CERT_PATH, "--header", "Authorization: Bearer " + token, "-X", "GET", "https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/" + K3S_NODENAME + "/proxy/stats/summary");
-                Process process = processBuilder.start();
-                process.waitFor();
-                List<String> strings = ProcessUtils.readProcessOutput(process.getInputStream());
-                return this.objectMapper.readTree(strings.stream().collect(Collectors.joining("\n")));
+                String command = "curl --cacert " + API_SERVICE_ACOUNT_CA_CERT_PATH + " --header \"Authorization: Bearer " + token + "\" -X GET https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/" + K3S_NODENAME + "/proxy/stats/summary";
+                synchronized (lock) {
+                    String uuid = UUID.randomUUID().toString();
+                    File file = new File(uuid + ".sh");
+                    Files.writeString(file.toPath(), command);
+                    boolean executable = file.setExecutable(true);
+                    if (!executable) {
+                        logger.error("Could not set file to executable");
+                        throw new ResourceServiceUtilizationException("Could not set file to executable");
+                    }
+                    ProcessBuilder processBuilder = new ProcessBuilder("./"+ uuid +".sh");
+                    Process process = processBuilder.start();
+                    process.waitFor();
+                    List<String> strings = ProcessUtils.readProcessOutput(process.getInputStream());
+                    boolean fileDeleted = file.delete();
+                    if (!fileDeleted) {
+                        logger.error("Could not delete file");
+                        throw new ResourceServiceUtilizationException("Could not delete file");
+                    }
+                    return this.objectMapper.readTree(strings.stream().collect(Collectors.joining("\n")));
+                }
             } catch (IOException | ProcessException e) {
-                logger.error("Could not read measurement from kubelet...retry", e);
+                retries++;
+                logger.error("Could not read measurement from kubelet...retry " + retries, e);
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     logger.error("Interrupted while waiting for retrying", e);
                     throw new ResourceServiceUtilizationException(e);
                 }
-                retries++;
             } catch (InterruptedException e) {
                 logger.info("Interrupted while waiting for process to finish", e);
                 throw new ResourceServiceUtilizationException(e);

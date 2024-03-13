@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -60,14 +61,15 @@ public class ResourceUtilizationService {
                 String command = "curl --cacert " + API_SERVICE_ACOUNT_CA_CERT_PATH + " --header \"Authorization: Bearer " + token + "\" -X GET https://" + API_SERVER_HOST + ":" + API_SERVER_PORT + "/api/v1/nodes/" + K3S_NODENAME + "/proxy/stats/summary";
                 synchronized (lock) {
                     String uuid = UUID.randomUUID().toString();
+                    List<String> lines = List.of("#!/bin/sh", command);
                     File file = new File(uuid + ".sh");
-                    Files.writeString(file.toPath(), command);
+                    Files.write(file.toPath(), lines, StandardCharsets.UTF_8);
                     boolean executable = file.setExecutable(true);
                     if (!executable) {
                         logger.error("Could not set file to executable");
                         throw new ResourceServiceUtilizationException("Could not set file to executable");
                     }
-                    ProcessBuilder processBuilder = new ProcessBuilder("./"+ uuid +".sh");
+                    ProcessBuilder processBuilder = new ProcessBuilder("sh", uuid + ".sh");
                     Process process = processBuilder.start();
                     process.waitFor();
                     List<String> strings = ProcessUtils.readProcessOutput(process.getInputStream());

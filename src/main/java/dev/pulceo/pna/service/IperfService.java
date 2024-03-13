@@ -200,6 +200,7 @@ public class IperfService {
 
     public IperfResult measureBandwidth(IperfRequest iperfRequest) throws BandwidthServiceException {
         try {
+            logger.debug("Measuring bandwidth from {} to {}!", iperfRequest.getSourceHost(), iperfRequest.getDestinationHost());
             String start = Instant.now().toString();
             Process p = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfRequest.getCmd())).start();
             // TODO: handle error caused by iperf, if remote server could not be found; error = 1; success = 0;

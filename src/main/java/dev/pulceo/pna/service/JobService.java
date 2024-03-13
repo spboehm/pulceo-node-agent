@@ -148,6 +148,7 @@ public class JobService {
     public long scheduleResourceUtilizationJobForCPU(long id) {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
+        logger.info("Scheduling resource utilization job for CPU: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 CPUUtilizationResult cpuUtilizationResult = this.resourceUtilizationService.retrieveCPUUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
@@ -161,6 +162,7 @@ public class JobService {
 
                 Message message = new Message(deviceId, networkMetric);
                 this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                logger.debug("Sent message to resource utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
             } catch (ResourceServiceUtilizationException e) {
                 logger.error(e.getMessage());
             }
@@ -172,6 +174,7 @@ public class JobService {
     public long scheduleResourceUtilizationJobForMEM(long id) {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
+        logger.info("Scheduling resource utilization job for memory: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 MemoryUtilizationResult memoryUtilizationResult = this.resourceUtilizationService.retrieveMemoryUtilization(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
@@ -185,6 +188,7 @@ public class JobService {
 
                 Message message = new Message(deviceId, networkMetric);
                 this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                logger.debug("Sent message to resource utilization mem service channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
             } catch (ResourceServiceUtilizationException e) {
                 logger.error(e.getMessage());
             }
@@ -196,6 +200,7 @@ public class JobService {
     public long scheduleResourceUtilizationJobForNetwork(long id) {
         ResourceUtilizationJob retrievedResourceUtilizationJob = this.resourceUtilizationJobRepository.findById(id).get();
         long retrievedResourceUtilizationJobForCPUId = retrievedResourceUtilizationJob.getId();
+        logger.info("Scheduling resource utilization job for network: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
@@ -209,6 +214,7 @@ public class JobService {
 
             Message message = new Message(deviceId, networkMetric);
             this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            logger.debug("Sent message to resource utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
             } catch (ResourceServiceUtilizationException e) {
                logger.error(e.getMessage());
             }
@@ -233,6 +239,7 @@ public class JobService {
 
             Message message = new Message(deviceId, networkMetric);
             this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+            logger.debug("Sent message to storage utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
             } catch (ResourceServiceUtilizationException e) {
                 logger.error(e.getMessage());
             }
@@ -390,6 +397,7 @@ public class JobService {
         IperfJob retrievedIperfJob = this.readIperfJob(id);
         // TODO: Fix retrievedIperfJobId with UUID
         long retrievedIperfJobId = retrievedIperfJob.getId();
+        logger.info("Scheduling iperf job: " + retrievedIperfJob.getIperfRequest().getDestinationHost());
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 IperfResult iperfResult = iperfService.measureBandwidth(retrievedIperfJob.getIperfRequest());
@@ -401,6 +409,7 @@ public class JobService {
                         .build();
                 Message message = new Message(deviceId, networkMetric);
                 this.bandwidthServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                logger.info("Sent message to bandwidth service message channel: " + retrievedIperfJob.getIperfRequest().getDestinationHost());
             } catch (BandwidthServiceException e) {
                logger.error(e.getMessage());
             }
@@ -456,6 +465,7 @@ public class JobService {
     public long schedulePingJob(long id) throws JobServiceException {
         PingJob retrievedPingJob = this.readPingJob(id);
         long retrievedPingJobId = retrievedPingJob.getId();
+        logger.info("Scheduling ping job: " + retrievedPingJob.getPingRequest().getDestinationHost());
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
                 PingResult pingResult = pingService.measureRoundTripTime(retrievedPingJob.getPingRequest());
@@ -467,6 +477,7 @@ public class JobService {
                         .build();
                 Message message = new Message(deviceId, networkMetric);
                 this.pingServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                logger.debug("Sent message to ping service message channel");
             } catch (PingServiceException e) {
                 logger.error(e.getMessage());
             }

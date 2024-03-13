@@ -78,6 +78,7 @@ public class ResourceUtilizationService {
 
     public CPUUtilizationResult retrieveCPUUtilization(ResourceUtilizationRequest resourceUtilizationRequest) throws ResourceServiceUtilizationException {
         try {
+            logger.debug("Retrieving CPU utilization for: " + resourceUtilizationRequest.getResourceName());
             JsonNode jsonNode = readStatSummaryFromKubelet();
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
                 return retrieveCPUUtilizationForNode(jsonNode);
@@ -146,6 +147,7 @@ public class ResourceUtilizationService {
     }
 
     public MemoryUtilizationResult retrieveMemoryUtilization(ResourceUtilizationRequest resourceUtilizationRequest) throws ResourceServiceUtilizationException {
+        logger.debug("Retrieving memory utilization for: " + resourceUtilizationRequest.getResourceName());
         try {
             JsonNode jsonNode = readStatSummaryFromKubelet();
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
@@ -214,6 +216,7 @@ public class ResourceUtilizationService {
     }
 
     public NetworkUtilizationResult retrieveNetworkUtilizationResult(ResourceUtilizationRequest resourceUtilizationRequest) throws ResourceServiceUtilizationException {
+        logger.debug("Retrieving network utilization for: " + resourceUtilizationRequest.getResourceName());
         try {
             JsonNode jsonNode = readStatSummaryFromKubelet();
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {
@@ -282,6 +285,7 @@ public class ResourceUtilizationService {
     }
 
     public StorageUtilizationResult retrieveStorageUtilizationResult(ResourceUtilizationRequest resourceUtilizationRequest) throws ResourceServiceUtilizationException {
+        logger.debug("Retrieving storage utilization for: " + resourceUtilizationRequest.getResourceName());
         try {
             JsonNode jsonNode = readStatSummaryFromKubelet();
             if (resourceUtilizationRequest.getK8sResourceType() == K8sResourceType.NODE) {

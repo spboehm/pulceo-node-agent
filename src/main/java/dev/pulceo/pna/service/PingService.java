@@ -8,6 +8,8 @@ import dev.pulceo.pna.model.ping.PingRequest;
 import dev.pulceo.pna.model.ping.PingResult;
 import dev.pulceo.pna.util.PingUtils;
 import dev.pulceo.pna.util.ProcessUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Service
 public class PingService {
+
+    private final Logger logger = LoggerFactory.getLogger(PingService.class);
 
     public boolean checkForRunningPingInstance(String destinationHost) throws PingServiceException {
         try {
@@ -35,6 +39,7 @@ public class PingService {
 
     public PingResult measureRoundTripTime(PingRequest pingRequest) throws PingServiceException {
         try {
+            logger.debug("Measuring ICMP delay from {} to {}!", pingRequest.getSourceHost(), pingRequest.getDestinationHost());
             String start = Instant.now().toString();
             Process pingProcess = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(pingRequest.getCmd())).start();
             if (pingProcess.waitFor() == 1) {
@@ -46,6 +51,7 @@ public class PingService {
             PingDelayMeasurement pingDelayMeasurement = PingUtils.extractPingDelayMeasurement(pingProcessOuput);
             return new PingResult(pingRequest.getSourceHost(), pingRequest.getDestinationHost(), start, end, pingDelayMeasurement);
         } catch (ProcessException | IOException | InterruptedException | PingException e) {
+            logger.error("Could not measure ICMP delay!", e);
             throw new PingServiceException("Could not measure ICMP delay!", e);
         }
     }

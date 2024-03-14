@@ -58,7 +58,7 @@ mkdir -p /tmp/pulceo-node-agent
 ```
 - Create a test cluster with k3d
 ```bash
-k3d cluster create pna-k8s-node --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer --port 7676:7676@loadbalancer --volume /tmp/pulceo-node-agent/:/home/pulceo
+k3d cluster create pna-test --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer --port 7676:7676@loadbalancer --volume /tmp/pulceo-node-agent/:/home/pulceo
 ```
 - Copy kubeconfig to the newly created temporary folder
 ```bash

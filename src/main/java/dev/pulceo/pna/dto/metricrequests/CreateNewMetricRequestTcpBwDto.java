@@ -15,7 +15,7 @@ public class CreateNewMetricRequestTcpBwDto {
         private boolean enabled;
         private long port;
         @Builder.Default
-        private int bitrate = 0;
+        private int bitrate = 50;
         @Builder.Default
-        private int time = 10;
+        private int time = 5;
 }

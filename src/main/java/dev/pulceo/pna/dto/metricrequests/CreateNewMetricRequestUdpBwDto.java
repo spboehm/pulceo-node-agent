@@ -15,7 +15,7 @@ public class CreateNewMetricRequestUdpBwDto {
     private boolean enabled;
     private int port;
     @Builder.Default
-    private int bitrate = 0;
+    private int bitrate = 50;
     @Builder.Default
-    private int time = 10;
+    private int time = 5;
 }

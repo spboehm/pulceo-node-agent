@@ -112,9 +112,13 @@ public class ResourceUtilizationService {
             } else {
                 // rewrite for pulceo node components
                 if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
-                    return retrieveCPUUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    CPUUtilizationResult cpuUtilizationResult = retrieveCPUUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    cpuUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return cpuUtilizationResult;
                 } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
-                    return retrieveCPUUtilizationForPod(jsonNode, "traefik");
+                    CPUUtilizationResult cpuUtilizationResult = retrieveCPUUtilizationForPod(jsonNode, "traefik");
+                    cpuUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return cpuUtilizationResult;
                 } else {
                     return retrieveCPUUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
                 }
@@ -182,9 +186,13 @@ public class ResourceUtilizationService {
             } else {
                 // rewrite for pulceo node components
                 if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
-                    return retrieveMemoryUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    MemoryUtilizationResult memoryUtilizationResult = retrieveMemoryUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    memoryUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return memoryUtilizationResult;
                 } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
-                    return retrieveMemoryUtilizationForPod(jsonNode, "traefik");
+                    MemoryUtilizationResult memoryUtilizationResult = retrieveMemoryUtilizationForPod(jsonNode, "traefik");
+                    memoryUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return memoryUtilizationResult;
                 } else {
                     return retrieveMemoryUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
                 }
@@ -251,9 +259,13 @@ public class ResourceUtilizationService {
             } else {
                 // rewrite for pulceo node components
                 if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
-                    return retrieveNetworkUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    NetworkUtilizationResult networkUtilizationResult = retrieveNetworkUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    networkUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return networkUtilizationResult;
                 } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
-                    return retrieveNetworkUtilizationForPod(jsonNode, "traefik");
+                    NetworkUtilizationResult networkUtilizationResult = retrieveNetworkUtilizationForPod(jsonNode, "traefik");
+                    networkUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return networkUtilizationResult;
                 } else {
                     return retrieveNetworkUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
                 }
@@ -320,9 +332,13 @@ public class ResourceUtilizationService {
             } else {
                 // rewrite for pulceo node components
                 if (resourceUtilizationRequest.getResourceName().endsWith("-pulceo-node-agent")) {
-                    return retrieveStorageUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    StorageUtilizationResult storageUtilizationResult = retrieveStorageUtilizationForPod(jsonNode, "pulceo-node-agent");
+                    storageUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return storageUtilizationResult;
                 } else if (resourceUtilizationRequest.getResourceName().endsWith("-traefik")) {
-                    return retrieveStorageUtilizationForPod(jsonNode, "traefik");
+                    StorageUtilizationResult storageUtilizationResult = retrieveStorageUtilizationForPod(jsonNode, "traefik");
+                    storageUtilizationResult.setResourceName(resourceUtilizationRequest.getResourceName());
+                    return storageUtilizationResult;
                 } else {
                     return retrieveStorageUtilizationForPod(jsonNode, resourceUtilizationRequest.getResourceName());
                 }

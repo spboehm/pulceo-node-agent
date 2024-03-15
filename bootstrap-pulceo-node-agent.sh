@@ -31,6 +31,14 @@ echo ""
 echo "PULCEO NODE AGENT - Bootstrapping tool. USE AT OWN RISK!!!"
 echo ""
 
+echo "Check if a .env-pulceo file is present..."
+if [ -f .env-pulceo ]; then
+  echo "Found .env-pulceo file...loading variables..."
+  source .env-pulceo
+else
+  echo "No .env-pulceo file found...creating one..."
+fi
+
 # PNA_MQTT_BROKER_URL
 if [ -z "$PNA_MQTT_BROKER_URL" ]; then
   read -p "Enter the MQTT broker URL (should be like ssl://be3187d06377498a1eee29fd8f09495d.s1.eu.hivemq.cloud:8883): " PNA_MQTT_BROKER_URL

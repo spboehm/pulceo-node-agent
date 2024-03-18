@@ -107,7 +107,14 @@ echo "PNA_HOST_FQDN=$PNA_HOST_FQDN" >> .env-pna
 echo "Successfully created .env-pna file with all credentials...DO NOT SHARE THIS FILE WITH ANYONE!!!"
 
 DOMAIN=$PNA_HOST_FQDN
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node" sh -
+if [ -z "$OVERRIDE_DNS" ]; then
+  echo "Install K3s with overridden DNS..."
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node --resolv-conf /home/$USER/resolv.conf" sh -
+else
+  echo "Install K3s with NOT overridden DNS..."
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node" sh -
+fi
+
 mkdir -p /home/$USER/.kube
 sudo cat /etc/rancher/k3s/k3s.yaml > /home/$USER/.kube/config
 chown -R $USER:$USER /home/$USER/.kube/config

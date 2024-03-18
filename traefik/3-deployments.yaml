@@ -27,6 +27,9 @@ spec:
       containers:
         - name: traefik
           image: traefik:v2.10
+          volumeMounts:
+            - name: traefik-pv-acme
+              mountPath: /letsencrypt
           args:
             - --api.insecure
             - --accesslog
@@ -35,7 +38,7 @@ spec:
             - --providers.kubernetescrd
             - --certificatesresolvers.myresolver.acme.tlschallenge
             - --certificatesresolvers.myresolver.acme.email=sebastian.boehm@uni-bamberg.de
-            - --certificatesresolvers.myresolver.acme.storage=acme.json
+            - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
             # Please note that this is the staging Let's Encrypt server.
             # Once you get things working, you should remove that whole line altogether.
             # --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
@@ -44,6 +47,24 @@ spec:
               containerPort: 7676
             - name: websecure
               containerPort: 443
+      volumes:
+        - name: traefik-pv-acme
+          persistentVolumeClaim:
+            claimName: traefik-pv-acme
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-pv-acme
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
 
 ---
 apiVersion: v1

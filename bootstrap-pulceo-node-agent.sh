@@ -108,11 +108,11 @@ echo "Successfully created .env-pna file with all credentials...DO NOT SHARE THI
 
 DOMAIN=$PNA_HOST_FQDN
 if [ -z "$OVERRIDE_DNS" ]; then
-  echo "Install K3s with overridden DNS..."
-  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node --resolv-conf /home/$USER/resolv.conf" sh -
-else
   echo "Install K3s with NOT overridden DNS..."
   curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node" sh -
+else
+  echo "Install K3s with overridden DNS..."
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --node-name=pna-k8s-node --resolv-conf /home/$USER/resolv.conf" sh -
 fi
 
 mkdir -p /home/$USER/.kube

@@ -18,5 +18,11 @@ public class IperfJob extends LinkJob {
     @JoinColumn(name = "iperfRequest_id", referencedColumnName = "id")
     private IperfRequest iperfRequest;
     private int recurrence;
+    private int initialDelay = 0;
+
+    public IperfJob(IperfRequest iperfRequest, int recurrence) {
+        this.iperfRequest = iperfRequest;
+        this.recurrence = recurrence;
+    }
 
 }

@@ -18,4 +18,6 @@ public class CreateNewMetricRequestUdpBwDto {
     private int bitrate = 50;
     @Builder.Default
     private int time = 5;
+    @Builder.Default
+    private int initialDelay = 0;
 }

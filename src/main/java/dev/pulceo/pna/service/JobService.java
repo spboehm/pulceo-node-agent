@@ -400,6 +400,10 @@ public class JobService {
         logger.info("Scheduling iperf job: " + retrievedIperfJob.getIperfRequest().getDestinationHost());
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
             try {
+                if (retrievedIperfJob.getInitialDelay() > 0) {
+                    logger.info("Initial delay: " + retrievedIperfJob.getInitialDelay() + " seconds");
+                    Thread.sleep(retrievedIperfJob.getInitialDelay() * 1000L);
+                }
                 IperfResult iperfResult = iperfService.measureBandwidth(retrievedIperfJob.getIperfRequest());
                 NetworkMetric networkMetric = NetworkMetric.builder()
                         .metricUUID(iperfResult.getUuid())
@@ -410,7 +414,7 @@ public class JobService {
                 Message message = new Message(deviceId, networkMetric);
                 this.bandwidthServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
                 logger.info("Sent message to bandwidth service message channel: " + retrievedIperfJob.getIperfRequest().getDestinationHost());
-            } catch (BandwidthServiceException e) {
+            } catch (BandwidthServiceException | InterruptedException e) {
                logger.error(e.getMessage());
             }
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));

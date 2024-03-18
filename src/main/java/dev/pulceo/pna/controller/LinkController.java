@@ -213,7 +213,7 @@ public class LinkController {
         // TODO: do this dynamically
         IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), createNewMetricRequestUdpBwDto.getPort(), createNewMetricRequestUdpBwDto.getBitrate(), createNewMetricRequestUdpBwDto.getTime(), IperfClientProtocol.UDP, this.iface);
         // Encapsulate PingRequest in PingJob
-        IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestUdpBwDto.getRecurrence()));
+        IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestUdpBwDto.getRecurrence()), createNewMetricRequestUdpBwDto.getInitialDelay());
         long id = this.jobService.createIperfJob(iperfJob);
 
         // if enabled
@@ -242,7 +242,7 @@ public class LinkController {
         // TODO: datatype of port...pfusch
         IperfRequest iperfRequest = new IperfRequest(link.getSrcNode().getHost(), link.getDestNode().getHost(), (int) createNewMetricRequestTcpBwDto.getPort(), createNewMetricRequestTcpBwDto.getBitrate(), createNewMetricRequestTcpBwDto.getTime(), IperfClientProtocol.TCP, this.iface);
         // Encapsulate PingRequest in PingJob
-        IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestTcpBwDto.getRecurrence()));
+        IperfJob iperfJob = new IperfJob(iperfRequest, Integer.parseInt(createNewMetricRequestTcpBwDto.getRecurrence()), createNewMetricRequestTcpBwDto.getInitialDelay());
         long id = this.jobService.createIperfJob(iperfJob);
 
         // if enabled

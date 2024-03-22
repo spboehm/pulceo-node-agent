@@ -287,8 +287,17 @@ public class ResourceUtilizationService {
         String name = node.get("nodeName").asText();
         String time = node.get("network").get("time").asText();
         String iface = node.get("network").get("name").asText();
-        long rxBytes = node.get("network").get("rxBytes").asLong();
-        long txBytes = node.get("network").get("txBytes").asLong();
+
+        long rxBytes = 0;
+        long txBytes = 0;
+
+        JsonNode interfaces = node.get("network").get("interfaces");
+        for (JsonNode networkIface : interfaces) {
+            if (networkIface.get("name").asText().startsWith("eth")) {
+                rxBytes += networkIface.get("rxBytes").asLong();
+                txBytes += networkIface.get("txBytes").asLong();
+            }
+        }
 
         NetworkUtilizationMeasurement networkUtilizationMeasurement = NetworkUtilizationMeasurement.builder()
                 .time(time)

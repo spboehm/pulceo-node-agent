@@ -29,11 +29,16 @@ public class ResourceUtilizationServiceIntegrationTests {
     ResourceUtilizationService resourceUtilizationService;
 
     private static JsonNode jsonNode;
+    private static JsonNode jsonNodeWithMultipleInterfaces;
 
     @BeforeAll
     public static void setup() throws IOException, InterruptedException {
         File statsSummaryFile = new File("src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary.json");
         ResourceUtilizationServiceIntegrationTests.jsonNode = Json.mapper().readTree(statsSummaryFile);
+
+        File statsSummaryFileWithMultipleInterfaces = new File("/home/sebastian.boehm/git/dissertation/pulceo-node-agent/src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary-multiple-ifaces.json");
+        ResourceUtilizationServiceIntegrationTests.jsonNodeWithMultipleInterfaces = Json.mapper().readTree(statsSummaryFileWithMultipleInterfaces);
+
         ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "./bootstrap-k3s-access.sh");
         Process p = processBuilder.start();
         p.waitFor();
@@ -209,6 +214,31 @@ public class ResourceUtilizationServiceIntegrationTests {
         // when
         NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNode);
 
+        // then
+        assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
+    }
+
+    @Test
+    public void testRetrieveNetworkUtilizationForNodeWithMultipleInterfaces() {
+        // given
+        String name = "pna-k8s-node";
+        NetworkUtilizationResult expectedNetworkUtilizationResult = NetworkUtilizationResult.builder()
+                .sourceHost("127.0.0.1")
+                .k8sResourceType(K8sResourceType.NODE)
+                .resourceName(name)
+                .time("2024-03-22T20:31:51Z")
+                .networkUtilizationMeasurement(NetworkUtilizationMeasurement.builder()
+                        .time("2024-03-22T20:31:51Z")
+                        .iface("eth0")
+                        .rxBytes(89408693)
+                        .txBytes(345760)
+                        .build())
+                .build();
+
+        // when
+        NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNodeWithMultipleInterfaces);
+        System.out.println(networkUtilizationResult.getNetworkUtilizationMeasurement().getRxBytes());
+        System.out.println(networkUtilizationResult.getNetworkUtilizationMeasurement().getTxBytes());
         // then
         assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
     }

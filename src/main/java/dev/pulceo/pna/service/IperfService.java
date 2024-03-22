@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class IperfService {
@@ -114,12 +115,13 @@ public class IperfService {
 
     // TODO: rename by port
     public void stopIperf3Server(int port) throws BandwidthServiceException {
+        Process killIperf3Server = null;
         try {
             if (!checkForRunningIperf3Receiver(port)) {
                 return;
             }
 
-            Process killIperf3Server = new ProcessBuilder("kill", "-9", String.valueOf(getPidOfRunningIperf3Receiver(port))).start();
+            killIperf3Server = new ProcessBuilder("kill", "-9", String.valueOf(getPidOfRunningIperf3Receiver(port))).start();
             killIperf3Server.waitFor();
 
             // wait for termination
@@ -128,16 +130,29 @@ public class IperfService {
             }
         } catch (InterruptedException | IOException e) {
             throw new BandwidthServiceException("Could not stop iperf3 server!", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(killIperf3Server);
+            } catch (IOException e) {
+                logger.error("Could not close iperf3 process!", e);
+            }
         }
     }
 
     // TODO: rename by pid
     public void stopIperf3Server(long pid) throws BandwidthServiceException {
+        Process p = null;
         try {
-            Process p = new ProcessBuilder("kill", String.valueOf(pid)).start();
+            p = new ProcessBuilder("kill", String.valueOf(pid)).start();
             p.waitFor();
         } catch (InterruptedException | IOException e) {
             throw new BandwidthServiceException("Could not stop iperf3 server!", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(p);
+            } catch (IOException e) {
+                logger.error("Could not close iperf3 process!", e);
+            }
         }
     }
 
@@ -199,24 +214,32 @@ public class IperfService {
     }
 
     public IperfResult measureBandwidth(IperfRequest iperfRequest) throws BandwidthServiceException {
+        Process p = null;
         try {
             logger.debug("Measuring bandwidth from {} to {}!", iperfRequest.getSourceHost(), iperfRequest.getDestinationHost());
             String start = Instant.now().toString();
-            Process p = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfRequest.getCmd())).start();
+            p = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfRequest.getCmd())).start();
             // TODO: handle error caused by iperf, if remote server could not be found; error = 1; success = 0;
-            if (p.waitFor() == 1) {
+            p.waitFor((long) iperfRequest.getTime() * 3, TimeUnit.SECONDS);
+            if (p.exitValue() != 0) {
                 List<String> strings = ProcessUtils.readProcessOutput(p.getErrorStream());
-                throw new ProcessException(List.of(strings).toString());
+                logger.error("Could not measure bandwidth from {} to {}: {}", iperfRequest.getSourceHost(), iperfRequest.getDestinationHost(), List.of(strings));
+                throw new ProcessException("Could not measure bandwidth!");
             }
             String end = Instant.now().toString();
             List<String> iperf3Output = ProcessUtils.readProcessOutput(p.getInputStream());
-
             IperfBandwidthMeasurement iperfBandwidthMeasurementSender = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfRequest.getIperfClientProtocol(), iperf3Output, IperfRole.SENDER);
             IperfBandwidthMeasurement iperfBandwidthMeasurementReceiver = Iperf3Utils.extractIperf3BandwidthMeasurement(iperfRequest.getIperfClientProtocol(), iperf3Output, IperfRole.RECEIVER);
             return new IperfResult(iperfRequest.getSourceHost(), iperfRequest.getDestinationHost(), start, end, iperfBandwidthMeasurementReceiver, iperfBandwidthMeasurementSender);
-
         } catch (InterruptedException | IOException | ProcessException e) {
+            logger.error("Could not measure bandwidth from {} to {}: {}", iperfRequest.getSourceHost(), iperfRequest.getDestinationHost(), e.getMessage());
             throw new BandwidthServiceException("Could not measure bandwidth!", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(p);
+            } catch (IOException e) {
+                logger.error("Could not close iperf3 process!", e);
+            }
         }
     }
 }

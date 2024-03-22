@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PingService {
@@ -38,12 +39,15 @@ public class PingService {
     }
 
     public PingResult measureRoundTripTime(PingRequest pingRequest) throws PingServiceException {
+        Process pingProcess = null;
         try {
             logger.debug("Measuring ICMP delay from {} to {}!", pingRequest.getSourceHost(), pingRequest.getDestinationHost());
             String start = Instant.now().toString();
-            Process pingProcess = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(pingRequest.getCmd())).start();
-            if (pingProcess.waitFor() == 1) {
+            pingProcess = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(pingRequest.getCmd())).start();
+            pingProcess.waitFor((long) pingRequest.getCount() * 3, TimeUnit.SECONDS);
+            if (pingProcess.exitValue() != 0) {
                 List<String> strings = ProcessUtils.readProcessOutput(pingProcess.getErrorStream());
+                logger.error("Could not measure ICMP delay: {}", strings);
                 throw new ProcessException(List.of(strings).toString());
             }
             String end = Instant.now().toString();
@@ -53,6 +57,12 @@ public class PingService {
         } catch (ProcessException | IOException | InterruptedException | PingException e) {
             logger.error("Could not measure ICMP delay!", e);
             throw new PingServiceException("Could not measure ICMP delay!", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(pingProcess);
+            } catch (IOException e) {
+                logger.error("Could not close process", e);
+            }
         }
     }
 

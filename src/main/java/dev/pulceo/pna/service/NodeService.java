@@ -9,6 +9,8 @@ import dev.pulceo.pna.util.MemoryUtil;
 import dev.pulceo.pna.util.ProcessUtils;
 import dev.pulceo.pna.util.StorageUtil;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.UUID;
 
 @Service
 public class NodeService {
+
+    private final Logger logger = LoggerFactory.getLogger(NodeService.class);
 
     private final NodeRepository nodeRepository;
 
@@ -62,32 +66,53 @@ public class NodeService {
     }
 
     public CPU obtainCPUInformation() throws NodeServiceException {
+        Process lscpuProcess = null;
         try {
-            Process lscpuProcess = new ProcessBuilder("lscpu").start();
+            lscpuProcess = new ProcessBuilder("lscpu").start();
             lscpuProcess.waitFor();
             return CPUUtil.extractCPUInformation(ProcessUtils.readProcessOutput(lscpuProcess.getInputStream()));
         } catch (IOException | InterruptedException | ProcessException e) {
             throw new NodeServiceException("Could not obtain CPU information", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(lscpuProcess);
+            } catch (IOException e) {
+                logger.error("Could not close process", e);
+            }
         }
     }
 
     public Memory obtainMemoryInformation() throws NodeServiceException {
+        Process procMemInfoAsString = null;
         try {
-            Process procMemInfoAsString = new ProcessBuilder("cat", "/proc/meminfo").start();
+            procMemInfoAsString = new ProcessBuilder("cat", "/proc/meminfo").start();
             procMemInfoAsString.waitFor();
             return MemoryUtil.extractMemoryInformation(ProcessUtils.readProcessOutput(procMemInfoAsString.getInputStream()));
         } catch (IOException | InterruptedException | ProcessException e) {
             throw new NodeServiceException("Could not obtain memory information", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(procMemInfoAsString);
+            } catch (IOException e) {
+                logger.error("Could not close process", e);
+            }
         }
     }
 
     public Storage obtainStorageInformation() throws NodeServiceException {
+        Process storageInfoAsString = null;
         try {
-            Process storageInfoAsString = new ProcessBuilder("df", "-h", "/").start();
+            storageInfoAsString = new ProcessBuilder("df", "-h", "/").start();
             storageInfoAsString.waitFor();
             return StorageUtil.extractStorageInformation(ProcessUtils.readProcessOutput(storageInfoAsString.getInputStream()));
         } catch (IOException | InterruptedException | ProcessException e) {
             throw new NodeServiceException("Could not obtain storage information", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(storageInfoAsString);
+            } catch (IOException e) {
+                logger.error("Could not close process", e);
+            }
         }
     }
 

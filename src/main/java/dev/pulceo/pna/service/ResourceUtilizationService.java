@@ -56,6 +56,7 @@ public class ResourceUtilizationService {
 
     public JsonNode readStatSummaryFromKubelet() throws ResourceServiceUtilizationException {
         int retries = 0;
+        Process process = null;
         while (retries < 3) {
             try {
                 String token = Files.readString(Path.of(API_SERVICE_ACCOUNT_TOKEN_PATH));
@@ -71,7 +72,7 @@ public class ResourceUtilizationService {
                         throw new ResourceServiceUtilizationException("Could not set file to executable");
                     }
                     ProcessBuilder processBuilder = new ProcessBuilder("sh", uuid + ".sh");
-                    Process process = processBuilder.start();
+                    process = processBuilder.start();
                     process.waitFor(3, TimeUnit.SECONDS);
                     if (process.exitValue() != 0) {
                         logger.error("Could not execute process");
@@ -98,6 +99,12 @@ public class ResourceUtilizationService {
             } catch (InterruptedException e) {
                 logger.info("Interrupted while waiting for process to finish", e);
                 throw new ResourceServiceUtilizationException(e);
+            } finally {
+                try {
+                    ProcessUtils.closeProcess(process);
+                } catch (IOException e) {
+                    logger.error("Could not close process", e);
+                }
             }
         }
         throw new ResourceServiceUtilizationException("Could not read measurement from kubelet...retry");

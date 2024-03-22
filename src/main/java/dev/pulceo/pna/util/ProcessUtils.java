@@ -1,6 +1,8 @@
 package dev.pulceo.pna.util;
 
 import dev.pulceo.pna.exception.ProcessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,6 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class ProcessUtils {
+
+    public static Logger logger = LoggerFactory.getLogger(ProcessUtils.class);
 
     public static List<String> readProcessOutput(InputStream inputStream) throws ProcessException {
         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -33,11 +37,12 @@ public class ProcessUtils {
     public static List<String> getListOfRunningProcesses() throws ProcessException {
         String tmpFileName = UUID.randomUUID() + ".tmp";
         File tmpProcessOutputFile = new File(tmpFileName);
+        Process p = null;
         try {
             ProcessBuilder builder = new ProcessBuilder("ps", "-eo", "pid,fname,cmd");
             builder.redirectOutput(ProcessBuilder.Redirect.to(tmpProcessOutputFile));
             builder.redirectError(ProcessBuilder.Redirect.to(tmpProcessOutputFile));
-            Process p = builder.start();
+            p = builder.start();
             p.waitFor();
             List<String> processOutput = Files.readAllLines(Paths.get(tmpFileName));
             boolean filedeleted = tmpProcessOutputFile.delete();
@@ -47,6 +52,12 @@ public class ProcessUtils {
             return processOutput;
         } catch (IOException | InterruptedException e) {
             throw new ProcessException("Could not determine list of running processes", e);
+        } finally {
+            try {
+                ProcessUtils.closeProcess(p);
+            } catch (IOException e) {
+               logger.error("Could not close process", e);
+            }
         }
     }
 
@@ -84,8 +95,24 @@ public class ProcessUtils {
             if (process.isAlive()) {
                 return process.pid();
             } else {
+                logger.error("Process is not alive after waiting for 5 seconds, ...");
                 throw new IOException();
             }
+        }
+    }
+
+    public static void closeProcess(Process process) throws IOException {
+        if (process != null) {
+            logger.debug("Closing process with PID: " + process.pid());
+            process.getInputStream().close();
+            process.getOutputStream().close();
+            process.getErrorStream().close();
+            process.destroy();
+            if (process.isAlive()) {
+                process.destroyForcibly();
+            }
+        } else {
+            logger.debug("Process is null, nothing to close");
         }
     }
 }

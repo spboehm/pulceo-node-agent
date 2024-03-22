@@ -48,7 +48,10 @@ public class IperfService {
         try {
             int nextAvailablePort = getNextAvailablePort();
             IperfServerCmd iperfServerCmd = new IperfServerCmd(nextAvailablePort, bind);
-            Process iperf3Process = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfServerCmd.getCmd())).start();
+            ProcessBuilder iperf3ProcessBuilder = new ProcessBuilder(ProcessUtils.splitCmdByWhitespaces(iperfServerCmd.getCmd()));
+            iperf3ProcessBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+            iperf3ProcessBuilder.redirectError(ProcessBuilder.Redirect.DISCARD);
+            Process iperf3Process = iperf3ProcessBuilder.start();
             ProcessUtils.waitUntilProcessIsAlive(iperf3Process);
             this.iperfServerRequestRepository.save(IperfServerRequest.builder().port(nextAvailablePort).build());
             return nextAvailablePort;

@@ -36,7 +36,7 @@ public class ResourceUtilizationServiceIntegrationTests {
         File statsSummaryFile = new File("src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary.json");
         ResourceUtilizationServiceIntegrationTests.jsonNode = Json.mapper().readTree(statsSummaryFile);
 
-        File statsSummaryFileWithMultipleInterfaces = new File("/home/sebastian.boehm/git/dissertation/pulceo-node-agent/src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary-multiple-ifaces.json");
+        File statsSummaryFileWithMultipleInterfaces = new File("src/test/java/dev/pulceo/pna/resources/k8s/kubelet-stats-summary-multiple-ifaces.json");
         ResourceUtilizationServiceIntegrationTests.jsonNodeWithMultipleInterfaces = Json.mapper().readTree(statsSummaryFileWithMultipleInterfaces);
 
         ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "./bootstrap-k3s-access.sh");
@@ -237,8 +237,7 @@ public class ResourceUtilizationServiceIntegrationTests {
 
         // when
         NetworkUtilizationResult networkUtilizationResult = this.resourceUtilizationService.retrieveNetworkUtilizationForNode(ResourceUtilizationServiceIntegrationTests.jsonNodeWithMultipleInterfaces);
-        System.out.println(networkUtilizationResult.getNetworkUtilizationMeasurement().getRxBytes());
-        System.out.println(networkUtilizationResult.getNetworkUtilizationMeasurement().getTxBytes());
+
         // then
         assertEquals(expectedNetworkUtilizationResult.getNetworkUtilizationMeasurement(), networkUtilizationResult.getNetworkUtilizationMeasurement());
     }

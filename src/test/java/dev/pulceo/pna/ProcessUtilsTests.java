@@ -85,7 +85,7 @@ public class ProcessUtilsTests {
         // given
         int port = 5001;
         IperfServerCmd iperfServerCmd = new IperfServerCmd(port, bind);
-        String[] expectedResult = new String[]{"/usr/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind", "localhost" };
+        String[] expectedResult = new String[]{"/usr/bin/iperf3", "-s", "-p", String.valueOf(port), "-f", "m", "--bind", "localhost", "--logfile", "iperf3-5001.log" };
         List<String> expectedResultList = Arrays.asList(expectedResult);
 
         // when

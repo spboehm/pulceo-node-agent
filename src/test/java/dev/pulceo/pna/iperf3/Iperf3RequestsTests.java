@@ -13,7 +13,7 @@ public class Iperf3RequestsTests {
     @Test
     public void testIperf3ServerCmd() {
         // given
-        String cmdTCPReceiverShort = "/usr/bin/iperf3 -s -p 5001 -f m --bind localhost";
+        String cmdTCPReceiverShort = "/usr/bin/iperf3 -s -p 5001 -f m --bind localhost --logfile iperf3-5001.log";
 
         // when
         String iperf3ServerCmd = new IperfServerCmd(5001, bind).getCmd();

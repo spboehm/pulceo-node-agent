@@ -48,7 +48,7 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
                 .port(applicationComponentDTO.getPort())
                 .protocol(applicationComponentDTO.getProtocol())
                 .applicationComponentType(applicationComponentDTO.getApplicationComponentType())
-                //.environmentVariables(applicationComponentDTO.getEnvironmentVariables())
+                .environmentVariables(applicationComponentDTO.getEnvironmentVariables())
                 .build();
     }
 
@@ -111,7 +111,8 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
                                                                                 new V1Container()
                                                                                         .name(name)
                                                                                         .image(image)
-                                                                                        .ports(List.of(new V1ContainerPort().containerPort(port))))))));
+                                                                                        .ports(List.of(new V1ContainerPort().containerPort(port)))
+                                                                                        .env(new ArrayList<>(environmentVariables.entrySet().stream().map(entry -> new V1EnvVar().name(entry.getKey()).value(entry.getValue())).toList())))))));
         return v1DeploymentBuilder.build();
     }
 

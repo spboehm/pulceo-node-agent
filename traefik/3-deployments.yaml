@@ -109,7 +109,7 @@ spec:
       serviceAccountName: cluster-admin
       containers:
         - name: pulceo-node-agent
-          image: ghcr.io/spboehm/pulceo-node-agent:main
+          image: ghcr.io/spboehm/pulceo-node-agent:v1.0.0
           volumeMounts:
             - mountPath: /.k3s.yaml
               name: k3s

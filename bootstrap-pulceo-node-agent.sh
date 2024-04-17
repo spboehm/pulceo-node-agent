@@ -27,6 +27,20 @@ validate_alphanumeric() {
   fi
 }
 
+function check_version() {
+  local version=$1
+  local service=$2
+
+  if [ -z "$version" ]; then
+    read -p "Enter the version for $service (should be like v1.0.0): " version
+    if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      version="v1.0.0"
+    fi
+  fi
+
+  echo $version
+}
+
 echo ""
 echo "PULCEO NODE AGENT - Bootstrapping tool. USE AT OWN RISK!!!"
 echo ""
@@ -38,6 +52,10 @@ if [ -f .env-pulceo ]; then
 else
   echo "No .env-pulceo file found...creating one..."
 fi
+
+# PNA_VERSION
+PNA_VERSION=$(check_version "$PNA_VERSION" "PNA")
+echo "USE PNA_VERSION=$PNA_VERSION"
 
 # PNA_MQTT_BROKER_URL
 if [ -z "$PNA_MQTT_BROKER_URL" ]; then
@@ -133,9 +151,9 @@ kubectl --kubeconfig=/home/$USER/.kube/config create secret generic pna-credenti
   --from-literal=PNA_INIT_TOKEN=${PNA_INIT_TOKEN} \
   --from-literal=PNA_HOST_FQDN=${PNA_HOST_FQDN} \
   --from-literal=PNA_UUID=$(uuidgen)
-kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/traefik/0-crd.yaml
-kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/traefik/1-crd.yaml
-kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/traefik/2-traefik-services.yaml
-kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/traefik/3-deployments.yaml
-curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/traefik/3-deployments.yaml | sed 's/\/home\/pulceo/\/home\/'"$USER"'/g' | kubectl --kubeconfig=/home/$USER/.kube/config apply -f -
-curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/main/traefik/4-routers.yaml | sed 's/localhost.localdomain/'"$DOMAIN"'/g' | kubectl --kubeconfig=/home/$USER/.kube/config apply -f -
+kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/$PNA_VERSION/traefik/0-crd.yaml
+kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/$PNA_VERSION/traefik/1-crd.yaml
+kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/$PNA_VERSION/traefik/2-traefik-services.yaml
+kubectl --kubeconfig=/home/$USER/.kube/config apply -f https://raw.githubusercontent.com/spboehm/pulceo-node-agent/$PNA_VERSION/traefik/3-deployments.yaml
+curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/$PNA_VERSION/traefik/3-deployments.yaml | sed 's/\/home\/pulceo/\/home\/'"$USER"'/g' | kubectl --kubeconfig=/home/$USER/.kube/config apply -f -
+curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/$PNA_VERSION/traefik/4-routers.yaml | sed 's/localhost.localdomain/'"$DOMAIN"'/g' | kubectl --kubeconfig=/home/$USER/.kube/config apply -f -

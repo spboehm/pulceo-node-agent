@@ -18,6 +18,16 @@
   - `5000-5015/udp` (iperf3 bandwidth checks)
 - Any Linux distribution is recommended (tested on Ubuntu 20.04 and openSUSE Tumbleweed)
 
+## Use a virtual machine for testing
+
+- Install [VirtualBox](https://www.virtualbox.org/) on your machine by following the official installation guide
+- Install [Vagrant](https://www.vagrantup.com/) on your machine by following the official installation guide
+```bash
+cd vagrant
+vagrant up --provider=virtualbox
+vagrant ssh
+```
+
 ## Quickstart (public deployment with Let's Encrypt)
 
 - First, deploy pulceo on another machine [pulceo-resource-manager#quickstart](https://github.com/spboehm/pulceo-resource-manager?tab=readme-ov-file#quickstart-try-locally)

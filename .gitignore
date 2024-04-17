@@ -182,3 +182,6 @@ pna_temporary_file_for_process_output.txt
 .k3s-service-account/
 
 iperf3-*.log
+
+.env
+.env-pulceo

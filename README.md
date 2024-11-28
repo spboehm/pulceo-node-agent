@@ -125,3 +125,23 @@ X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 X-Xss-Protection: 0
 ```
+
+## Developing
+
+- Install [k3d](https://k3d.io/v5.6.0/#learning) on your machine by following the official installation guide
+- Create a temporary folder on the system to store the kubeconfig file, which is required by pulceo-node-agent
+```bash
+mkdir -p /tmp/pulceo-node-agent
+```
+- Create a test cluster with k3d
+```bash
+k3d cluster create pna-test --api-port 40475 --k3s-arg "--disable=traefik@server:0" --port 80:80@loadbalancer --volume /tmp/pulceo-node-agent/:/home/pulceo
+```
+- Bootstrap access to K3s:
+```bash
+chmod +x ./bootstrap-k3s-access.sh && ./bootstrap-k3s-access.sh
+```
+- Run the tests:
+```bash
+./gradlew test
+```

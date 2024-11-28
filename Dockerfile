@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17.0.9_9-jre-alpine
+FROM eclipse-temurin:21.0.5_11-jre-alpine
 VOLUME /tmp
 RUN apk add --no-cache nmap-nping util-linux iputils-ping procps psmisc curl
 RUN apk add --no-cache iperf3=3.16-r0 --repository=https://dl-cdn.alpinelinux.org/alpine/v3.19/main

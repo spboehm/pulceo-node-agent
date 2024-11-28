@@ -9,6 +9,9 @@ plugins {
 group = 'dev.pulceo'
 version = '0.0.1-SNAPSHOT'
 
+sourceCompatibility = 21
+targetCompatibility = 21
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -85,7 +88,4 @@ tasks.register("bootRun-pna-test3") {
 
 test {
 	useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
 }

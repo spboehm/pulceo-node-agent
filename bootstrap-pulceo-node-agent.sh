@@ -101,7 +101,7 @@ validate_alphanumeric "PNA_USERNAME" $PNA_USERNAME
 # PNA_PASSWORD
 # 32 chars
 if [ -z "$PNA_PASSWORD" ]; then
-  read -p "Enter the PNA password: " PNA_USERNAME
+  read -p "Enter the PNA password: " PNA_PASSWORD
   if [ -z "$PNA_PASSWORD" ]; then
     exit 1
   fi

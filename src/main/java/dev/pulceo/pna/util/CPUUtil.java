@@ -4,18 +4,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pulceo.pna.exception.ProcessException;
 import dev.pulceo.pna.model.node.CPU;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 public class CPUUtil {
+
+    private final static Logger logger = LoggerFactory.getLogger(CPUUtil.class);
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static CPU extractCPUInformation(List<String> lsCPUAsString) throws JsonProcessingException {
         // only used for calculation
         String modelName = "";
-        int sockets = 0;
+        int sockets = 1; // default, must be set to one in case parsing the CPU fails
         int coresPerSocket = 0;
         int threadsPerCore = 0;
 
@@ -27,30 +32,34 @@ public class CPUUtil {
         float slots = 0;
 
         for (String line : lsCPUAsString) {
-            if (line.contains("Model name:")) {
-                String[] split = line.split(":");
-                modelName = split[1].trim();
-            } else if (line.contains("Socket(s):")) {
-                String[] split = line.split(":");
-                sockets = Integer.parseInt(split[1].trim());
-            } else if (line.contains("Core(s) per socket:")) {
-                String[] split = line.split(":");
-                coresPerSocket = Integer.parseInt(split[1].trim());
-            } else if (line.contains("Thread(s) per core:")) {
-                String[] split = line.split(":");
-                threadsPerCore = Integer.parseInt(split[1].trim());
-            } else if (line.contains("BogoMIPS:")) {
-                String[] split = line.split(":");
-                bogoMIPS = Float.parseFloat(split[1].trim());
-            } else if (line.contains("CPU min MHz:")) {
-                String[] split = line.split(":");
-                minFrequency = Float.parseFloat(split[1].trim());
-            } else if (line.contains("CPU max MHz:")) {
-                String[] split = line.split(":");
-                maxFrequency = Float.parseFloat(split[1].trim());
-            } else if (line.contains("CPU MHz:")) {
-                String[] split = line.split(":");
-                avgFrequency = Float.parseFloat(split[1].trim());
+            try {
+                if (line.contains("Model name:")) {
+                    String[] split = line.split(":");
+                    modelName = split[1].trim();
+                } else if (line.contains("Socket(s):")) {
+                    String[] split = line.split(":");
+                    sockets = Integer.parseInt(split[1].trim());
+                } else if (line.contains("Core(s) per socket:")) {
+                    String[] split = line.split(":");
+                    coresPerSocket = Integer.parseInt(split[1].trim());
+                } else if (line.contains("Thread(s) per core:")) {
+                    String[] split = line.split(":");
+                    threadsPerCore = Integer.parseInt(split[1].trim());
+                } else if (line.contains("BogoMIPS:")) {
+                    String[] split = line.split(":");
+                    bogoMIPS = Float.parseFloat(split[1].trim());
+                } else if (line.contains("CPU min MHz:")) {
+                    String[] split = line.split(":");
+                    minFrequency = Float.parseFloat(split[1].trim());
+                } else if (line.contains("CPU max MHz:")) {
+                    String[] split = line.split(":");
+                    maxFrequency = Float.parseFloat(split[1].trim());
+                } else if (line.contains("CPU MHz:")) {
+                    String[] split = line.split(":");
+                    avgFrequency = Float.parseFloat(split[1].trim());
+                }
+            } catch (PatternSyntaxException | NumberFormatException e) {
+                logger.warn("Could not completely determine CPU information: ", e);
             }
         }
 

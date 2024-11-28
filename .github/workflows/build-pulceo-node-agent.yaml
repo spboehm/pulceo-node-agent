@@ -26,11 +26,11 @@ jobs:
         run: cp /home/$USER/.kube/config $GITHUB_WORKSPACE/.k3s.yaml
       - name: Bootstrap k3s access
         run: chmod +x ./bootstrap-k3s-access.sh && ./bootstrap-k3s-access.sh
-      - name: Set up JDK 11
+      - name: Set up JDK eclipse-temurin 21
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21.0.5'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
       - name: Build with Gradle

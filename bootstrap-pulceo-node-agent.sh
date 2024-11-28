@@ -50,12 +50,12 @@ echo ""
 echo "PULCEO NODE AGENT - Bootstrapping tool. USE AT OWN RISK!!!"
 echo ""
 
-echo "Check if a .env-pulceo file is present..."
-if [ -f .env-pulceo ]; then
-  echo "Found .env-pulceo file...loading variables..."
-  source .env-pulceo
+echo "Check if a .env-pna file is present..."
+if [ -f .env-pna ]; then
+  echo "Found .env-pna file...loading variables..."
+  source .env-pna
 else
-  echo "No .env-pulceo file found...creating one..."
+  echo "No .env-pna file found...creating one..."
 fi
 
 # PNA_VERSION

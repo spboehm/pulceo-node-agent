@@ -2,6 +2,11 @@
 set -e
 set -o noglob
 
+generate_password() {
+  local chars=$1
+  head /dev/urandom | tr -dc A-Za-z0-9 | head -c $chars ; echo ''
+}
+
 validate_mqtt_broker_url() {
   local url=$1
   local regex="^ssl://[a-zA-Z0-9.-]+:[0-9]+$"

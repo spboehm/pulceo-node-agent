@@ -47,7 +47,7 @@ export PNA_HOST_FQDN="<FQDN>"
 ```
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/v1.0.0/bootstrap-pulceo-node-agent.sh)
+bash <(curl -s https://raw.githubusercontent.com/spboehm/pulceo-node-agent/v1.1.0/bootstrap-pulceo-node-agent.sh)
 ```
 
 ## Create a free MQTT broker (recommended)

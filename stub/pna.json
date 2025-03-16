@@ -1,0 +1,21 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "url": "/api/v1/tasks",
+        "method": "POST"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "remoteNodeUUID": "8f08e447-7ccd-4657-a873-a1d43a733b1a",
+          "remoteTaskUUID": "123e4567-e89b-12d3-a456-426614174001",
+          "status": "NEW"
+        }
+      }
+    }
+  ]
+}

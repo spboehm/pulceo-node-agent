@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="WireMock pna.json" type="WireMock" factoryName="WireMock">
+    <option name="port" value="7676" />
+    <option name="stubsFilePath" value="$PROJECT_DIR$/stub/pna.json" />
+    <method v="2" />
+  </configuration>
+</component>

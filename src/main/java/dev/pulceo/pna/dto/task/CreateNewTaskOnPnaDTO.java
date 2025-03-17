@@ -5,7 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Data
 @Getter
@@ -14,8 +13,8 @@ import java.util.UUID;
 @SuperBuilder
 @ToString
 public class CreateNewTaskOnPnaDTO {
-    private UUID applicationUUID; // local application UUID on device (remote from psm)
-    private UUID applicationComponentId; // local application component id on device (remote from psm)
+    private String applicationUUID; // local application UUID on device (remote from psm)
+    private String applicationComponentId; // local application component id on device (remote from psm)
     private byte[] payload = new byte[0]; // payload of the task
     @Builder.Default
     private String callbackProtocol = ""; // statically generated, never changed

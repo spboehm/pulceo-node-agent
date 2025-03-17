@@ -25,7 +25,7 @@ import java.util.Objects;
 public class Task extends Resource {
 
     @Builder.Default
-    private String remoteNodeUUID = ""; // local UUID of device (remote from psm)
+    private String remoteNodeUUID = ""; // local UUID of device (remote from psm), hence, the local uuid
     @Builder.Default
     private String applicationUUID = ""; // local application UUID on device (remote from psm)
     @Builder.Default

@@ -19,7 +19,7 @@ public class UpdateTaskFromPnaDTO {
 
     private String remoteTaskUUID;
     private TaskStatus newTaskStatus;
-    private String modifiedByRemoteNodeUUID; // remoteNodeUUID
+    private String modifiedByRemoteNodeUUID; // always the pna remote node uuid
     private Timestamp modifiedOn = Timestamp.valueOf(LocalDateTime.now()); // timestamp where task is modified on device
 
 }

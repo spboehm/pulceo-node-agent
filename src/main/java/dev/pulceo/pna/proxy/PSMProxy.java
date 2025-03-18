@@ -35,6 +35,7 @@ public class PSMProxy {
                 .remoteTaskUUID(taskId)
                 .newTaskStatus(newTaskStatus)
                 .modifiedByRemoteNodeUUID(modifiedBy)
+                // modified on is set by default
                 .build();
 
         try {
@@ -48,7 +49,6 @@ public class PSMProxy {
         } catch (JsonProcessingException e) {
             throw new ProxyException(e);
         }
-
 
     }
 

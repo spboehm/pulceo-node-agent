@@ -20,14 +20,18 @@ import java.util.Map;
 @Component
 public class PSMProxy {
 
-    // TODO: mqtt backend
+    // TODO: mqtt backend, mostly event-driven,  usage of HTTP API not intended
     @Value("${pna.uuid}")
     private String deviceId;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final PublishSubscribeChannel proxyMessageChannel;
+
     @Autowired
-    PublishSubscribeChannel proxyMessageChannel;
+    public PSMProxy(PublishSubscribeChannel proxyMessageChannel) {
+        this.proxyMessageChannel = proxyMessageChannel;
+    }
 
     public void updateTask(String taskId, TaskStatus newTaskStatus, String modifiedBy) throws ProxyException {
 

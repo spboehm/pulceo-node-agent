@@ -13,12 +13,14 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class CreateNewTaskOnPnaResponseDTO {
 
+    private String globalTaskUUID;
     private String remoteNodeUUID;
     private String remoteTaskUUID;
     private TaskStatus status;
 
     public static CreateNewTaskOnPnaResponseDTO fromTask(Task task) {
         return CreateNewTaskOnPnaResponseDTO.builder()
+                .globalTaskUUID(task.getGlobalTaskUUID())
                 .remoteNodeUUID(task.getRemoteNodeUUID())
                 .remoteTaskUUID(task.getUuid().toString())
                 .status(task.getStatus())

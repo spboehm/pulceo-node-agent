@@ -33,9 +33,10 @@ public class PSMProxy {
         this.proxyMessageChannel = proxyMessageChannel;
     }
 
-    public void updateTask(String taskId, TaskStatus newTaskStatus, String modifiedBy) throws ProxyException {
+    public void updateTask(String globaltaskId, String taskId, TaskStatus newTaskStatus, String modifiedBy) throws ProxyException {
 
         UpdateTaskFromPnaDTO updateTaskFromPnaDTO = UpdateTaskFromPnaDTO.builder()
+                .globalTaskUUID(globaltaskId)
                 .remoteTaskUUID(taskId)
                 .newTaskStatus(newTaskStatus)
                 .modifiedByRemoteNodeUUID(modifiedBy)

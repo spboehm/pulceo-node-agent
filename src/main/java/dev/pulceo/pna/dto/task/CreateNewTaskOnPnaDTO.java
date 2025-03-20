@@ -13,8 +13,13 @@ import java.util.Map;
 @SuperBuilder
 @ToString
 public class CreateNewTaskOnPnaDTO {
-    private String applicationUUID; // local application UUID on device (remote from psm)
-    private String applicationComponentId; // local application component id on device (remote from psm)
+    @Builder.Default
+    private String globalTaskUUID = ""; // the one from PSM
+    @Builder.Default
+    private String applicationId = ""; // local application UUID on device (remote from psm)
+    @Builder.Default
+    private String applicationComponentId = ""; // local application component id on device (remote from psm)
+    @Builder.Default
     private byte[] payload = new byte[0]; // payload of the task
     @Builder.Default
     private String callbackProtocol = ""; // statically generated, never changed

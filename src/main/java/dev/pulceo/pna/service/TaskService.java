@@ -43,6 +43,7 @@ public class TaskService {
     }
 
     public Task createTask(Task task) throws TaskServiceException {
+        logger.info("Received task with global id %s".formatted(task.getGlobalTaskUUID()));
 
         // TODO: validation of Task
         // check if applicationUUID does exist
@@ -104,7 +105,7 @@ public class TaskService {
                     this.taskRepository.save(taskToBeUpdated);
 
                     // TODO: then propagate status change to psm via PSM Proxy
-                    this.psmProxy.updateTask(taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
+                    this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
                     this.logger.debug("Update task %s by using PSMProxy");
                 } catch (InterruptedException | ProxyException e) {
                     throw new RuntimeException(e);

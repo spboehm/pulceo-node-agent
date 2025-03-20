@@ -5,13 +5,11 @@ import dev.pulceo.pna.dto.task.CreateNewTaskOnPnaResponseDTO;
 import dev.pulceo.pna.exception.TaskServiceException;
 import dev.pulceo.pna.model.task.Task;
 import dev.pulceo.pna.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +29,7 @@ public class TaskController {
     // TODO: Get task list by id
 
     @PostMapping("")
-    public ResponseEntity<CreateNewTaskOnPnaResponseDTO> createNewTaskOnPna(CreateNewTaskOnPnaDTO createNewTaskOnPnaDTO) throws TaskServiceException {
+    public ResponseEntity<CreateNewTaskOnPnaResponseDTO> createNewTaskOnPna(@Valid @RequestBody CreateNewTaskOnPnaDTO createNewTaskOnPnaDTO) throws TaskServiceException {
         Task task = this.taskService.createTask(Task.fromCreateNewTaskOnPnaDTO(createNewTaskOnPnaDTO));
         return ResponseEntity.status(200).body(CreateNewTaskOnPnaResponseDTO.fromTask(task));
     }

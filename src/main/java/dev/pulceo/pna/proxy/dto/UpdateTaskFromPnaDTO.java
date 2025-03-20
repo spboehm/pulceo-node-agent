@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class UpdateTaskFromPnaDTO {
 
+    private String globalTaskUUID; // based on the one from PSM
     private String remoteTaskUUID;
     private TaskStatus newTaskStatus;
     private String modifiedByRemoteNodeUUID; // always the pna remote node uuid

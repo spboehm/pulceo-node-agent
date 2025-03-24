@@ -1,10 +1,7 @@
 package dev.pulceo.pna.proxy.dto;
 
 import dev.pulceo.pna.model.task.TaskStatus;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.sql.Timestamp;
@@ -21,6 +18,7 @@ public class UpdateTaskFromPnaDTO {
     private String remoteTaskUUID;
     private TaskStatus newTaskStatus;
     private String modifiedByRemoteNodeUUID; // always the pna remote node uuid
+    @Builder.Default
     private Timestamp modifiedOn = Timestamp.valueOf(LocalDateTime.now()); // timestamp where task is modified on device
 
 }

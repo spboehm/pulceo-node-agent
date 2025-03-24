@@ -73,6 +73,23 @@ public class TaskService {
         return this.taskRepository.readTaskByUuid(UUID.fromString(id));
     }
 
+    public void updateTaskInternally(String taskId, TaskStatus newStatus, float progress, String comment) throws TaskServiceException, InterruptedException {
+        // check if task exists
+        Optional<Task> taskOptional = this.readTaskById(taskId);
+        if (taskOptional.isEmpty()) {
+            throw new TaskServiceException("Task %s not found".formatted(taskId));
+        }
+        Task task = taskOptional.get();
+
+        // TODO: Update task
+        task.setStatus(newStatus);
+        // TODO: add progress, do we need that?
+        // TODO: add comment, do we need that?
+        // TODO: add task to queue
+        this.taskRepository.save(task);
+        this.taskQueue.put(task.getUuid().toString());
+    }
+
     @PostConstruct
     private void init() throws TaskServiceException {
         threadPoolTaskExecutor.execute(() -> {
@@ -91,26 +108,55 @@ public class TaskService {
                     }
                     Task taskToBeUpdated = optionalOfTaskToBeProcessed.get();
 
-                    // TODO: check if application exists
-                    logger.debug("Simulate checking if application exists");
-
-                    // TODO: check if application component exists
-
-                    // TODO: check if endpoint is available
-
-                    // TODO: pass task to application component and change status to RUNNING
-                    // TODO: additional check from application is needed, e.g., if task is really running
-                    taskToBeUpdated.setStatus(TaskStatus.RUNNING);
-                    this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
-                    this.taskRepository.save(taskToBeUpdated);
-
-                    // TODO: then propagate status change to psm via PSM Proxy
-                    this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
-                    this.logger.debug("Update task %s by using PSMProxy");
+                    // TODO: differentiate between NEW and RUNNING tasks
+                    // TODO: CREATE and UPDATE
+                    if (taskToBeUpdated.getStatus() == TaskStatus.NEW) {
+                        // case TaskStatus.NEW:
+                        processNewTask(taskToBeUpdated);
+                    } else if (taskToBeUpdated.getStatus() == TaskStatus.RUNNING) {
+                        // case TaskStatus.RUNNING:
+                        // processRunningTask(nextTaskId, taskToBeUpdated);
+                    } else {
+                        // case TaskStatus.COMPLETED:
+                        processFinishedTask(taskToBeUpdated);
+                    }
+                    // case TaskStatus.NEW:
                 } catch (InterruptedException | ProxyException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
     }
+
+
+    private void processNewTask(Task taskToBeUpdated) throws ProxyException {
+        logger.debug("Process new task %s".formatted(taskToBeUpdated.getUuid()));
+        // TODO: check if application exists
+
+        // TODO: check if application component exists
+
+        // TODO: check if endpoint is available
+
+        // TODO: pass task to application component and change status to RUNNING
+        // TODO: additional check from application is needed, e.g., if task is really running
+        taskToBeUpdated.setStatus(TaskStatus.RUNNING);
+        this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
+        this.taskRepository.save(taskToBeUpdated);
+
+        // TODO: then propagate status change to psm via PSM Proxy
+        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
+        this.logger.debug("Update task %s by using PSMProxy");
+    }
+
+    private void processFinishedTask(Task taskToBeUpdated) throws ProxyException {
+        logger.debug("Process finished task %s".formatted(taskToBeUpdated.getUuid()));
+        taskToBeUpdated.setStatus(TaskStatus.COMPLETED);
+        this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
+        this.taskRepository.save(taskToBeUpdated);
+
+        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
+        this.logger.debug("Update task %s by using PSMProxy");
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package dev.pulceo.pna.service;
 
+import dev.pulceo.pna.dto.task.application.CreateNewTaskOnApplicationDTO;
 import dev.pulceo.pna.exception.ProxyException;
 import dev.pulceo.pna.exception.TaskServiceException;
 import dev.pulceo.pna.model.node.Node;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -32,14 +34,16 @@ public class TaskService {
     private final PSMProxy psmProxy;
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final AtomicBoolean isRunning = new AtomicBoolean(true);
+    private final WebClient webClient;
 
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, NodeService nodeService, PSMProxy psmProxy, ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+    public TaskService(TaskRepository taskRepository, NodeService nodeService, PSMProxy psmProxy, ThreadPoolTaskExecutor threadPoolTaskExecutor, WebClient webClient) {
         this.taskRepository = taskRepository;
         this.nodeService = nodeService;
         this.psmProxy = psmProxy;
         this.threadPoolTaskExecutor = threadPoolTaskExecutor;
+        this.webClient = webClient;
     }
 
     public Task createTask(Task task) throws TaskServiceException {
@@ -114,9 +118,9 @@ public class TaskService {
                         // case TaskStatus.NEW:
                         processNewTask(taskToBeUpdated);
                     } else if (taskToBeUpdated.getStatus() == TaskStatus.RUNNING) {
-                        // case TaskStatus.RUNNING:
-                        // processRunningTask(nextTaskId, taskToBeUpdated);
-                    } else {
+                        // TODO: case TaskStatus.RUNNING:update progress for example ???
+                        processRunningTask(nextTaskId, taskToBeUpdated);
+                    } else if (taskToBeUpdated.getStatus() == TaskStatus.COMPLETED) {
                         // case TaskStatus.COMPLETED:
                         processFinishedTask(taskToBeUpdated);
                     }
@@ -126,6 +130,27 @@ public class TaskService {
                 }
             }
         });
+    }
+
+    // TODO: this is just a copy, try to refactor
+    private void processRunningTask(String nextTaskId, Task taskToBeUpdated) throws ProxyException {
+        logger.debug("Process running task %s".formatted(nextTaskId));
+        // TODO: check if application exists
+
+        // TODO: check if application component exists
+
+        // TODO: check if endpoint is available
+
+        // TODO: pass task to application component and change status to RUNNING
+        // TODO: additional check from application is needed, e.g., if task is really running
+
+        taskToBeUpdated.setStatus(TaskStatus.RUNNING);
+        // TODO: update running task with progress
+        this.taskRepository.save(taskToBeUpdated);
+        this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
+        // TODO: then propagate status change to psm via PSM Proxy
+        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
+        this.logger.debug("Update task %s by using PSMProxy");
     }
 
 
@@ -139,6 +164,29 @@ public class TaskService {
 
         // TODO: pass task to application component and change status to RUNNING
         // TODO: additional check from application is needed, e.g., if task is really running
+
+        /* pass to application component */
+        // TODO: replace dynamically with HTTP / MQTT
+        CreateNewTaskOnApplicationDTO createNewTaskOnApplicationDTO = CreateNewTaskOnApplicationDTO.builder()
+                .remoteTaskUUID(taskToBeUpdated.getUuid().toString())
+                .payload(taskToBeUpdated.getPayload())
+                .callbackProtocol(taskToBeUpdated.getCallbackProtocol())
+                .callbackEndpoint(taskToBeUpdated.getCallbackEndpoint())
+                .build();
+
+        webClient.post()
+                .uri("https://localhost:8087/tasks")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .bodyValue(createNewTaskOnApplicationDTO)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .onErrorResume(e -> {
+                    logger.error("Task assignment failed with error: %s".formatted(e.getMessage()));
+                    throw new RuntimeException(new TaskServiceException("Failed to assign task to application component", e));
+                })
+                .block();
+
         taskToBeUpdated.setStatus(TaskStatus.RUNNING);
         this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
         this.taskRepository.save(taskToBeUpdated);

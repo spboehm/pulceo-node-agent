@@ -25,6 +25,8 @@ import java.util.Objects;
 public class Task extends Resource {
 
     @Builder.Default
+    private long taskSequenceNumber = 0; // sequence number of the task
+    @Builder.Default
     private String globalTaskUUID = ""; // based on the one from PSM
     @Builder.Default
     private String remoteNodeUUID = ""; // local UUID of device (remote from psm), hence, the local uuid
@@ -58,6 +60,7 @@ public class Task extends Resource {
 
     public static Task fromCreateNewTaskOnPnaDTO(@Valid CreateNewTaskOnPnaDTO createNewTaskOnPnaDTO) {
         return Task.builder()
+                .taskSequenceNumber(createNewTaskOnPnaDTO.getTaskSequenceNumber())
                 .globalTaskUUID(createNewTaskOnPnaDTO.getGlobalTaskUUID())
                 .applicationUUID(createNewTaskOnPnaDTO.getApplicationId())
                 .applicationComponentId(createNewTaskOnPnaDTO.getApplicationComponentId())

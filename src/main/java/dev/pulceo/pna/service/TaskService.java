@@ -168,6 +168,7 @@ public class TaskService {
         /* pass to application component */
         // TODO: replace dynamically with HTTP / MQTT
         CreateNewTaskOnApplicationDTO createNewTaskOnApplicationDTO = CreateNewTaskOnApplicationDTO.builder()
+                .globalTaskUUID(taskToBeUpdated.getGlobalTaskUUID())
                 .remoteTaskUUID(taskToBeUpdated.getUuid().toString())
                 .payload(taskToBeUpdated.getPayload())
                 .callbackProtocol(taskToBeUpdated.getCallbackProtocol())
@@ -181,9 +182,9 @@ public class TaskService {
                 .bodyValue(createNewTaskOnApplicationDTO)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .onErrorResume(e -> {
+                .onErrorComplete(e -> {
                     logger.error("Task assignment failed with error: %s".formatted(e.getMessage()));
-                    throw new RuntimeException(new TaskServiceException("Failed to assign task to application component", e));
+                    return false;
                 })
                 .block();
 

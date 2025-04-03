@@ -13,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 public class CreateNewTaskOnApplicationDTO {
 
     @Builder.Default
+    private String globalTaskUUID = ""; // global taskUUID
+    @Builder.Default
     @JsonProperty("uuid")
     private String remoteTaskUUID = ""; // the one from PNA, internal
     @Builder.Default

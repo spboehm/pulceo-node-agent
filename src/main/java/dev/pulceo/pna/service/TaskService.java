@@ -179,7 +179,7 @@ public class TaskService {
         String applicationComponentId = taskToBeUpdated.getApplicationComponentId();
 
         webClient.post()
-                .uri("https://" + applicationComponentId + ":8087/tasks")
+                .uri("https://" + applicationComponentId + "/tasks")
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .bodyValue(createNewTaskOnApplicationDTO)

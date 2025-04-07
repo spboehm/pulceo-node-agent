@@ -175,8 +175,11 @@ public class TaskService {
                 .callbackEndpoint(taskToBeUpdated.getCallbackEndpoint())
                 .build();
 
+        // this is equals the Kubernetes service name
+        String applicationComponentId = taskToBeUpdated.getApplicationComponentId();
+
         webClient.post()
-                .uri("https://localhost:8087/tasks")
+                .uri("https://" + applicationComponentId + ":8087/tasks")
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .bodyValue(createNewTaskOnApplicationDTO)

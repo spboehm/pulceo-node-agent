@@ -14,6 +14,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
 import java.util.Properties;
+import java.util.UUID;
 
 @Configuration
 public class MQTTConfig {
@@ -86,7 +87,7 @@ public class MQTTConfig {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[] {mqttBrokerURL});
+        options.setServerURIs(new String[]{mqttBrokerURL});
         options.setUserName(mqttBrokerUsername);
         options.setPassword(mqttBrokerPassword.toCharArray());
         options.setAutomaticReconnect(true);
@@ -105,9 +106,9 @@ public class MQTTConfig {
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler =
-                new MqttPahoMessageHandler(deviceId, mqttClientFactory());
+                new MqttPahoMessageHandler(UUID.randomUUID().toString(), mqttClientFactory());
         messageHandler.setAsync(true);
-        messageHandler.setDefaultTopic("dt" + "/" + deviceId + "/");
+        messageHandler.setDefaultTopic("dt" + "/" + UUID.randomUUID().toString() + "/");
         messageHandler.setConverter(new DefaultPahoMessageConverter());
         return messageHandler;
     }

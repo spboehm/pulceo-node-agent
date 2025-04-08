@@ -32,6 +32,7 @@ public class InternalTaskController {
     @PutMapping("/{id}")
     public ResponseEntity<UpdateTaskInternallyOnPNAResponseDTO> updateTaskById(@PathVariable String id, @Valid @RequestBody UpdateTaskInternallyOnPNADTO updateTaskInternallyOnPNADTO) throws TaskServiceException, InterruptedException {
         this.taskService.updateTaskInternally(id, updateTaskInternallyOnPNADTO.getNewTaskStatus(), updateTaskInternallyOnPNADTO.getProgress(), updateTaskInternallyOnPNADTO.getComment());
+        this.taskService.queueForScheduling(id);
         return ResponseEntity.accepted().build();
     }
 

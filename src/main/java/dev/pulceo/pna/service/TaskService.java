@@ -60,17 +60,12 @@ public class TaskService {
         }
         task.setRemoteNodeUUID(localNode.get().getUuid().toString());
         task.setStatus(TaskStatus.NEW);
+        logger.info("Created task with global ID: {} and remote task ID: {}", task.getGlobalTaskUUID(), task.getUuid());
+        return this.taskRepository.save(task);
+    }
 
-        Task persistedTask = this.taskRepository.save(task);
-
-        // TODO: enqueue task
-        try {
-            this.taskQueue.put(persistedTask.getUuid().toString());
-            logger.info("Task created: " + task + " , remaining capacity is: " + taskQueue.remainingCapacity());
-        } catch (InterruptedException e) {
-            throw new TaskServiceException("Task queue is full");
-        }
-        return persistedTask;
+    public void queueForScheduling(String taskSchedulingUuid) {
+        this.taskQueue.add(taskSchedulingUuid);
     }
 
     public Optional<Task> readTaskById(String id) {
@@ -91,7 +86,7 @@ public class TaskService {
         // TODO: add comment, do we need that?
         // TODO: add task to queue
         this.taskRepository.save(task);
-        this.taskQueue.put(task.getUuid().toString());
+        //this.taskQueue.put(task.getUuid().toString());
     }
 
     @PostConstruct

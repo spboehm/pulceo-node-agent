@@ -31,6 +31,7 @@ public class TaskController {
     @PostMapping("")
     public ResponseEntity<CreateNewTaskOnPnaResponseDTO> createNewTaskOnPna(@Valid @RequestBody CreateNewTaskOnPnaDTO createNewTaskOnPnaDTO) throws TaskServiceException {
         Task task = this.taskService.createTask(Task.fromCreateNewTaskOnPnaDTO(createNewTaskOnPnaDTO));
+        this.taskService.queueForScheduling(task.getUuid().toString());
         return ResponseEntity.status(200).body(CreateNewTaskOnPnaResponseDTO.fromTask(task));
     }
 

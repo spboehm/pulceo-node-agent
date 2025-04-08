@@ -1,6 +1,5 @@
 package dev.pulceo.pna.service;
 
-import dev.pulceo.pna.dto.task.application.CreateNewTaskOnApplicationDTO;
 import dev.pulceo.pna.exception.ProxyException;
 import dev.pulceo.pna.exception.TaskServiceException;
 import dev.pulceo.pna.model.node.Node;
@@ -35,15 +34,17 @@ public class TaskService {
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final AtomicBoolean isRunning = new AtomicBoolean(true);
     private final WebClient webClient;
+    private final TaskProcessor taskProcessor;
 
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, NodeService nodeService, PSMProxy psmProxy, ThreadPoolTaskExecutor threadPoolTaskExecutor, WebClient webClient) {
+    public TaskService(TaskRepository taskRepository, NodeService nodeService, PSMProxy psmProxy, ThreadPoolTaskExecutor threadPoolTaskExecutor, WebClient webClient, TaskProcessor taskProcessor) {
         this.taskRepository = taskRepository;
         this.nodeService = nodeService;
         this.psmProxy = psmProxy;
         this.threadPoolTaskExecutor = threadPoolTaskExecutor;
         this.webClient = webClient;
+        this.taskProcessor = taskProcessor;
     }
 
     public Task createTask(Task task) throws TaskServiceException {
@@ -64,8 +65,8 @@ public class TaskService {
         return this.taskRepository.save(task);
     }
 
-    public void queueForScheduling(String taskSchedulingUuid) {
-        this.taskQueue.add(taskSchedulingUuid);
+    public void queueForScheduling(String taskSchedulingUuid) throws InterruptedException {
+        this.taskQueue.put(taskSchedulingUuid);
     }
 
     public Optional<Task> readTaskById(String id) {
@@ -90,7 +91,7 @@ public class TaskService {
     }
 
     @PostConstruct
-    private void init() throws TaskServiceException {
+    public void init() throws TaskServiceException {
         threadPoolTaskExecutor.execute(() -> {
             logger.info("Starting task service...");
             while (isRunning.get()) {
@@ -101,24 +102,7 @@ public class TaskService {
                     String nextTaskId = this.taskQueue.take();
 
                     logger.debug("Try to read task %s from db".formatted(nextTaskId));
-                    Optional<Task> optionalOfTaskToBeProcessed = this.readTaskById(nextTaskId);
-                    if (optionalOfTaskToBeProcessed.isEmpty()) {
-                        throw new ProxyException("Task %s not found".formatted(nextTaskId));
-                    }
-                    Task taskToBeUpdated = optionalOfTaskToBeProcessed.get();
-
-                    // TODO: differentiate between NEW and RUNNING tasks
-                    // TODO: CREATE and UPDATE
-                    if (taskToBeUpdated.getStatus() == TaskStatus.NEW) {
-                        // case TaskStatus.NEW:
-                        processNewTask(taskToBeUpdated);
-                    } else if (taskToBeUpdated.getStatus() == TaskStatus.RUNNING) {
-                        // TODO: case TaskStatus.RUNNING:update progress for example ???
-                        processRunningTask(nextTaskId, taskToBeUpdated);
-                    } else if (taskToBeUpdated.getStatus() == TaskStatus.COMPLETED) {
-                        // case TaskStatus.COMPLETED:
-                        processFinishedTask(taskToBeUpdated);
-                    }
+                    this.taskProcessor.processTask(nextTaskId);
                     // case TaskStatus.NEW:
                 } catch (InterruptedException | ProxyException e) {
                     throw new RuntimeException(e);
@@ -127,83 +111,8 @@ public class TaskService {
         });
     }
 
+
     // TODO: this is just a copy, try to refactor
-    private void processRunningTask(String nextTaskId, Task taskToBeUpdated) throws ProxyException {
-        logger.debug("Process running task %s".formatted(nextTaskId));
-        // TODO: check if application exists
-
-        // TODO: check if application component exists
-
-        // TODO: check if endpoint is available
-
-        // TODO: pass task to application component and change status to RUNNING
-        // TODO: additional check from application is needed, e.g., if task is really running
-
-        taskToBeUpdated.setStatus(TaskStatus.RUNNING);
-        // TODO: update running task with progress
-        this.taskRepository.save(taskToBeUpdated);
-        this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
-        // TODO: then propagate status change to psm via PSM Proxy
-        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
-        this.logger.debug("Update task %s by using PSMProxy");
-    }
-
-
-    private void processNewTask(Task taskToBeUpdated) throws ProxyException {
-        logger.debug("Process new task %s".formatted(taskToBeUpdated.getUuid()));
-        // TODO: check if application exists
-
-        // TODO: check if application component exists
-
-        // TODO: check if endpoint is available
-
-        // TODO: pass task to application component and change status to RUNNING
-        // TODO: additional check from application is needed, e.g., if task is really running
-
-        /* pass to application component */
-        // TODO: replace dynamically with HTTP / MQTT
-        CreateNewTaskOnApplicationDTO createNewTaskOnApplicationDTO = CreateNewTaskOnApplicationDTO.builder()
-                .globalTaskUUID(taskToBeUpdated.getGlobalTaskUUID())
-                .remoteTaskUUID(taskToBeUpdated.getUuid().toString())
-                .payload(taskToBeUpdated.getPayload())
-                .callbackProtocol(taskToBeUpdated.getCallbackProtocol())
-                .callbackEndpoint(taskToBeUpdated.getCallbackEndpoint())
-                .build();
-
-        // this is equals the Kubernetes service name
-        String applicationComponentId = taskToBeUpdated.getApplicationComponentId();
-
-        webClient.post()
-                .uri("https://" + applicationComponentId + "/tasks")
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .bodyValue(createNewTaskOnApplicationDTO)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .onErrorComplete(e -> {
-                    logger.error("Task assignment failed with error: %s".formatted(e.getMessage()));
-                    return false;
-                })
-                .block();
-
-        taskToBeUpdated.setStatus(TaskStatus.RUNNING);
-        this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
-        this.taskRepository.save(taskToBeUpdated);
-
-        // TODO: then propagate status change to psm via PSM Proxy
-        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
-        this.logger.debug("Update task %s by using PSMProxy");
-    }
-
-    private void processFinishedTask(Task taskToBeUpdated) throws ProxyException {
-        logger.debug("Process finished task %s".formatted(taskToBeUpdated.getUuid()));
-        taskToBeUpdated.setStatus(TaskStatus.COMPLETED);
-        this.logger.debug("Set task %s to status %s.".formatted(taskToBeUpdated.getUuid(), taskToBeUpdated.getStatus()));
-        this.taskRepository.save(taskToBeUpdated);
-
-        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
-        this.logger.debug("Update task %s by using PSMProxy");
-    }
 
 
 }

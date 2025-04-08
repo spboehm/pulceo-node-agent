@@ -31,8 +31,8 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Node node;
     @ElementCollection
-    @MapKeyColumn(name="envKey")
-    @Column(name="envValue")
+    @MapKeyColumn(name = "envKey")
+    @Column(name = "envValue")
     @CollectionTable(name = "application_component_environment_variables", joinColumns = @JoinColumn(name = "application_component_id"))
     @Builder.Default
     private Map<String, String> environmentVariables = new HashMap<>();
@@ -68,7 +68,7 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
         if ("UDP".equalsIgnoreCase(this.protocol)) {
             return "UDP";
         } else {
-           return "TCP";
+            return "TCP";
         }
     }
 
@@ -111,6 +111,7 @@ public class ApplicationComponent extends Resource implements HasEndpoint, Kuber
                                                                                 new V1Container()
                                                                                         .name(name)
                                                                                         .image(image)
+                                                                                        .imagePullPolicy("Always")
                                                                                         .ports(List.of(new V1ContainerPort().containerPort(port)))
                                                                                         .env(new ArrayList<>(environmentVariables.entrySet().stream().map(entry -> new V1EnvVar().name(entry.getKey()).value(entry.getValue())).toList())))))));
         return v1DeploymentBuilder.build();

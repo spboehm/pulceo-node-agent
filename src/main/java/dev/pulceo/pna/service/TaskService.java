@@ -110,9 +110,4 @@ public class TaskService {
             }
         });
     }
-
-
-    // TODO: this is just a copy, try to refactor
-
-
 }

@@ -105,6 +105,7 @@ public class TaskService {
                     this.taskProcessor.processTask(nextTaskId);
                     // case TaskStatus.NEW:
                 } catch (InterruptedException | ProxyException e) {
+                    this.isRunning.set(false);
                     throw new RuntimeException(e);
                 }
             }

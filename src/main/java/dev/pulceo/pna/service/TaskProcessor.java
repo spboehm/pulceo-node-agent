@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -62,6 +63,9 @@ public class TaskProcessor {
         // TODO: check if endpoint is available
 
         // TODO: pass task to application component and change status to RUNNING
+
+        // TODO: it is either done by application or it is done by the PNA
+
         // TODO: additional check from application is needed, e.g., if task is really running
 
         /* pass to application component */
@@ -84,14 +88,24 @@ public class TaskProcessor {
                 .bodyValue(createNewTaskOnApplicationDTO)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .onErrorComplete(e -> {
+                .doOnSuccess(aVoid -> {
+                    logger.debug("Task %s has been successfully assigned to application component %s".formatted(taskToBeUpdated.getUuid(), applicationComponentId));
+                    try {
+                        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), TaskStatus.RUNNING, taskToBeUpdated.getRemoteNodeUUID());
+                    } catch (ProxyException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .onErrorResume(e -> {
                     logger.error("Task assignment failed with error: %s".formatted(e.getMessage()));
-                    return false;
+                    try {
+                        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), TaskStatus.FAILED, taskToBeUpdated.getRemoteNodeUUID());
+                    } catch (ProxyException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    return Mono.empty();
                 })
                 .block();
-
-        // TODO: then propagate status change to psm via PSM Proxy
-        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
     }
 
     @Transactional

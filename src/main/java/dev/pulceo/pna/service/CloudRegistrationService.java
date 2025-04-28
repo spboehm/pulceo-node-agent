@@ -13,14 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 
+@Order(8)
 @Service
-public class CloudRegistrationService {
+public class CloudRegistrationService implements ManagedService {
 
     private final Logger logger = LoggerFactory.getLogger(CloudRegistrationService.class);
 
@@ -52,19 +54,22 @@ public class CloudRegistrationService {
         // validate prmUUID
         if (!isValidUUID(cloudRegistrationRequest.getPrmUUID())) {
             throw new CloudRegistrationException("prmUUID is not a valid UUID!");
-        };
+        }
+        ;
 
         // validate prmEndpoint
         // TODO: redundant bean validation
         if (!isValidEndpoint(cloudRegistrationRequest.getPrmEndpoint())) {
             throw new CloudRegistrationException("prmEndpoint is not a valid endpoint!");
-        };
+        }
+        ;
 
         // validate pnaInitToken
         // TODO: consider leaving this because it is checking further logic
         if (!isValidPnaInitToken(cloudRegistrationRequest.getPnaInitToken())) {
             throw new CloudRegistrationException("pnaInitToken is not a valid token!");
-        };
+        }
+        ;
 
         /* case everything good */
         if (isPnaInitTokenExistingInDB()) {
@@ -111,7 +116,7 @@ public class CloudRegistrationService {
         }
 
         if (isValidPnaInitTokenExistingInAppProperties()) {
-           // continue here with registration and write to DB
+            // continue here with registration and write to DB
             logger.info("Found valid pna init token in application.properties, writing to DB...");
             this.pnaInitTokenRepository.save(new PnaInitToken(this.pnaId, this.pnaInitToken));
             return;
@@ -162,6 +167,12 @@ public class CloudRegistrationService {
 
     private String generateSecureRandomString(int length) {
         return RandomStringUtils.randomAlphanumeric(length);
+    }
+
+    public void reset() {
+        this.logger.info("Resetting cloud registration...");
+        this.cloudRegistrationRepository.deleteAll();
+        this.pnaInitTokenRepository.deleteAll();
     }
 
 }

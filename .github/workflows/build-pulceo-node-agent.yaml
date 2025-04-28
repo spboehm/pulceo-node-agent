@@ -19,6 +19,7 @@ jobs:
       PNA_USERNAME: ${{ secrets.PNA_USERNAME }}
       PNA_PASSWORD: ${{ secrets.PNA_PASSWORD }}
       PNA_INIT_TOKEN: ${{ secrets.PNA_INIT_TOKEN }}
+      USER: ${{ secrets.USER }}
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3

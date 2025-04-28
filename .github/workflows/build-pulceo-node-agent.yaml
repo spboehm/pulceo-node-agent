@@ -19,12 +19,11 @@ jobs:
       PNA_USERNAME: ${{ secrets.PNA_USERNAME }}
       PNA_PASSWORD: ${{ secrets.PNA_PASSWORD }}
       PNA_INIT_TOKEN: ${{ secrets.PNA_INIT_TOKEN }}
-      USER: ${{ secrets.USER }}
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - name: Copy k3s.yaml
-        run: cp /home/$USER/.kube/config $GITHUB_WORKSPACE/.k3s.yaml
+        run: cp /home/$(whoami)/.kube/config $GITHUB_WORKSPACE/.k3s.yaml
       - name: Bootstrap k3s access
         run: chmod +x ./bootstrap-k3s-access.sh && ./bootstrap-k3s-access.sh
       - name: Set up JDK eclipse-temurin 21

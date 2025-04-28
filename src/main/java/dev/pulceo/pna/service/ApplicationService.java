@@ -9,6 +9,7 @@ import dev.pulceo.pna.repository.ApplicationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Order(2)
 @Service
-public class ApplicationService {
+public class ApplicationService implements ManagedService {
 
     private final Logger logger = LoggerFactory.getLogger(ApplicationService.class);
 
@@ -127,6 +129,13 @@ public class ApplicationService {
 
     public void updateApplication(Application fullApplication) {
         this.applicationRepository.save(fullApplication);
+    }
+
+    @Override
+    public void reset() {
+        this.logger.info("Resetting application service...");
+        this.applicationComponentRepository.deleteAll();
+        this.applicationRepository.deleteAll();
     }
 
 }

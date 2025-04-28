@@ -13,14 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
+@Order(5)
 @Service
-public class NodeService {
+public class NodeService implements ManagedService {
 
     private final Logger logger = LoggerFactory.getLogger(NodeService.class);
 
@@ -125,9 +127,22 @@ public class NodeService {
         }
     }
 
+    @Override
+    public void reset() {
+        // reset node service
+        this.logger.info("Resetting node service...");
+        this.nodeRepository.deleteAll();
+        try {
+            this.initLocalNode();
+        } catch (NodeServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @PostConstruct
     private void initLocalNode() throws NodeServiceException {
         // check if local node already exists
+        this.logger.info("Initializing local node service...");
         Optional<Node> localNode = this.readLocalNode();
 
         if (localNode.isPresent()) {
@@ -141,7 +156,7 @@ public class NodeService {
         Memory memoryCapacity = this.obtainMemoryInformation();
         Storage storageCapacity = this.obtainStorageInformation();
 
-        this.createNode(Node.builder()
+        Node createdNode = this.createNode(Node.builder()
                 .pnaUUID(pnaUUID)
                 .isLocalNode(true)
                 .name(host)
@@ -151,6 +166,12 @@ public class NodeService {
                 .memoryResource(MemoryResource.builder().memoryAllocatable(memoryAllocatable).memoryCapacity(memoryCapacity).build())
                 .storageResource(StorageResource.builder().storageCapacity(storageCapacity).build())
                 .build());
+        this.logger.info("Created local node with id {}, pnaUUID {}, host {}, endpoint {}",
+                createdNode.getId(),
+                createdNode.getPnaUUID(),
+                createdNode.getHost(),
+                createdNode.getPnaEndpoint()
+        );
     }
 
 }

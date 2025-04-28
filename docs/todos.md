@@ -14,10 +14,10 @@
 - [ ] Consider changing the attribute names for the json serialization
 - [ ] Introduce Version for all entities
 - [ ] Consider renaming `Jobs` to `MetricRequests` or `MeasurementRequests`
-- [ ] Consider adding `@Builder` for all 
+- [ ] Consider adding `@Builder` for all
 - [ ] Check all set UUIDs in the project
 - [ ] Consider using Spring HATEOS for all Outgoing DTOs
-- [ ] Repository classes in tests should manage the lifecycle of the entities
+- [ ] Repository classes in tests should manage the managedService of the entities
 - [ ] Enable proper bean validation for all DTOs
 - [ ] Make sure defaults are set for all DTOs at one proper location
 - [ ] `ShortRequestDto` should be clear about the `UUID` and the mapping either to type `metric` or ``
@@ -26,7 +26,7 @@
 - [ ] Fix queue full bug in Bandwidth-related measurement tests
 - [ ] Make sure that NodeName is properly set in `application.properties`. Check on start...
 
-## KubernetesService 
+## KubernetesService
 
 - [ ] add labels with the application name to all deployments and services (KubernetesService)
 
@@ -38,12 +38,12 @@
 
 - [ ] Inconsistent naming of bandwidth vs. iperf, e.g. in (`JobService`)
 - [ ] Inconsistent naming of delay vs. npingTCP, e.g. in (`JobService`)
-- [ ] Implement support for IPv6 
-- [ ] SourceHost should be removed from `PingRequest`, `IperfRequest`, and `NpingReqeuest` 
+- [ ] Implement support for IPv6
+- [ ] SourceHost should be removed from `PingRequest`, `IperfRequest`, and `NpingReqeuest`
 - [ ] Consider using `Optional` for all read operations in service classes
 - [ ] Consider returning the Object in all service classes for create operations
-  - [ ] `NodeService`
-  - 
+    - [ ] `NodeService`
+    -
 - [ ] `Long` vs. `long`
 - [ ] Consider removing inherit `Repositories` in favor of `JobRepository`
 - [ ] Properly add `@Autowired` bean configuration
@@ -64,7 +64,7 @@
 
 - [ ] Adjust DefaultHandlerExceptionResolver, e.g., for methods that are not defined. Do not return stack trace.
 - [ ] Also for Bad Request (400), if something is missing
-- [ ] Consider parsing response body for failed requests in MockMvc 
+- [ ] Consider parsing response body for failed requests in MockMvc
 
 ## Package config
 
@@ -94,17 +94,19 @@
 - [ ] Create different `application.properties` for different ways to create tokens
 - [ ] Consider Hashing the generated token
 - [ ] put initTokenMethod with private access modifier
-- [ ] Consider putting the init token at a different location in a simple text file to avoid pushing it to remote filesystem
+- [ ] Consider putting the init token at a different location in a simple text file to avoid pushing it to remote
+  filesystem
 - [ ] Consider removing the init bean in favor of a service
 - [ ] Consider that generated Values are matched in test classes
-- [ ] Intensify mock verification options, verify no more interactions and consider comparing parameters for `PnaInitToken`
+- [ ] Intensify mock verification options, verify no more interactions and consider comparing parameters for
+  `PnaInitToken`
 
 ## NodeService
 
 - [ ] Prevent creating duplicates of Nodes
 - [ ] Add different strategies for adding a node
-  - [ ] Just by stating the endpoint (e.g., IP address) and an API-Token
-  - [ ] By using cloud providers with bootstrapping particular nodes
+    - [ ] Just by stating the endpoint (e.g., IP address) and an API-Token
+    - [ ] By using cloud providers with bootstrapping particular nodes
 - [x] Consider adding additional methods for initializing a node
 - [ ] Consider renaming `pnaId` to `pnaUUID`
 
@@ -112,12 +114,13 @@
 
 - [ ] Prevent creating duplicated of Links
 - [ ] Check if there are proper references between `Link`s and `Job`s
-- [ ] Properly cross references between `Job`s and `Link`s 
+- [ ] Properly cross references between `Job`s and `Link`s
 - [ ] Check the dependency of `Jobs` and `Links`
 
-## BandwidthService 
+## BandwidthService
 
-- [ ] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances` accordingly
+- [ ] Implement dedicated port ranges for TCP and UDP bandwidth measurements, update `pna.iperf3.max.server.instances`
+  accordingly
 - [ ] Reference defined port ranges in `BandwidthService`
 - [x] Implement test with only one measurement result, otherwise tests last pretty long
 - [ ] Check client and sender semantics, respectively naming
@@ -130,15 +133,17 @@
 - [x] Implement `testMeasureBandwidth()` in `BandwidthServiceTests`
 - [ ] Also include the retr tansmission in iperf3
 - [x] Include custom bitrate in iperf3
-- [ ] Add object-oriented style for running 
+- [ ] Add object-oriented style for running
 - [x] Add test cases for TCP
 - [ ] Add appropriate validation for all input parameters of BandwidthService
-  - [ ] In UDP mode, bitrate must be 1 at least
-  - [ ] In TCP mode, bitrate can be 0
+    - [ ] In UDP mode, bitrate must be 1 at least
+    - [ ] In TCP mode, bitrate can be 0
 - [ ] Ensure that `IperfBandwidthMeasurement` has the right inheritance
 - [ ] Rework waiting on starting process in `measure...()`
-- [ ] !!! Provide possibility to set the target port dynamically by asking the source node for the next free port, do this dynamically in `LinkController`
-- [ ] Structure of Inheritance between `IperfBandwidthMeasurement` and `IperfUDPBandwidthMeasurement` is unclear and hard to handle 
+- [ ] !!! Provide possibility to set the target port dynamically by asking the source node for the next free port, do
+  this dynamically in `LinkController`
+- [ ] Structure of Inheritance between `IperfBandwidthMeasurement` and `IperfUDPBandwidthMeasurement` is unclear and
+  hard to handle
 - [ ] Remove `bind` from `Iperf3Request`
 - [ ] Search for "localhost" static values in all tests
 
@@ -173,16 +178,17 @@
 - [ ] Ensure that cancellation of jobs properly sets the active flag
 - [x] Enable that the result is sent via `this.delayServiceMessageChannel.send(new GenericMessage<>(npingTCPResult))`;
 - [ ] Ensure that no duplicate jobs can be created
-- [ ] Add appropriate logging for 
+- [ ] Add appropriate logging for
 - [ ] Consider moving PublishSubscribeChannels for bandwidth and delay to another place
 - [ ] Consider working with `Optional` for all read operations
 - [ ] Check if a (Network) Job can be created even without being attached to a link
 - [ ] Check if there are cross references between Jobs and links
-- [ ] `JObService#scheduleIperfJob` should completely encapsulate `IperfResult`, not a map-like structure that ends up in not proper mappings  
+- [ ] `JObService#scheduleIperfJob` should completely encapsulate `IperfResult`, not a map-like structure that ends up
+  in not proper mappings
 - [ ] Ensure that cancellation and disabling of jobs is properly handeled with an additional parameter `true` or `false`
 - [ ] Ensure that cancellation and disabling is properly set in other methods in `JobService`
 - [ ] Clean `JobService` with concrete methods
-- [ ] Ensure that on startup, alle enabled jobs are loaded into the `JobHashMap` 
+- [ ] Ensure that on startup, alle enabled jobs are loaded into the `JobHashMap`
 - [ ] Check naming and design of spring integration channels in Iperf3-related Jobs
 - [ ] !!! Check UUID of retriebedIperfJob in `JobService#scheduleIperfJob(...)`
 - [ ] Check if references to Link in Job a properly set
@@ -211,16 +217,17 @@
 
 ## PingUtils
 
-- [ ] Check error handling of PingUtils in case of `name or service not found`, might not be good idea to pass the output of the nping proces to the user
+- [ ] Check error handling of PingUtils in case of `name or service not found`, might not be good idea to pass the
+  output of the nping proces to the user
 
 ## ProcessUtils
 
 - [ ] Check randomly continuing `sleep` processes in `ProcessUtils`
 - [ ] FindProcessByName must be more exact by looking into the columns of `ps -eo pid,fname,cmd`. Check for
-  - [ ] `ping`
-  - [ ] `nping`
-  - [ ] `iperf3`
-  - [ ] `sleep`
+    - [ ] `ping`
+    - [ ] `nping`
+    - [ ] `iperf3`
+    - [ ] `sleep`
 
 ## Helper classes (package `utils`)
 
@@ -233,12 +240,15 @@
 - [ ] Disable Devtools by setting 'spring.devtools.add-properties' to false
 - [ ] Ensure that device id is properly set (`pna.id`)
 - [ ] Ensure that the device name is properly set (`pna.name`)
-- [ ] Ensure that all low level tools a function properly, e.g., `ping`, `nping`, `iperf3`, by doing a short check during the first startup
+- [ ] Ensure that all low level tools a function properly, e.g., `ping`, `nping`, `iperf3`, by doing a short check
+  during the first startup
 
 ## Join Process
 
-- [ ] Via PNA-node-agent: Nodes is booting and showing connection string with `endpoint`, `port`, and `token`. Cloud can then authenticate to the device and register.
-- [ ] Via IaaS: All basic information is filled, endpoint, port, and token are generated and passed to the pna-agent. Cloud can then authenticate to the device because it is registered in the cloud.
+- [ ] Via PNA-node-agent: Nodes is booting and showing connection string with `endpoint`, `port`, and `token`. Cloud can
+  then authenticate to the device and register.
+- [ ] Via IaaS: All basic information is filled, endpoint, port, and token are generated and passed to the pna-agent.
+  Cloud can then authenticate to the device because it is registered in the cloud.
 
 ## Miscellaneous
 
@@ -248,16 +258,18 @@
 
 - [ ] `dev.pulceo.pna.IperfLinkJobServiceTests` misses additional tests for linkJob cancellation
 - [ ] `dev.pulceo.pna.NpingLinkJobServiceTests` misses additional tests for linkJob cancellation
-- [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it. 
+- [ ] `BandwidthServiceTests#startIperf3TCPSenderInstance` uses a too long sending interval. Reduce it.
 - [ ] add additional error cases of failed Iperf3 Measurements
 - [x] Add missing tests for `PingJobServiceTests`
-- [ ] `LinkServiceUnitTests` misses proper configuration of `properties`. Consider excluding external dependencies completely.
+- [ ] `LinkServiceUnitTests` misses proper configuration of `properties`. Consider excluding external dependencies
+  completely.
 - [ ] Consider renaming `read` to `retrieved`, e.g., in `LinkService`
 - [ ] Fix port collision for alle `@AutoConfigureMockMvc` tests
 
 ## CloudRegistrationControllerTests
 
-- [ ] Revise if `@SpringBootTest` is required, because it creates a new application context (https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework/server-setup-options.html)
+- [ ] Revise if `@SpringBootTest` is required, because it creates a new application
+  context (https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework/server-setup-options.html)
 
 ## Package config
 
@@ -278,4 +290,5 @@
 - [ ] Get rid of terminating all iperf3 processes
 
 ## CPUUtil
+
 - [ ] Correct calculation of CPU utilization

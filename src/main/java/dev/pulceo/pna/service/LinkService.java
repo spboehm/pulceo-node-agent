@@ -2,22 +2,27 @@ package dev.pulceo.pna.service;
 
 import dev.pulceo.pna.exception.JobServiceException;
 import dev.pulceo.pna.exception.LinkServiceException;
-import dev.pulceo.pna.model.jobs.Job;
 import dev.pulceo.pna.model.jobs.LinkJob;
 import dev.pulceo.pna.model.link.Link;
 import dev.pulceo.pna.model.node.Node;
 import dev.pulceo.pna.repository.LinkRepository;
 import dev.pulceo.pna.repository.SuperJobRespository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Order(4)
 @Service
-public class LinkService {
+public class LinkService implements ManagedService {
+
+    private final Logger logger = LoggerFactory.getLogger(LinkService.class);
 
     @Autowired
     LinkRepository linkRepository;
@@ -53,7 +58,9 @@ public class LinkService {
         return this.linkRepository.findAll();
     }
 
-    public Optional<Link> readLinkByDestNode(Node node) { return this.linkRepository.findLinkByDestNode(node); }
+    public Optional<Link> readLinkByDestNode(Node node) {
+        return this.linkRepository.findLinkByDestNode(node);
+    }
 
     @Transactional
     public void addJobToLink(long linkId, long jobId) throws LinkServiceException, JobServiceException {
@@ -99,5 +106,10 @@ public class LinkService {
         }
         this.linkRepository.delete(link.get());
         // TODO: delete remote node
+    }
+
+    public void reset() {
+        this.logger.info("Resetting link service...");
+        this.linkRepository.deleteAll();
     }
 }

@@ -16,6 +16,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -24,8 +25,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
+@Order(3)
 @Service
-public class KubernetesService {
+public class KubernetesService implements ManagedService {
 
     private final Logger logger = LoggerFactory.getLogger(KubernetesService.class);
 
@@ -54,7 +56,8 @@ public class KubernetesService {
                         api.listNamespace()
                                 .watch(true)
                                 .buildCall(null),
-                        new TypeToken<Watch.Response<V1Namespace>>() {}.getType())) {
+                        new TypeToken<Watch.Response<V1Namespace>>() {
+                        }.getType())) {
                     for (Watch.Response<V1Namespace> item : watch) {
                         // TODO: add specific search for created namespace
                         if (Objects.equals(Objects.requireNonNull(item.object.getMetadata()).getName(), namespace) && Objects.equals(item.type, "ADDED")) {
@@ -85,7 +88,8 @@ public class KubernetesService {
                     api.listNamespace()
                             .watch(true)
                             .buildCall(null),
-                    new TypeToken<Watch.Response<V1Namespace>>() {}.getType())) {
+                    new TypeToken<Watch.Response<V1Namespace>>() {
+                    }.getType())) {
                 for (Watch.Response<V1Namespace> item : watch) {
                     if (Objects.equals(item.object.getMetadata().getName(), namespace) && Objects.equals(item.type, "DELETED")) {
                         break;
@@ -247,6 +251,21 @@ public class KubernetesService {
             throw new KubernetesServiceException("Could not delete deployment!", e);
         }
     }
+
+    @Override
+    public void reset() {
+        this.logger.info("Resetting Kubernetes service...");
+        // blocks
+        this.deleteNamespace(this.namespace);
+
+        // reset
+        try {
+            this.init();
+        } catch (KubernetesServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @PostConstruct
     private void init() throws KubernetesServiceException {

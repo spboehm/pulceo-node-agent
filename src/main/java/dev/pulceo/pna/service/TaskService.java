@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,8 +22,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Order(7)
 @Service
-public class TaskService {
+public class TaskService implements ManagedService {
 
     private final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
@@ -88,6 +90,11 @@ public class TaskService {
         // TODO: add task to queue
         this.taskRepository.save(task);
         //this.taskQueue.put(task.getUuid().toString());
+    }
+
+    @Override
+    public void reset() {
+        this.taskRepository.deleteAll();
     }
 
     @PostConstruct

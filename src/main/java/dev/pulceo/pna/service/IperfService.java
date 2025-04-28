@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Order(6)
 @Service
-public class IperfService {
+public class IperfService implements ManagedService {
 
     private final Logger logger = LoggerFactory.getLogger(IperfService.class);
 
@@ -77,8 +79,15 @@ public class IperfService {
         }
     }
 
+    @Override
+    public void reset() {
+        this.iperfServerRequestRepository.deleteAll();
+        this.init();
+    }
+
     @PostConstruct
-    private void init()  {
+    private void init() {
+        this.logger.info("Starting Iperf3 service...");
         try {
             // kill all iperf processes
             Process p = new ProcessBuilder("killall", "-e", "iperf3").start();
@@ -131,7 +140,7 @@ public class IperfService {
             killIperf3Server.waitFor();
 
             // wait for termination
-            while(checkForRunningIperf3Receiver(port)) {
+            while (checkForRunningIperf3Receiver(port)) {
                 Thread.sleep(100);
             }
         } catch (InterruptedException | IOException e) {

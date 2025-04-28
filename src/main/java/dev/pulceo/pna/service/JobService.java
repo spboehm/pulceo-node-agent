@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
@@ -32,8 +33,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
+@Order(1)
 @Service
-public class JobService {
+public class JobService implements ManagedService {
 
     Logger logger = LoggerFactory.getLogger(JobService.class);
 
@@ -212,11 +214,11 @@ public class JobService {
                         .metricResult(networkUtilizationResult)
                         .build();
 
-            Message message = new Message(deviceId, networkMetric);
-            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
-            logger.debug("Sent message to resource utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
+                Message message = new Message(deviceId, networkMetric);
+                this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                logger.debug("Sent message to resource utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
             } catch (ResourceServiceUtilizationException e) {
-               logger.error(e.getMessage());
+                logger.error(e.getMessage());
             }
         }, Duration.ofSeconds(retrievedResourceUtilizationJob.getRecurrence()));
         this.jobHashMap.put(retrievedResourceUtilizationJobForCPUId, scheduledFuture);
@@ -230,16 +232,16 @@ public class JobService {
             try {
                 StorageUtilizationResult storageUtilizationResult = this.resourceUtilizationService.retrieveStorageUtilizationResult(retrievedResourceUtilizationJob.getResourceUtilizationRequest());
 
-            NetworkMetric networkMetric = NetworkMetric.builder()
-                    .metricUUID(storageUtilizationResult.getUuid())
-                    .metricType(storageUtilizationResult.getMetricType())
-                    .jobUUID(retrievedResourceUtilizationJob.getUuid())
-                    .metricResult(storageUtilizationResult)
-                    .build();
+                NetworkMetric networkMetric = NetworkMetric.builder()
+                        .metricUUID(storageUtilizationResult.getUuid())
+                        .metricType(storageUtilizationResult.getMetricType())
+                        .jobUUID(retrievedResourceUtilizationJob.getUuid())
+                        .metricResult(storageUtilizationResult)
+                        .build();
 
-            Message message = new Message(deviceId, networkMetric);
-            this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
-            logger.debug("Sent message to storage utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
+                Message message = new Message(deviceId, networkMetric);
+                this.resourceUtilizationCPUServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
+                logger.debug("Sent message to storage utilization CPU service message channel: " + retrievedResourceUtilizationJob.getResourceUtilizationRequest().getResourceName());
             } catch (ResourceServiceUtilizationException e) {
                 logger.error(e.getMessage());
             }
@@ -415,7 +417,7 @@ public class JobService {
                 this.bandwidthServiceMessageChannel.send(new GenericMessage<>(message, new MessageHeaders(Map.of("mqtt_topic", metricsMqttTopic))));
                 logger.info("Sent message to bandwidth service message channel: " + retrievedIperfJob.getIperfRequest().getDestinationHost());
             } catch (BandwidthServiceException | InterruptedException e) {
-               logger.error(e.getMessage());
+                logger.error(e.getMessage());
             }
         }, Duration.ofSeconds(retrievedIperfJob.getRecurrence()));
         this.jobHashMap.put(retrievedIperfJobId, scheduledFuture);
@@ -509,6 +511,16 @@ public class JobService {
 
     public boolean cancelPingJob(long id) {
         return this.jobHashMap.get(id).cancel(false);
+    }
+
+    @Override
+    public void reset() {
+        // cancel all jobs
+        for (Map.Entry<Long, ScheduledFuture<?>> entry : this.jobHashMap.entrySet()) {
+            entry.getValue().cancel(false);
+        }
+        this.jobHashMap.clear();
+        this.jobRepository.deleteAll();
     }
 
     @PostConstruct

@@ -47,12 +47,14 @@ public class CloudRegistrationService implements ManagedService {
     public CloudRegistration newInitialCloudRegistration(CloudRegistrationRequest cloudRegistrationRequest) throws CloudRegistrationException {
 
         if (isCloudRegistrationExisting()) {
+            this.logger.info("Cloud registration already exists");
             throw new CloudRegistrationException("A valid cloud registration already exists!");
         }
         /* Maybe remove because already covered by bean validation, except token validation */
         // TODO: redundant bean validation
         // validate prmUUID
         if (!isValidUUID(cloudRegistrationRequest.getPrmUUID())) {
+            this.logger.error("prmUUID is not a valid UUID!");
             throw new CloudRegistrationException("prmUUID is not a valid UUID!");
         }
         ;
@@ -60,6 +62,7 @@ public class CloudRegistrationService implements ManagedService {
         // validate prmEndpoint
         // TODO: redundant bean validation
         if (!isValidEndpoint(cloudRegistrationRequest.getPrmEndpoint())) {
+            this.logger.error("prmEndpoint is not a valid endpoint!");
             throw new CloudRegistrationException("prmEndpoint is not a valid endpoint!");
         }
         ;
@@ -67,19 +70,23 @@ public class CloudRegistrationService implements ManagedService {
         // validate pnaInitToken
         // TODO: consider leaving this because it is checking further logic
         if (!isValidPnaInitToken(cloudRegistrationRequest.getPnaInitToken())) {
+            this.logger.error("pnaInitToken is not a valid pnaInitToken!");
             throw new CloudRegistrationException("pnaInitToken is not a valid token!");
         }
         ;
 
         /* case everything good */
         if (isPnaInitTokenExistingInDB()) {
+            this.logger.info("Found pnaInitToken in DB, checking if valid...");
             PnaInitToken pnaInitToken = this.pnaInitTokenRepository.findAll().iterator().next();
 
             if (!pnaInitToken.isValid()) {
+                this.logger.error("PNA init token is invalid!");
                 throw new CloudRegistrationException("pnaInitToken is not valid!");
             }
 
             if (!pnaInitToken.getToken().equals(cloudRegistrationRequest.getPnaInitToken())) {
+                this.logger.error("pnaInitToken does not match!");
                 throw new CloudRegistrationException("pnaInitToken does not match!");
             }
 
@@ -90,11 +97,13 @@ public class CloudRegistrationService implements ManagedService {
             // Obtain localnode
             Optional<Node> localNode = this.nodeService.readLocalNode();
             if (localNode.isEmpty()) {
+                this.logger.error("Could not find local node!");
                 throw new CloudRegistrationException("Local node does not exist!");
             }
             // TODO: replace with pnaInitToken.getToken() with pnaToken in later use cases
             return this.cloudRegistrationRepository.save(new CloudRegistration(localNode.get().getUuid().toString(), this.pnaId, prmUUID, prmEndpoint, pnaInitToken.getToken()));
         } else {
+            this.logger.error("pnaInitToken does not exist in DB!");
             throw new CloudRegistrationException("pnaInitToken does not exist!");
         }
     }
@@ -106,23 +115,23 @@ public class CloudRegistrationService implements ManagedService {
         // TODO: check exception handling for @Postconstruct
         // first check if there is already a valid cloud registration, if yes, abort
         if (isCloudRegistrationExisting()) {
-            logger.info("A valid cloud registration already exists, skipping generation...");
+            this.logger.info("A valid cloud registration already exists, skipping generation...");
             return;
         }
 
         if (isPnaInitTokenExistingInDB()) {
-            logger.info("A valid pna init token already exists in DB, skipping generation...");
+            this.logger.info("A valid pna init token already exists in DB, skipping generation...");
             return;
         }
 
         if (isValidPnaInitTokenExistingInAppProperties()) {
             // continue here with registration and write to DB
-            logger.info("Found valid pna init token in application.properties, writing to DB...");
+            this.logger.info("Found valid pna init token in application.properties, writing to DB...");
             this.pnaInitTokenRepository.save(new PnaInitToken(this.pnaId, this.pnaInitToken));
             return;
         }
         // otherwise generate a new token and write to DB
-        logger.info("Generating new pna init token and writing to DB...");
+        this.logger.info("Generating new pna init token and writing to DB...");
         this.pnaInitTokenRepository.save(new PnaInitToken(this.pnaId, generatePnaToken()));
     }
 
@@ -173,6 +182,11 @@ public class CloudRegistrationService implements ManagedService {
         this.logger.info("Resetting cloud registration...");
         this.cloudRegistrationRepository.deleteAll();
         this.pnaInitTokenRepository.deleteAll();
+        try {
+            this.initPnaInitToken();
+        } catch (CloudRegistrationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

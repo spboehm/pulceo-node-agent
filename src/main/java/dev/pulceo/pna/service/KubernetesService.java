@@ -278,8 +278,13 @@ public class KubernetesService implements ManagedService {
             // TODO: create namespace if not exists
             createNameSpaceIfNotExists();
 
-        } catch (Exception e) {
+        } catch (KubernetesServiceException | IOException e) {
             logger.error("Could not init KubernetesService!", e);
+            if (e.getCause().getMessage().contains("409")) {
+                // swallow and return, concurrently accessed
+                this.logger.warn("KubernetesService already initialized, returning!");
+                return;
+            }
             throw new KubernetesServiceException("Could not init KubernetesService!", e);
         }
     }

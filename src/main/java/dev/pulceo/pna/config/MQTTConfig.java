@@ -1,5 +1,8 @@
 package dev.pulceo.pna.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.pulceo.pna.dto.task.CreateNewTaskOnPnaDTO;
+import dev.pulceo.pna.model.task.Task;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,11 +10,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.Transformers;
+import org.springframework.integration.json.JsonToObjectTransformer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -45,10 +52,13 @@ public class MQTTConfig {
     public MessageChannel mqttInputChannelForTask() { return new DirectChannel(); }
 
     @Bean
+    public MessageChannel mqttOutputChannelForTask() { return new DirectChannel(); }
+
+    @Bean
     public MessageProducer inboundTask() {
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(UUID.randomUUID().toString(), mqttClientFactory(),
-                        "dt/" + this.pnaUUID + "/tasks");
+                        "dt/" + this.pnaUUID + "/tasks/create");
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
@@ -58,15 +68,23 @@ public class MQTTConfig {
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "mqttInputChannelForTask")
-    public MessageHandler handler() {
-        return message -> {
-            try {
-                this.mqttBlockingQueueTask().put(message);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        };
+    public IntegrationFlow taskFlow() {
+        return IntegrationFlow
+                .from(mqttInputChannelForTask())
+                .transform(new JsonToObjectTransformer(CreateNewTaskOnPnaDTO.class))
+                .transform(Task::fromCreateNewTaskOnPnaDTO)
+                .handle("taskService", "createTask")
+                .channel("mqttOutputChannelForTask")
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow mqttResponseFlow(ObjectMapper objectMapper) {
+        return IntegrationFlow.from("mqttOutputChannelForTask")  // channel where the service sends responses
+                .transform(Transformers.toJson()) // convert your Task/DTO to JSON string
+                .enrich(h -> h.header(MqttHeaders.TOPIC, "dt/" + this.pnaUUID + "/tasks/create/replies")) // set the topic for MQTT
+                .handle(mqttOutbound())             // send JSON to MQTT
+                .get();
     }
 
 //    @Bean

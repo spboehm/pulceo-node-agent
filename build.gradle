@@ -64,6 +64,17 @@ tasks.register("bootRun-pna-test1") {
 	finalizedBy("bootRun")
 }
 
+tasks.register("bootRun-pna-test1-mqtt-public") {
+	group = "application"
+	description = "Runs pna with the test1-mqtt-public profile"
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "test1-mqtt-public")
+		}
+	}
+	finalizedBy("bootRun")
+}
+
 tasks.register("bootRun-pna-test2") {
 	group = "application"
 	description = "Runs pna with the test2 profile"

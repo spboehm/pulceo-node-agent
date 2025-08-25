@@ -52,6 +52,7 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core:5.6.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.0'
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 

@@ -31,7 +31,7 @@ public class TaskController {
     @PostMapping("")
     public ResponseEntity<CreateNewTaskOnPnaResponseDTO> createNewTaskOnPna(@Valid @RequestBody CreateNewTaskOnPnaDTO createNewTaskOnPnaDTO) throws TaskServiceException, InterruptedException {
         Task task = this.taskService.createTask(Task.fromCreateNewTaskOnPnaDTO(createNewTaskOnPnaDTO));
-        this.taskService.queueForScheduling(task.getUuid().toString());
+        this.taskService.queueForScheduling(task);
         return ResponseEntity.status(200).body(CreateNewTaskOnPnaResponseDTO.fromTask(task));
     }
 

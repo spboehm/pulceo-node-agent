@@ -40,25 +40,24 @@ public class TaskProcessor {
     }
 
     @Transactional
-    public void processTask(String nextTaskId) throws ProxyException {
-        Optional<Task> optionalOfTaskToBeProcessed = this.taskRepository.readTaskByUuid(UUID.fromString(nextTaskId));
+    public void processTask(Task task) throws ProxyException {
+        Optional<Task> optionalOfTaskToBeProcessed = this.taskRepository.readTaskByUuid(UUID.fromString(task.getUuid().toString()));
         if (optionalOfTaskToBeProcessed.isEmpty()) {
-            throw new ProxyException("Task %s not found".formatted(nextTaskId));
+            throw new ProxyException("Task %s not found".formatted(task.getUuid().toString()));
         }
-        Task taskToBeUpdated = optionalOfTaskToBeProcessed.get();
 
-        if (taskToBeUpdated.getStatus() == TaskStatus.NEW) {
-            this.processNewTask(taskToBeUpdated);
+        if (task.getStatus() == TaskStatus.NEW) {
+            this.processNewTask(task);
             logger.debug("Processed tasks with status [NEW] " + taskCounterNew.incrementAndGet());
-        } else if (taskToBeUpdated.getStatus() == TaskStatus.RUNNING) {
+        } else if (task.getStatus() == TaskStatus.RUNNING) {
             // TODO: case TaskStatus.RUNNING:update progress for example ???
-            this.processRunningTask(nextTaskId, taskToBeUpdated);
+            this.processRunningTask(task);
             logger.debug("Processed tasks with status [RUNNING] " + taskCounterRunning.incrementAndGet());
-        } else if (taskToBeUpdated.getStatus() == TaskStatus.COMPLETED) {
-            this.processCompletedTask(taskToBeUpdated);
+        } else if (task.getStatus() == TaskStatus.COMPLETED) {
+            this.processCompletedTask(task);
             logger.debug("Processed tasks with status [COMPLETED] " + taskCounterCompleted.incrementAndGet());
         } else {
-            logger.warn("Unhandled task status: {}", taskToBeUpdated.getStatus());
+            logger.warn("Unhandled task status: {}", task.getStatus());
         }
     }
 
@@ -118,8 +117,8 @@ public class TaskProcessor {
     }
 
     @Transactional
-    public void processRunningTask(String nextTaskId, Task taskToBeUpdated) throws ProxyException {
-        logger.debug("Process RUNNING task with id %s".formatted(nextTaskId));
+    public void processRunningTask(Task taskToBeUpdated) throws ProxyException {
+        logger.debug("Process RUNNING task with id %s".formatted(taskToBeUpdated.getUuid().toString()));
         // TODO: check if application exists
 
         // TODO: check if application component exists

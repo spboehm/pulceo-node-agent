@@ -71,7 +71,7 @@ public class TaskServiceIntegrationTest {
     @Test
     public void createAndScheduleTasks() throws Exception {
         // given
-        int batchSize = 100;
+        int batchSize = 1000;
         List<Task> tasks = generateTasks(batchSize);
         List<Task> createdTasks = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class TaskServiceIntegrationTest {
         for (Task task : tasks) {
             Task createdTask = this.taskService.createTask(task);
             createdTasks.add(createdTask);
-            this.taskService.queueForScheduling(createdTask.getUuid().toString());
+            this.taskService.queueForScheduling(task);
         }
 
         // ensure all tasks are in NEW status
@@ -91,7 +91,7 @@ public class TaskServiceIntegrationTest {
         ExecutorService executorService = Executors.newFixedThreadPool(batchSize);
         CountDownLatch runningTasks = new CountDownLatch(batchSize);
         CountDownLatch completedTasks = new CountDownLatch(batchSize);
-        simulateEisCLients(createdTasks, executorService, runningTasks, completedTasks);
+        simulateEisClients(createdTasks, executorService, runningTasks, completedTasks);
         executorService.shutdown();
         shutdownAndAwaitTermination(executorService);
 
@@ -105,7 +105,7 @@ public class TaskServiceIntegrationTest {
         assertEquals(batchSize, this.taskProcessor.getTaskCounterCompleted().intValue());
     }
 
-    private void simulateEisCLients(List<Task> createdTasks, ExecutorService executorService, CountDownLatch runningTasks, CountDownLatch completedTasks) {
+    private void simulateEisClients(List<Task> createdTasks, ExecutorService executorService, CountDownLatch runningTasks, CountDownLatch completedTasks) {
         for (Task createdTask : createdTasks) {
             executorService.submit(() -> {
                 try {

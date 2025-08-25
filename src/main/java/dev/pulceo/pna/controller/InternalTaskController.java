@@ -3,6 +3,7 @@ package dev.pulceo.pna.controller;
 import dev.pulceo.pna.dto.task.internal.UpdateTaskInternallyOnPNADTO;
 import dev.pulceo.pna.dto.task.internal.UpdateTaskInternallyOnPNAResponseDTO;
 import dev.pulceo.pna.exception.TaskServiceException;
+import dev.pulceo.pna.model.task.Task;
 import dev.pulceo.pna.service.TaskService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -31,8 +32,8 @@ public class InternalTaskController {
     // TODO: get rid of interrupted exception
     @PutMapping("/{id}")
     public ResponseEntity<UpdateTaskInternallyOnPNAResponseDTO> updateTaskById(@PathVariable String id, @Valid @RequestBody UpdateTaskInternallyOnPNADTO updateTaskInternallyOnPNADTO) throws TaskServiceException, InterruptedException {
-        this.taskService.updateTaskInternally(id, updateTaskInternallyOnPNADTO.getNewTaskStatus(), updateTaskInternallyOnPNADTO.getProgress(), updateTaskInternallyOnPNADTO.getComment());
-        this.taskService.queueForScheduling(id);
+        Task internallyUpdatedTask = this.taskService.updateTaskInternally(id, updateTaskInternallyOnPNADTO.getNewTaskStatus(), updateTaskInternallyOnPNADTO.getProgress(), updateTaskInternallyOnPNADTO.getComment());
+        this.taskService.queueForScheduling(internallyUpdatedTask);
         return ResponseEntity.accepted().build();
     }
 

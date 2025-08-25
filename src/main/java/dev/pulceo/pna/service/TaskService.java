@@ -33,8 +33,6 @@ public class TaskService implements ManagedService {
 
     private final TaskRepository taskRepository;
     private final NodeService nodeService;
-    // TODO: may configure as bean?
-//    private final BlockingQueue<String> taskQueueWithIds = new ArrayBlockingQueue<>(1000);
     private final BlockingQueue<Task> taskProcessingQueue = new LinkedBlockingQueue<>(1000);
     private final PSMProxy psmProxy;
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -71,10 +69,6 @@ public class TaskService implements ManagedService {
         return this.taskRepository.save(task);
     }
 
-//    public void queueForScheduling(String taskSchedulingUuid) throws InterruptedException {
-//        this.taskQueueWithIds.put(taskSchedulingUuid);
-//    }
-    // TODO: immutable copy of task
     public void queueForScheduling(Task task) throws InterruptedException {
         this.taskProcessingQueue.put(task);
     }
@@ -104,27 +98,29 @@ public class TaskService implements ManagedService {
     @Override
     public void reset() {
         this.taskRepository.deleteAll();
+        this.taskProcessor.getTaskCounterNew().set(0);
+        this.taskProcessor.getTaskCounterRunning().set(0);
+        this.taskProcessor.getTaskCounterCompleted().set(0);
     }
 
     @PostConstruct
     public void init() throws TaskServiceException {
-        //this.taskRepository.deleteAll();
         threadPoolTaskExecutor.execute(() -> {
             logger.info("Starting task service...");
             while (isRunning.get()) {
-                // TODO: start processing tasks, e.g., after restart of application, load from db
                 try {
-                    // process newly incoming tasks from queue
-//                    String nextTaskId = this.taskQueueWithIds.take();
                     Task task = this.taskProcessingQueue.take();
-                    this.taskProcessor.processTask(task);
+                    threadPoolTaskExecutor.execute(() -> {
+                        try {
+                            this.taskProcessor.processTask(task);
+                        } catch (ProxyException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 } catch (InterruptedException e) {
                     this.isRunning.set(false);
                     Thread.currentThread().interrupt();
                     logger.warn("Task service interrupted, shutting down...");
-                } catch (ProxyException e) {
-                    throw new RuntimeException(e);
-
                 }
             }
         });

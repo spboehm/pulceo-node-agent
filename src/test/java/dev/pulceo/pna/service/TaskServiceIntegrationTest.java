@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,12 +69,11 @@ public class TaskServiceIntegrationTest {
     }
 
     @Test
-    public void createAndScheduleTenTasks() throws Exception {
+    public void createAndScheduleTasks() throws Exception {
         // given
-        int batchSize = 10;
+        int batchSize = 100;
         List<Task> tasks = generateTasks(batchSize);
         List<Task> createdTasks = new ArrayList<>();
-
 
         // when
         for (Task task : tasks) {
@@ -82,60 +82,69 @@ public class TaskServiceIntegrationTest {
             this.taskService.queueForScheduling(createdTask.getUuid().toString());
         }
 
-        // 10 new
+        // ensure all tasks are in NEW status
         while (this.taskProcessor.getTaskCounterNew().intValue() != batchSize) {
             Thread.sleep(100);
         }
 
+        // simulate eis clients processing tasks concurrently
         ExecutorService executorService = Executors.newFixedThreadPool(batchSize);
         CountDownLatch runningTasks = new CountDownLatch(batchSize);
-        CountDownLatch completed = new CountDownLatch(batchSize);
-        // 10 running
-        // TODO: Update internally to task running and completed
-        for (Task createdTask : createdTasks) {
-            UpdateTaskInternallyOnPNADTO updateNewTaskInternallyOnPNADTO = UpdateTaskInternallyOnPNADTO.builder()
-                    .taskId(createdTask.getUuid().toString())
-                    .newTaskStatus(TaskStatus.RUNNING)
-                    .progress(50.0f)
-                    .comment("Task is running")
-                    .build();
-
-            this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/internal/tasks/" + updateNewTaskInternallyOnPNADTO.getTaskId())
-                            .contentType("application/json")
-                            .accept("application/json")
-                            .content(this.objectMapper.writeValueAsString(updateNewTaskInternallyOnPNADTO)))
-                    .andExpect(status().is2xxSuccessful());
-            runningTasks.countDown();
-
-            // simulate some delay
-            Thread.sleep((long)(Math.random() * 1000));
-
-            UpdateTaskInternallyOnPNADTO updateCompletedTaskInternallyOnPNADTO = UpdateTaskInternallyOnPNADTO.builder()
-                    .taskId(createdTask.getUuid().toString())
-                    .newTaskStatus(TaskStatus.COMPLETED)
-                    .progress(50.0f)
-                    .comment("Task is running")
-                    .build();
-
-            this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/internal/tasks/" + updateCompletedTaskInternallyOnPNADTO.getTaskId())
-                            .contentType("application/json")
-                            .accept("application/json")
-                            .content(this.objectMapper.writeValueAsString(updateCompletedTaskInternallyOnPNADTO)))
-                    .andExpect(status().is2xxSuccessful());
-            completed.countDown();
-        }
+        CountDownLatch completedTasks = new CountDownLatch(batchSize);
+        simulateEisCLients(createdTasks, executorService, runningTasks, completedTasks);
         executorService.shutdown();
+        shutdownAndAwaitTermination(executorService);
 
-        while (this.taskProcessor.getTaskCounterRunning().intValue() != batchSize) {
-            Thread.sleep(100);
+        // wait after all tasks are processed by eis clients
+        runningTasks.await(30, TimeUnit.SECONDS);
+        completedTasks.await(30, TimeUnit.SECONDS);
+        Thread.sleep(5000);
+
+        // then
+        assertEquals(batchSize, this.taskProcessor.getTaskCounterRunning().intValue());
+        assertEquals(batchSize, this.taskProcessor.getTaskCounterCompleted().intValue());
+    }
+
+    private void simulateEisCLients(List<Task> createdTasks, ExecutorService executorService, CountDownLatch runningTasks, CountDownLatch completedTasks) {
+        for (Task createdTask : createdTasks) {
+            executorService.submit(() -> {
+                try {
+                    UpdateTaskInternallyOnPNADTO updateNewTaskInternallyOnPNADTO = UpdateTaskInternallyOnPNADTO.builder()
+                            .taskId(createdTask.getUuid().toString())
+                            .newTaskStatus(TaskStatus.RUNNING)
+                            .progress(50.0f)
+                            .comment("Task is running")
+                            .build();
+
+                    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/internal/tasks/" + updateNewTaskInternallyOnPNADTO.getTaskId())
+                                    .contentType("application/json")
+                                    .accept("application/json")
+                                    .content(this.objectMapper.writeValueAsString(updateNewTaskInternallyOnPNADTO)))
+                            .andExpect(status().is2xxSuccessful());
+                    runningTasks.countDown();
+
+                    // simulate some delay
+                    Thread.sleep((long)(Math.random() * 100));
+
+                    UpdateTaskInternallyOnPNADTO updateCompletedTaskInternallyOnPNADTO = UpdateTaskInternallyOnPNADTO.builder()
+                            .taskId(createdTask.getUuid().toString())
+                            .newTaskStatus(TaskStatus.COMPLETED)
+                            .progress(50.0f)
+                            .comment("Task is running")
+                            .build();
+
+                    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/internal/tasks/" + updateCompletedTaskInternallyOnPNADTO.getTaskId())
+                                    .contentType("application/json")
+                                    .accept("application/json")
+                                    .content(this.objectMapper.writeValueAsString(updateCompletedTaskInternallyOnPNADTO)))
+                            .andExpect(status().is2xxSuccessful());
+                    completedTasks.countDown();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
         }
-
-        while (this.taskProcessor.getTaskCounterCompleted().intValue() != batchSize) {
-            Thread.sleep(100);
-        }
-
-        assertEquals(this.taskProcessor.getTaskCounterRunning().intValue(), batchSize);
-        assertEquals(this.taskProcessor.getTaskCounterCompleted().intValue(), batchSize);
     }
 
     private List<Task> generateTasks(int batchSize) {
@@ -159,5 +168,21 @@ public class TaskServiceIntegrationTest {
         return tasks;
     }
 
-
+    void shutdownAndAwaitTermination(ExecutorService pool) {
+        pool.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                pool.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            pool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+    }
 }

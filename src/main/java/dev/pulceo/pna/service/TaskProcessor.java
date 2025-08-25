@@ -23,7 +23,6 @@ public class TaskProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(TaskProcessor.class);
 
-    private final TaskRepository taskRepository;
     private final PSMProxy psmProxy;
     private final WebClient webClient;
     @Getter
@@ -33,24 +32,16 @@ public class TaskProcessor {
     @Getter
     private final AtomicInteger taskCounterCompleted = new AtomicInteger(0);
 
-    public TaskProcessor(TaskRepository taskRepository, PSMProxy psmProxy, WebClient webClient) {
-        this.taskRepository = taskRepository;
+    public TaskProcessor(PSMProxy psmProxy, WebClient webClient) {
         this.psmProxy = psmProxy;
         this.webClient = webClient;
     }
 
-    @Transactional
     public void processTask(Task task) throws ProxyException {
-        Optional<Task> optionalOfTaskToBeProcessed = this.taskRepository.readTaskByUuid(UUID.fromString(task.getUuid().toString()));
-        if (optionalOfTaskToBeProcessed.isEmpty()) {
-            throw new ProxyException("Task %s not found".formatted(task.getUuid().toString()));
-        }
-
         if (task.getStatus() == TaskStatus.NEW) {
             this.processNewTask(task);
             logger.debug("Processed tasks with status [NEW] " + taskCounterNew.incrementAndGet());
         } else if (task.getStatus() == TaskStatus.RUNNING) {
-            // TODO: case TaskStatus.RUNNING:update progress for example ???
             this.processRunningTask(task);
             logger.debug("Processed tasks with status [RUNNING] " + taskCounterRunning.incrementAndGet());
         } else if (task.getStatus() == TaskStatus.COMPLETED) {
@@ -61,7 +52,6 @@ public class TaskProcessor {
         }
     }
 
-    @Transactional
     public void processNewTask(Task taskToBeUpdated) throws ProxyException {
         logger.debug("Process NEW task with id %s".formatted(taskToBeUpdated.getUuid()));
         // TODO: check if application exists
@@ -116,7 +106,6 @@ public class TaskProcessor {
                 .block();
     }
 
-    @Transactional
     public void processRunningTask(Task taskToBeUpdated) throws ProxyException {
         logger.debug("Process RUNNING task with id %s".formatted(taskToBeUpdated.getUuid().toString()));
         // TODO: check if application exists
@@ -133,7 +122,6 @@ public class TaskProcessor {
         this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
     }
 
-    @Transactional
     public void processCompletedTask(Task taskToBeUpdated) throws ProxyException {
         logger.debug("Process COMPLETED task %s".formatted(taskToBeUpdated.getUuid()));
         this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());

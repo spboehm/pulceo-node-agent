@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -49,6 +51,9 @@ public class TaskServiceIntegrationTest {
     private TaskRepository taskRepository;
 
     private final static WireMockServer wireMockServer = new WireMockServer(WireMockConfiguration.options().httpsPort(8087));
+
+    @Autowired
+    private PublishSubscribeChannel proxyMessageChannel;
 
     @BeforeEach
     public void setupEach() {
@@ -74,6 +79,10 @@ public class TaskServiceIntegrationTest {
         int batchSize = 1000;
         List<Task> tasks = generateTasks(batchSize);
         List<Task> createdTasks = new ArrayList<>();
+        CountDownLatch sentMessages = new CountDownLatch(batchSize * 3); // running + completed
+        proxyMessageChannel.subscribe(message -> {
+            sentMessages.countDown();
+        });
 
         // when
         for (Task task : tasks) {
@@ -96,11 +105,14 @@ public class TaskServiceIntegrationTest {
         shutdownAndAwaitTermination(executorService);
 
         // wait after all tasks are processed by eis clients
-        runningTasks.await(30, TimeUnit.SECONDS);
-        completedTasks.await(30, TimeUnit.SECONDS);
-        Thread.sleep(5000);
+        boolean runningTasksValid = runningTasks.await(30, TimeUnit.SECONDS);
+        boolean completedTasksValid = completedTasks.await(30, TimeUnit.SECONDS);
+        boolean processingCompleted = sentMessages.await(30, TimeUnit.SECONDS);
 
         // then
+        assertTrue(runningTasksValid);
+        assertTrue(completedTasksValid);
+        assertTrue(processingCompleted);
         assertEquals(batchSize, this.taskProcessor.getTaskCounterRunning().intValue());
         assertEquals(batchSize, this.taskProcessor.getTaskCounterCompleted().intValue());
     }

@@ -67,7 +67,7 @@ public class MQTTConfig {
         return adapter;
     }
 
-    @Bean
+/*    @Bean
     public IntegrationFlow taskFlow() {
         return IntegrationFlow
                 .from(mqttInputChannelForTask())
@@ -85,7 +85,7 @@ public class MQTTConfig {
                 .enrich(h -> h.header(MqttHeaders.TOPIC, "dt/" + this.pnaUUID + "/tasks/create/replies")) // set the topic for MQTT
                 .handle(mqttOutbound())             // send JSON to MQTT
                 .get();
-    }
+    }*/
 
 //    @Bean
 //    public MessageChannel mqttInputChannel() {

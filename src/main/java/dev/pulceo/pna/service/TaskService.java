@@ -8,6 +8,7 @@ import dev.pulceo.pna.model.task.TaskStatus;
 import dev.pulceo.pna.proxy.PSMProxy;
 import dev.pulceo.pna.repository.TaskRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Order(7)
 @Service
@@ -39,6 +43,8 @@ public class TaskService implements ManagedService {
     private final AtomicBoolean isRunning = new AtomicBoolean(true);
     private final WebClient webClient;
     private final TaskProcessor taskProcessor;
+    private final AtomicInteger taskCounterCreated = new AtomicInteger(0);
+    private final AtomicInteger taskCounterUpdated = new AtomicInteger(0);
 
 
     @Autowired
@@ -52,6 +58,7 @@ public class TaskService implements ManagedService {
     }
 
     public Task createTask(Task task) throws TaskServiceException {
+        logger.debug("CreatedTaskCounter: {}", taskCounterCreated.incrementAndGet());
         logger.info("Received task with global id %s".formatted(task.getGlobalTaskUUID()));
 
         // TODO: validation of Task
@@ -77,6 +84,7 @@ public class TaskService implements ManagedService {
         return this.taskRepository.readTaskByUuid(UUID.fromString(id));
     }
 
+    @Transactional
     public void updateTaskInternally(String taskId, TaskStatus newStatus, float progress, String comment) throws TaskServiceException, InterruptedException {
         // check if task exists
         Optional<Task> taskOptional = this.readTaskById(taskId);
@@ -86,11 +94,16 @@ public class TaskService implements ManagedService {
         Task task = taskOptional.get();
 
         // TODO: Update task
-        task.setStatus(newStatus);
+        if (task.getStatus() == TaskStatus.COMPLETED) {
+            logger.debug("Task %s is already completed, skipping update.".formatted(task.getUuid()));
+        } else {
+            task.setStatus(newStatus);
+        }
         // TODO: add progress, do we need that?
         // TODO: add comment, do we need that?
         // TODO: add task to queue
         this.taskRepository.save(task);
+        logger.debug("UpdatedTaskCounterInternally: {}", taskCounterUpdated.incrementAndGet());
         //this.taskQueue.put(task.getUuid().toString());
     }
 
@@ -101,6 +114,7 @@ public class TaskService implements ManagedService {
 
     @PostConstruct
     public void init() throws TaskServiceException {
+        //this.taskRepository.deleteAll();
         threadPoolTaskExecutor.execute(() -> {
             logger.info("Starting task service...");
             while (isRunning.get()) {
@@ -108,16 +122,21 @@ public class TaskService implements ManagedService {
                 try {
                     // process newly incoming tasks from queue
                     logger.info("TaskService is waiting for processing tasks");
+                    logger.debug(String.valueOf(this.taskRepository.count()));
                     String nextTaskId = this.taskQueue.take();
 
                     logger.debug("Try to read task %s from db".formatted(nextTaskId));
                     this.taskProcessor.processTask(nextTaskId);
-                    // case TaskStatus.NEW:
-                } catch (InterruptedException | ProxyException e) {
+                } catch (InterruptedException e) {
                     this.isRunning.set(false);
+                    Thread.currentThread().interrupt();
+                    logger.warn("Task service interrupted, shutting down...");
+                } catch (ProxyException e) {
                     throw new RuntimeException(e);
+
                 }
             }
         });
     }
+
 }

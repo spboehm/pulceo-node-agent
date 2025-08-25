@@ -34,7 +34,6 @@ public class PSMProxy {
     }
 
     public void updateTask(String globaltaskId, String taskId, TaskStatus newTaskStatus, String modifiedBy) throws ProxyException {
-
         UpdateTaskFromPnaDTO updateTaskFromPnaDTO = UpdateTaskFromPnaDTO.builder()
                 .globalTaskUUID(globaltaskId)
                 .remoteTaskUUID(taskId)

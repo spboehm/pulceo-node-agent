@@ -7,6 +7,7 @@ import dev.pulceo.pna.model.task.TaskStatus;
 import dev.pulceo.pna.proxy.PSMProxy;
 import dev.pulceo.pna.repository.TaskRepository;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,47 +16,44 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class TaskProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(TaskProcessor.class);
 
-    private final TaskRepository taskRepository;
     private final PSMProxy psmProxy;
     private final WebClient webClient;
+    @Getter
+    private final AtomicInteger taskCounterNew = new AtomicInteger(0);
+    @Getter
+    private final AtomicInteger taskCounterRunning = new AtomicInteger(0);
+    @Getter
+    private final AtomicInteger taskCounterCompleted = new AtomicInteger(0);
 
-    public TaskProcessor(TaskRepository taskRepository, PSMProxy psmProxy, WebClient webClient) {
-        this.taskRepository = taskRepository;
+    public TaskProcessor(PSMProxy psmProxy, WebClient webClient) {
         this.psmProxy = psmProxy;
         this.webClient = webClient;
     }
 
-    @Transactional
-    public void processTask(String nextTaskId) throws ProxyException {
-        Optional<Task> optionalOfTaskToBeProcessed = this.taskRepository.readTaskByUuid(UUID.fromString(nextTaskId));
-        if (optionalOfTaskToBeProcessed.isEmpty()) {
-            throw new ProxyException("Task %s not found".formatted(nextTaskId));
-        }
-        Task taskToBeUpdated = optionalOfTaskToBeProcessed.get();
-
-        if (taskToBeUpdated.getStatus() == TaskStatus.NEW) {
-            // case TaskStatus.NEW:
-            this.processNewTask(taskToBeUpdated);
-        } else if (taskToBeUpdated.getStatus() == TaskStatus.RUNNING) {
-            // TODO: case TaskStatus.RUNNING:update progress for example ???
-            this.processRunningTask(nextTaskId, taskToBeUpdated);
-        } else if (taskToBeUpdated.getStatus() == TaskStatus.COMPLETED) {
-            // case TaskStatus.COMPLETED:
-            this.processFinishedTask(taskToBeUpdated);
+    public void processTask(Task task) throws ProxyException {
+        if (task.getStatus() == TaskStatus.NEW) {
+            this.processNewTask(task);
+            logger.debug("Processed tasks with status [NEW] " + taskCounterNew.incrementAndGet());
+        } else if (task.getStatus() == TaskStatus.RUNNING) {
+            this.processRunningTask(task);
+            logger.debug("Processed tasks with status [RUNNING] " + taskCounterRunning.incrementAndGet());
+        } else if (task.getStatus() == TaskStatus.COMPLETED) {
+            this.processCompletedTask(task);
+            logger.debug("Processed tasks with status [COMPLETED] " + taskCounterCompleted.incrementAndGet());
         } else {
-            logger.warn("Unhandled task status: {}", taskToBeUpdated.getStatus());
+            logger.warn("Unhandled task status: {}", task.getStatus());
         }
     }
 
-    @Transactional
     public void processNewTask(Task taskToBeUpdated) throws ProxyException {
-        logger.debug("Process new task %s".formatted(taskToBeUpdated.getUuid()));
+        logger.debug("Process NEW task with id %s".formatted(taskToBeUpdated.getUuid()));
         // TODO: check if application exists
 
         // TODO: check if application component exists
@@ -108,9 +106,8 @@ public class TaskProcessor {
                 .block();
     }
 
-    @Transactional
-    public void processRunningTask(String nextTaskId, Task taskToBeUpdated) throws ProxyException {
-        logger.debug("Process running task %s".formatted(nextTaskId));
+    public void processRunningTask(Task taskToBeUpdated) throws ProxyException {
+        logger.debug("Process RUNNING task with id %s".formatted(taskToBeUpdated.getUuid().toString()));
         // TODO: check if application exists
 
         // TODO: check if application component exists
@@ -125,8 +122,8 @@ public class TaskProcessor {
         this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
     }
 
-    @Transactional
-    public void processFinishedTask(Task taskToBeUpdated) throws ProxyException {
+    public void processCompletedTask(Task taskToBeUpdated) throws ProxyException {
+        logger.debug("Process COMPLETED task %s".formatted(taskToBeUpdated.getUuid()));
         this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), taskToBeUpdated.getStatus(), taskToBeUpdated.getRemoteNodeUUID());
     }
 

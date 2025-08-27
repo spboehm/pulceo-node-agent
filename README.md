@@ -147,6 +147,11 @@ X-Xss-Protection: 0
 ## Developing
 
 - Install [k3d](https://k3d.io/v5.6.0/#learning) on your machine by following the official installation guide
+- Install kubectl on your system by following the official installation guide
+- Install the following packages on your system. For example, on openSUSE MicroOS you can run:
+  `nmap-nping util-linux iputils-ping procps psmisc curl iperf docker wget git distrobox`
+
+```bash
 - Create a temporary folder on the system to store the kubeconfig file, which is required by pulceo-node-agent
 
 ```bash

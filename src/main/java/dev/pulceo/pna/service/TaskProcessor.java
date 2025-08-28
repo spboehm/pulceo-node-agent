@@ -5,8 +5,6 @@ import dev.pulceo.pna.exception.ProxyException;
 import dev.pulceo.pna.model.task.Task;
 import dev.pulceo.pna.model.task.TaskStatus;
 import dev.pulceo.pna.proxy.PSMProxy;
-import dev.pulceo.pna.repository.TaskRepository;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
@@ -88,11 +84,11 @@ public class TaskProcessor {
                 .bodyToMono(Void.class)
                 .doOnSuccess(aVoid -> {
                     logger.debug("Task %s has been successfully assigned to application component %s".formatted(taskToBeUpdated.getUuid(), applicationComponentId));
-                    try {
-                        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), TaskStatus.RUNNING, taskToBeUpdated.getRemoteNodeUUID());
+/*                    try {
+                        //this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), TaskStatus.RUNNING, taskToBeUpdated.getRemoteNodeUUID());
                     } catch (ProxyException e) {
                         throw new RuntimeException(e);
-                    }
+                    }*/
                 })
                 .onErrorResume(e -> {
                     logger.error("Task assignment failed with error: %s".formatted(e.getMessage()));

@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
         - name: pulceo-node-agent
-          image: ghcr.io/spboehm/pulceo-node-agent:v1.3.0
+          image: ghcr.io/spboehm/pulceo-node-agent:v1.3.1
           volumeMounts:
             - mountPath: /k3s.yaml
               name: k3s

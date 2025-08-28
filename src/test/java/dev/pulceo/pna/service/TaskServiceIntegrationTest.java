@@ -79,7 +79,7 @@ public class TaskServiceIntegrationTest {
         int batchSize = 1000;
         List<Task> tasks = generateTasks(batchSize);
         List<Task> createdTasks = new ArrayList<>();
-        CountDownLatch sentMessages = new CountDownLatch(batchSize * 3); // running + completed
+        CountDownLatch sentMessages = new CountDownLatch(batchSize * 2); // running + completed
         proxyMessageChannel.subscribe(message -> {
             sentMessages.countDown();
         });
@@ -136,7 +136,7 @@ public class TaskServiceIntegrationTest {
                     runningTasks.countDown();
 
                     // simulate some delay
-                    Thread.sleep((long)(Math.random() * 100));
+                    Thread.sleep((long) (Math.random() * 100));
 
                     UpdateTaskInternallyOnPNADTO updateCompletedTaskInternallyOnPNADTO = UpdateTaskInternallyOnPNADTO.builder()
                             .taskId(createdTask.getUuid().toString())

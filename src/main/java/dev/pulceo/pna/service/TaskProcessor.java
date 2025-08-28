@@ -83,9 +83,9 @@ public class TaskProcessor {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .doOnSuccess(aVoid -> {
-                    logger.debug("Task %s has been successfully assigned to application component %s".formatted(taskToBeUpdated.getUuid(), applicationComponentId));
-/*                    try {
-                        //this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), TaskStatus.RUNNING, taskToBeUpdated.getRemoteNodeUUID());
+/*                    logger.debug("Task %s has been successfully assigned to application component %s".formatted(taskToBeUpdated.getUuid(), applicationComponentId));
+                    try {
+                        this.psmProxy.updateTask(taskToBeUpdated.getGlobalTaskUUID(), taskToBeUpdated.getUuid().toString(), TaskStatus.RUNNING, taskToBeUpdated.getRemoteNodeUUID());
                     } catch (ProxyException e) {
                         throw new RuntimeException(e);
                     }*/

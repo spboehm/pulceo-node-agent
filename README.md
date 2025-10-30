@@ -2,11 +2,7 @@
 
 # pulceo-node-agent
 
-[OpenAPI definition for pulceo-node-agent](https://spboehm.github.io/pulceo-node-agent/)
-
-Architecture Overview:
-
-<img src="docs/assets/pna-architecture-v1.png" alt="pulceo-logo" width="75%" height="auto"/>
+<img src="docs/assets/pna-architecture-v1.png" alt="pna-architecture" width="100%" height="auto"/>
 
 ## General Prerequisites
 
@@ -21,6 +17,10 @@ Architecture Overview:
     - `5000-5015/tcp` (iperf3 bandwidth checks)
     - `5000-5015/udp` (iperf3 bandwidth checks)
 - Any Linux distribution is recommended (tested on Ubuntu 20.04 and openSUSE Tumbleweed)
+
+## OpenAPI Definition
+
+[OpenAPI definition for pulceo-node-agent](https://spboehm.github.io/pulceo-node-agent/)
 
 ## Use a virtual machine for testing
 

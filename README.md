@@ -2,9 +2,11 @@
 
 # pulceo-node-agent
 
-<img src="docs/assets/pna-architecture-v1.png" alt="pulceo-logo" width="50%" height="auto"/>
-
 [OpenAPI definition for pulceo-node-agent](https://spboehm.github.io/pulceo-node-agent/)
+
+Architecture Overview:
+
+<img src="docs/assets/pna-architecture-v1.png" alt="pulceo-logo" width="75%" height="auto"/>
 
 ## General Prerequisites
 
